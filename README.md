@@ -47,3 +47,9 @@ Some ideas and code was taken from other projects. Credits for those go to -
 * torrinfail ([dwmblocks](https://github.com/torrinfail/dwmblocks))
 * Daniel Bylinka ([statuscmd patch for dwm](https://dwm.suckless.org/patches/statuscmd/))
 * Jeremy Jay ([statuscolors patch for dwm](https://dwm.suckless.org/patches/statuscolors/))
+
+# See also
+
+* [dwmblocks](https://github.com/ashish-yadav11/dwmblocks) - A clone of this
+project with the only difference being that external programs instead of C
+functions are used to update blocks and handle clicks.
