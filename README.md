@@ -24,10 +24,10 @@ patch for dwm), clickability (inspired by statuscmd patch for dwm) and cursor
 hinting when hovering on clickable blocks (inspired by polybar).
 
 To add colors to the status have your functions output raw characters from
-'\x11' to '\x31'. '\x11' in status text switches the active colorscheme to the
+'\x0b' to '\x31'. '\x0b' in status text switches the active colorscheme to the
 first one in the scheme array in dwm and so on. See
 [statuscolors patch](https://dwm.suckless.org/patches/statuscolors/)
-for more info. Keep in mind that you have to start from '\x11' instead of '\x01'
+for more info. Keep in mind that you have to start from '\x0b' instead of '\x01'
 as instructed on the page.
 
 # Signaling changes
