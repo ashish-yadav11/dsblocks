@@ -29,22 +29,22 @@ volumec(int button)
                 {       char *arg[] = { "/usr/bin/pamixer", "--toggle-mute", NULL };
 
                         execv(arg[0], arg);
-                        goto error;
+                        perror("volumec - execv");
+                        _exit(127);
                 }
                 case 2:
                 {       char *arg[] = { "/usr/bin/pavucontrol-qt", NULL };
 
                         execv(arg[0], arg);
-                        goto error;
+                        perror("volumec - execv");
+                        _exit(127);
                 }
                 case 3:
                 {       char *arg[] = { "/usr/bin/pamixer", "--set-volume", "60", NULL };
 
                         execv(arg[0], arg);
-                        goto error;
+                        perror("volumec - execv");
+                        _exit(127);
                 }
         }
-error:
-        perror("volumec - execv");
-        _exit(127);
 }

@@ -26,9 +26,9 @@ cputempu(char *str, int *sigval)
         fclose(fp); 
 
         if (temp < WARNCPUTEMP)
-                snprintf(str, CMDLENGTH, TEM0 "%d°C", (temp + 999) / 1000);
+                snprintf(str, CMDLENGTH, CTMP0 "%d°C", (temp + 999) / 1000);
         else
-                snprintf(str, CMDLENGTH, TEM1 "%d°C", (temp + 999) / 1000);
+                snprintf(str, CMDLENGTH, CTMP1 "%d°C", (temp + 999) / 1000);
 }
 
 void
@@ -39,22 +39,22 @@ cputempc(int button)
                 {       char *arg[] = { "/usr/bin/termite", "-e", "htop -s PERCENT_CPU", NULL };
 
                         execv(arg[0], arg);
-                        goto error;
+                        perror("cputempc - execv");
+                        _exit(127);
                 }
                 case 2:
                 {       char *arg[] = { "/usr/bin/termite", "-e", "htop", NULL };
 
                         execv(arg[0], arg);
-                        goto error;
+                        perror("cputempc - execv");
+                        _exit(127);
                 }
                 case 3:
                 {       char *arg[] = { "/usr/bin/termite", "-e", "htop -s PERCENT_MEM", NULL };
 
                         execv(arg[0], arg);
-                        goto error;
+                        perror("cputempc - execv");
+                        _exit(127);
                 }
         }
-error:
-        perror("cputempc - execv");
-        _exit(127);
 }
