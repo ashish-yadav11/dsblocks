@@ -2,15 +2,18 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "../util.h"
+#include "mail.h"
+
 void
-mailu(char *str, int *sigval)
+mailu(char *str, int sigval)
 {
 }
 
 void
 mailc(int button)
 {
-        switch(button) {
+        switch (button) {
                 case 1:
                 {
                 }

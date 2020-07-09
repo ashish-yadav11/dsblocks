@@ -2,10 +2,11 @@
 #include <time.h>
 #include <unistd.h>
 
-#include "common.h"
+#include "../util.h"
+#include "calendar.h"
 
 void
-calendaru(char *str, int *sigval)
+calendaru(char *str, int sigval)
 {
         char *day;
         char *month;

@@ -1,32 +1,40 @@
 #PREFIX = /usr/local
 PREFIX = ${HOME}/.local
 
+CC = gcc
+CFLAGS1 = -Wall -Wextra -O3 -Wno-unused-parameter -Wno-missing-field-initializers
+CFLAGS2 = -Wall -Wextra -O3
+
 BLOCKS = ${wildcard blocks/*.c}
 
-CC = gcc
-CFLAGS = -Wall -Wextra -Wextra -O3
-CFLAGSEXTRA = -Wno-unused-parameter -Wno-missing-field-initializers
+all: dsblocks sigdsblocks/sigdsblocks xgetrootname/xgetrootname
 
-all: dsblocks sigdsblocks
+dsblocks.o: dsblocks.c blocks.h shared.h
+util.o: util.c util.h shared.h
+${BLOCKS:c=o}: $@ ${@:c=h} util.h shared.h
 
-dsblocks: dsblocks.c blocks/common.h ${BLOCKS}
-	${CC} -o $@ -lX11 ${CFLAGS} ${CFLAGSEXTRA} $<
+%.o: %.c
+	${CC} -o $@ -c ${CFLAGS1} $<
 
-sigdsblocks: sigdsblocks.c
-	${CC} -o $@ ${CFLAGS} sigdsblocks.c
+dsblocks: dsblocks.o util.o ${BLOCKS:c=o}
+	${CC} -o $@ -lX11 dsblocks.o util.o ${BLOCKS:c=o}
 
-xgetrootname: xgetrootname.c
-	${CC} -o $@ -lX11 ${CFLAGS} xgetrootname.c
+sigdsblocks/sigdsblocks: sigdsblocks/sigdsblocks.c
+	${CC} -o $@ ${CFLAGS2} sigdsblocks/sigdsblocks.c
+
+xgetrootname/xgetrootname: xgetrootname/xgetrootname.c
+	${CC} -o $@ -lX11 ${CFLAGS2} xgetrootname/xgetrootname.c
 
 clean:
-	rm -f dsblocks sigdsblocks
+	rm -f blocks/*.o *.o dsblocks sigdsblocks/sigdsblocks xgetrootname/xgetrootname
 
 install: all
 	mkdir -p ${DESTDIR}${PREFIX}/bin
 	install -m 0755 dsblocks ${DESTDIR}${PREFIX}/bin/dsblocks
-	install -m 0755 sigdsblocks ${DESTDIR}${PREFIX}/bin/sigdsblocks
+	install -m 0755 sigdsblocks/sigdsblocks ${DESTDIR}${PREFIX}/bin/sigdsblocks
+	install -m 0755 xgetrootname/xgetrootname ${DESTDIR}${PREFIX}/bin/xgetrootname
 
 uninstall:
-	rm -f ${DESTDIR}${PREFIX}/bin/dsblocks ${DESTDIR}${PREFIX}/bin/sigdsblocks
+	rm -f ${DESTDIR}${PREFIX}/bin/dsblocks ${DESTDIR}${PREFIX}/bin/sigdsblocks ${DESTDIR}${PREFIX}/bin/xgetrootname
 
 .PHONY: all clean install uninstall

@@ -1,11 +1,11 @@
 #define SLEEPINTERVAL			1
 
-#include "blocks/battery.c"
-#include "blocks/cputemp.c"
-#include "blocks/calendar.c"
-#include "blocks/hotspot.c"
-#include "blocks/time.c"
-#include "blocks/volume.c"
+#include "blocks/battery.h"
+#include "blocks/cputemp.h"
+#include "blocks/calendar.h"
+#include "blocks/hotspot.h"
+#include "blocks/time.h"
+#include "blocks/volume.h"
 
 /* If multiple realtime signals are pending, then the lowest numbered signal is delivered first.
  * If interval of a block is set to 0, the block will only be updated once at startup.
@@ -15,19 +15,19 @@
 
 static Block blocks[] = {
 /*	funcu			funcc			interval	signal */
-	{ hotspotu,		hotspotc,		-1,		3},
+	{ hotspotu,		hotspotc,		-1,		3 },
 
-	{ timeu,		NULL,			30,		0},
+	{ timeu,		NULL,			30,		5 },
 
-	{ calendaru,		calendarc,		60,		6},
+	{ calendaru,		calendarc,		60,		5 },
 
-//	{ mailu,		mailc,			30,		2},
+//	{ mailu,		mailc,			30,		2 },
 
-	{ volumeu,		volumec,		0,		1},
+	{ volumeu,		volumec,		0,		1 },
 
-	{ cputempu,		cputempc,		1,		5},
+	{ cputempu,		cputempc,		1,		6 },
 
-	{ batteryu,		batteryc,		0,		4},
+	{ batteryu,		batteryc,		10,		4 },
 
         { NULL } /* just to mark the end of the array */
 };

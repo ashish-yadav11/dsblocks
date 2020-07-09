@@ -7,7 +7,8 @@
 #include <unistd.h>
 #include <X11/Xlib.h>
 
-#define CMDLENGTH			25
+#include "shared.h"
+
 #define STTLENGTH			256
 #define LOCKFILE			"/tmp/dsblocks.pid"
 
@@ -15,15 +16,13 @@
 #define NOTATCMDOUTEND(block, i)	(i < CMDLENGTH && block->cmdoutcur[i] != '\0' && block->cmdoutcur[i] != '\n')
 
 typedef struct {
-        void (*funcu)(char *str, int *sigval);
+        void (*funcu)(char *str, int sigval);
 	void (*funcc)(int button);
 	const int interval;
 	const int signal;
         char cmdoutcur[CMDLENGTH];
         char cmdoutprv[CMDLENGTH];
 } Block;
-
-static ssize_t getcmdout(char *const *arg, char *cmdout, size_t cmdoutlen);
 
 #include "blocks.h"
 
@@ -36,10 +35,10 @@ static void termhandler(int signum);
 static int updatestatus();
 static void writepid();
 
+Display *dpy;
 static int statusContinue = 1;
 static char statusstr[STTLENGTH];
 static size_t delimlength;
-static Display *dpy;
 
 void
 buttonhandler(int signal, siginfo_t *si, void *ucontext)
@@ -53,43 +52,6 @@ buttonhandler(int signal, siginfo_t *si, void *ucontext)
                                 current->funcc(si->si_value.sival_int & 0xff);
                                 exit(0);
                         }
-}
-
-ssize_t
-getcmdout(char *const *arg, char *cmdout, size_t cmdoutlen)
-{
-        int fd[2];
-        ssize_t rd;
-
-        if (pipe(fd) == -1) {
-                perror("getcmdout - pipe");
-                exit(1);
-        }
-        switch (fork()) {
-                case -1:
-                        perror("getcmdout - fork");
-                        exit(1);
-                case 0:
-                        close(ConnectionNumber(dpy));
-                        close(fd[0]);
-                        if (dup2(fd[1], STDOUT_FILENO) != STDOUT_FILENO) {
-                                perror("getcmdout - child - dup2");
-                                exit(1);
-                        }
-                        close(fd[1]);
-                        execv(arg[0], arg);
-                        perror("getcmdout - child - execv");
-                        _exit(127);
-                default:
-                        close(fd[1]);
-                        rd = read(fd[0], cmdout, cmdoutlen);
-                        if (rd == -1) {
-                                perror("getcmdout - read");
-                                exit(1);
-                        }
-                        close(fd[0]);
-        }
-        return rd;
 }
 
 void
@@ -138,7 +100,7 @@ sighandler(int signal, siginfo_t *si, void *ucontext)
         signal -= SIGRTMIN;
 	for (Block *current = blocks; current->funcu; current++)
 		if (current->signal == signal)
-			current->funcu(current->cmdoutcur, &(si->si_value.sival_int));
+                        current->funcu(current->cmdoutcur, si->si_value.sival_int);
 	setroot();
 }
 
@@ -150,14 +112,14 @@ statusloop()
 	setupsignals();
         for (Block *current = blocks; current->funcu; current++)
                 if (current->interval >= 0)
-                        current->funcu(current->cmdoutcur, NULL);
+                        current->funcu(current->cmdoutcur, NILL);
         setroot();
         sleep(SLEEPINTERVAL);
         i = SLEEPINTERVAL;
 	while (statusContinue) {
                 for (Block *current = blocks; current->funcu; current++)
                         if (current->interval > 0 && i % current->interval == 0)
-                                current->funcu(current->cmdoutcur, NULL);
+                                current->funcu(current->cmdoutcur, NILL);
 		setroot();
 		sleep(SLEEPINTERVAL);
 		i += SLEEPINTERVAL;

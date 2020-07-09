@@ -2,12 +2,13 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "common.h"
+#include "../util.h"
+#include "hotspot.h"
 
 void
-hotspotu(char *str, int *sigval)
+hotspotu(char *str, int sigval)
 {
-        if (*sigval)
+        if (sigval)
                 strcpy(str, HTSPT);
         else
                 *str = '\0';

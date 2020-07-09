@@ -8,13 +8,8 @@ Modular status monitor for dwm written in C.
 
 # Modifying blocks
 
-Take a look at `blocks.h` file.
-
-## Output from external programs
-
-Use `getcmdout` function defined in `dsblocks.c`. See `volumeu` function defined
-in `blocks/volume.c` for an example. Note that `getcmdout` doesn't guarantee
-null termination.
+Take a look at `blocks.h` file. Functions defined in util.c might prove helpful
+when adding blocks.
 
 # Colored output and Clickability
 
@@ -25,15 +20,15 @@ hinting when hovering on clickable blocks (inspired by polybar).
 
 To add colors to the status have your functions output raw characters from
 '\x0b' to '\x31'. '\x0b' in status text switches the active colorscheme to the
-first one in the scheme array in dwm and so on. See
+first one in the scheme array in dwm and so on. See `util.h` file and
 [statuscolors patch](https://dwm.suckless.org/patches/statuscolors/)
 for more info. Keep in mind that you have to start from '\x0b' instead of '\x01'
-as instructed on the page.
+as instructed on statuscolors patch's page.
 
 # Signaling changes
 
 To signal a specific block to update, run `sigdsblocks signal [sigval]`.
-`sigval` is optional and must be an integer. When not provided it defaults to 0.
+`sigval` is optional and must be an integer.
 
 # xgetrootname
 
