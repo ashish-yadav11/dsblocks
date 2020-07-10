@@ -8,8 +8,8 @@ Modular status monitor for dwm written in C.
 
 # Modifying blocks
 
-Take a look at `blocks.h` file. Functions defined in util.c might prove helpful
-when adding blocks.
+Take a look at `blocks.h` file. Functions defined in `util.c` might prove
+helpful when adding blocks.
 
 # Colored output and Clickability
 
