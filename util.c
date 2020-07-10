@@ -45,14 +45,8 @@ int
 readint(const char *path, int *var) {
         FILE *fp;
 
-        if (!(fp = fopen(path, "r"))) {
-                perror("readint - fopen");
+        if (!(fp = fopen(path, "r")) || fscanf(fp, "%d", var) != 1)
                 return 0;
-        }
-        if (fscanf(fp, "%d", var) != 1) {
-                perror("readint - fscanf");
-                return 0;
-        }
         fclose(fp);
         return 1;
 }
