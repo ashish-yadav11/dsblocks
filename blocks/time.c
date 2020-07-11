@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <time.h>
 
-#define ICON			COL1 "" COL0
+#define ICON			COL1 "" COL0
 
 #include "../util.h"
 #include "time.h"
