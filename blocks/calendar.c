@@ -2,6 +2,8 @@
 #include <time.h>
 #include <unistd.h>
 
+#define ICON			COL1 "" COL0
+
 #include "../util.h"
 #include "calendar.h"
 
@@ -36,7 +38,7 @@ calendaru(char *str, int sigval)
                 case 10: month = "Nov"; break;
                 default: month = "Dec"; break;
         }
-        snprintf(str, CMDLENGTH, CAL "%s, %02d %s", day, tm.tm_mday, month);
+        snprintf(str, CMDLENGTH, ICON "%s, %02d %s", day, tm.tm_mday, month);
 }
 
 void

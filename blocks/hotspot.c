@@ -2,6 +2,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#define ICON			COL1 "" COL0
+
 #include "../util.h"
 #include "hotspot.h"
 
@@ -9,7 +11,7 @@ void
 hotspotu(char *str, int sigval)
 {
         if (sigval)
-                strcpy(str, HTSPT);
+                strcpy(str, ICON);
         else
                 *str = '\0';
 }

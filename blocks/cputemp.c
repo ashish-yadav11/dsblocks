@@ -5,6 +5,9 @@
 #include "../util.h"
 #include "cputemp.h"
 
+#define ICON0				COL1 "" COL0
+#define ICON1				COL1 "" COL0
+
 #define WARNCPUTEMP			70000
 #define	CPUTEMPFILE			"/sys/class/thermal/thermal_zone0/temp"
 
@@ -21,9 +24,9 @@ cputempu(char *str, int sigval)
                 return;
         }
         if (temp < WARNCPUTEMP)
-                snprintf(str, CMDLENGTH, CTMP0 "%d°C", (temp + 999) / 1000);
+                snprintf(str, CMDLENGTH, ICON0 "%d°C", (temp + 999) / 1000);
         else
-                snprintf(str, CMDLENGTH, CTMP1 "%d°C", (temp + 999) / 1000);
+                snprintf(str, CMDLENGTH, ICON1 "%d°C", (temp + 999) / 1000);
 }
 
 void

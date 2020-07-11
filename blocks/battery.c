@@ -5,6 +5,13 @@
 #include "../util.h"
 #include "battery.h"
 
+#define ICON0				COL1 "" COL0
+#define ICON1				COL1 "" COL0
+#define ICON2				COL1 "" COL0
+#define ICON3				COL1 "" COL0
+#define ICON4				COL1 "" COL0
+#define ICON5				COL1 "" COL0
+
 #define BATCAPFILE			"/sys/class/power_supply/BAT0/capacity"
 #define	ACSTATEFILE			"/sys/class/power_supply/AC/online"
 #define BATRATEFILE			"/sys/class/power_supply/BAT0/current_now"
@@ -47,7 +54,7 @@ batteryu(char *str, int ac)
         }
         if (ac) {
 yac:
-                snprintf(str, CMDLENGTH, BAT5 "%d%%", bat);
+                snprintf(str, CMDLENGTH, ICON5 "%d%%", bat);
                 if (bat >= 80) { 
                         if (state != Unplug) {
                                 state = Unplug;
@@ -58,21 +65,21 @@ yac:
         } else {
 nac:
                 if (bat >= 80) {
-                        snprintf(str, CMDLENGTH, BAT4 "%d%%", bat);
+                        snprintf(str, CMDLENGTH, ICON4 "%d%%", bat);
                         if (state != Normal)
                                 state = Normal;
                 } else if (bat > 40) {
-                        snprintf(str, CMDLENGTH, BAT3 "%d%%", bat);
+                        snprintf(str, CMDLENGTH, ICON3 "%d%%", bat);
                         if (state != Normal)
                                 state = Normal;
                 } else if (bat > 20) {
-                        snprintf(str, CMDLENGTH, BAT2 "%d%%", bat);
+                        snprintf(str, CMDLENGTH, ICON2 "%d%%", bat);
                         if (state != Plug) {
                                 state = Plug;
                                 UNNOTIFY("0", "Plug in the charger");
                         }
                 } else {
-                        snprintf(str, CMDLENGTH, BAT1 "%d%%", bat);
+                        snprintf(str, CMDLENGTH, ICON1 "%d%%", bat);
                         if (bat > 10) {
                                 if (state != Low) {
                                         state = Low;
