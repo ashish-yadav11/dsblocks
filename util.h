@@ -10,7 +10,7 @@
 #define COL7			""
 #define COL8			""
 
+void cspawn(char *const *arg);
 ssize_t getcmdout(char *const *arg, char *cmdout, size_t cmdoutlen);
 int readint(const char *path, int *var);
-void cspawn(char *const *arg);
 void uspawn(char *const *arg);

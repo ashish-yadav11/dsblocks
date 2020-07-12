@@ -4,6 +4,14 @@
 
 #include "util.h"
 
+void
+cspawn(char *const *arg)
+{
+        execv(arg[0], arg);
+        perror("cspawn - execv");
+        _exit(127);
+}
+
 ssize_t
 getcmdout(char *const *arg, char *cmdout, size_t cmdoutlen)
 {
@@ -51,14 +59,6 @@ readint(const char *path, int *var) {
         }
         fclose(fp);
         return 1;
-}
-
-void
-cspawn(char *const *arg)
-{
-        execv(arg[0], arg);
-        perror("cspawn - execv");
-        _exit(127);
 }
 
 void
