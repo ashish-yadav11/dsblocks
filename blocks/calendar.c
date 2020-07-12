@@ -10,8 +10,7 @@
 void
 calendaru(char *str, int sigval)
 {
-        char *day;
-        char *month;
+        char *day, *month;
         time_t t = time(NULL);
         struct tm tm = *localtime(&t);
 
