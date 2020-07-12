@@ -40,8 +40,8 @@ batteryu(char *str, int ac)
         }
         if (ac == NILL) {
                 if (!readint(ACSTATEFILE, &ac)) {
-                        ac = 0;
-                        goto nac;
+                        *str = '\0';
+                        return;
                 }
         } else {
                 if (ac) {
