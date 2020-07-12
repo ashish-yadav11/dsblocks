@@ -1,0 +1,1 @@
+ACTION=="change", SUBSYSTEM=="power_supply", ATTR{type}=="Mains", RUN+="/home/ashish/.local/bin/sigdsblocks 4 $attr{online}"
