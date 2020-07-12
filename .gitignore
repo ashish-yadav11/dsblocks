@@ -1,0 +1,8 @@
+# object files
+blocks/*.o
+*.o
+
+# binaries
+dsblocks
+sigdsblocks/sigdsblocks
+xgetrootname/xgetrootname
