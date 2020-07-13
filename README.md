@@ -4,7 +4,7 @@ Modular status monitor for dwm written in C.
 
 # Usage
 
-`dsblocks [-d delimiter]`
+`dsblocks [-d <delimiter>]`
 
 # Modifying blocks
 
@@ -27,8 +27,8 @@ as instructed on statuscolors patch's page.
 
 # Signaling changes
 
-To signal a specific block to update, run `sigdsblocks signal [sigval]`.
-`sigval` is optional and must be an integer.
+To signal a specific block to update, run `sigdsblocks <signal> [<sigval>]`.
+`<sigval>` is optional and must be an integer.
 
 # xgetrootname
 
