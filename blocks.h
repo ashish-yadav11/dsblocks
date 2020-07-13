@@ -7,17 +7,17 @@
 #include "blocks/time.h"
 #include "blocks/volume.h"
 
-/* If multiple realtime signals are pending, then the lowest numbered signal is delivered first.
- * If interval of a block is set to 0, the block will only be updated once at startup.
+/* If interval of a block is set to 0, the block will only be updated once at startup.
  * If interval is set to a negative value, the block will never be updated in the main loop.
  * Set signal to 0 if signalling is not required for the block.
- * Keep signal less than 10 for clickable blocks. */
+ * Keep signal less than 10 for clickable blocks.
+ * If multiple realtime signals are pending, then the lowest numbered signal is delivered first. */
 
 static Block blocks[] = {
 /*	funcu			funcc			interval	signal */
 	{ hotspotu,		hotspotc,		-1,		3 },
 
-	{ timeu,		NULL,			30,		5 },
+	{ timeu,		NULL,			30,		10 },
 
 	{ calendaru,		calendarc,		60,		5 },
 
