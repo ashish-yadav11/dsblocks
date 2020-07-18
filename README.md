@@ -1,6 +1,7 @@
 # dsblocks
 
-Modular status monitor for dwm written in C.
+Modular status monitor for dwm written in C with support for clickability,
+cursor hinting for clickable modules and color.
 
 # Usage
 
@@ -8,8 +9,10 @@ Modular status monitor for dwm written in C.
 
 # Modifying blocks
 
-Take a look at `blocks.h` file. Functions defined in `util.c` might prove
-helpful when adding blocks.
+Blocks are composed of two functions, one responsible for updating what is
+shown on the status and one responsible for handling clicks. Take a look at
+`blocks.h` file. Functions defined in `util.c` might prove helpful when adding
+your own blocks.
 
 # Colored output and Clickability
 
