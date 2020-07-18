@@ -13,6 +13,9 @@
  * Keep signal less than 10 for clickable blocks.
  * If multiple realtime signals are pending, then the lowest numbered signal is delivered first. */
 
+/* funcu - function responsible for updating what is shown on the status
+ * funcc - function responsible for handling clicks on the block */
+
 static Block blocks[] = {
 /*	funcu			funcc			interval	signal */
 	{ hotspotu,		hotspotc,		-1,		3 },
