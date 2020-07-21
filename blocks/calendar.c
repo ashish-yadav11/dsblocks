@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <time.h>
-#include <unistd.h>
 
 #define ICON			COL1 "" COL0
 
