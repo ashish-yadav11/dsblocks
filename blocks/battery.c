@@ -216,6 +216,7 @@ batteryc(int button)
                                 default:
                                 {
                                         char buf[21];
+
                                         snprintf(buf, sizeof buf, "%d minutes remaining", mn);
                                         CNNOTIFY("2000", buf);
                                 }
@@ -233,6 +234,7 @@ batteryc(int button)
                                 default:
                                 {
                                         char buf[29];
+
                                         snprintf(buf, sizeof buf, "1 hour, %d minutes remaining", mn);
                                         CNNOTIFY("2000", buf);
                                 }
@@ -244,6 +246,7 @@ batteryc(int button)
                                 case 0:
                                 {
                                         char buf[19];
+
                                         snprintf(buf, sizeof buf, "%d hours remaining", hr);
                                         CNNOTIFY("2000", buf);
                                 }
@@ -251,6 +254,7 @@ batteryc(int button)
                                 case 1:
                                 {
                                         char buf[29];
+
                                         snprintf(buf, sizeof buf, "%d hours, 1 minute remaining", hr);
                                         CNNOTIFY("2000", buf);
                                 }
@@ -258,6 +262,7 @@ batteryc(int button)
                                 default:
                                 {
                                         char buf[31];
+
                                         snprintf(buf, sizeof buf, "%d hours, %d minutes remaining", hr, mn);
                                         CNNOTIFY("2000", buf);
                                 }
