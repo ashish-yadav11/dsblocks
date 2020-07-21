@@ -26,13 +26,13 @@ volumec(int button)
 {
         switch(button) {
                 case 1:
-                        cspawn((char *[]) { "/usr/bin/pamixer", "--toggle-mute", NULL });
+                        cspawn((char *[]){ "/usr/bin/pamixer", "--toggle-mute", NULL });
                         break;
                 case 2:
-                        cspawn((char *[]) { "/usr/bin/pavucontrol-qt", NULL });
+                        cspawn((char *[]){ "/usr/bin/pavucontrol-qt", NULL });
                         break;
                 case 3:
-                        cspawn((char *[]) { "/usr/bin/pamixer", "--set-volume", "50", NULL });
+                        cspawn((char *[]){ "/usr/bin/pamixer", "--set-volume", "50", NULL });
                         break;
         }
 }

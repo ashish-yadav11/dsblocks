@@ -26,13 +26,13 @@
 #define BATCFULLFILE			"/sys/class/power_supply/BAT0/charge_full"
 
 #define UNNOTIFY(t, msg) \
-	uspawn((char *[]) { "/usr/bin/dunstify", "-r", "2120", "-t", t, "BatMon", msg, NULL })
+	uspawn((char *[]){ "/usr/bin/dunstify", "-r", "2120", "-t", t, "BatMon", msg, NULL })
 #define UCNOTIFY(t, msg) \
-	uspawn((char *[]) { "/usr/bin/dunstify", "-r", "2120", "-t", t, "-u", "critical", "BatMon", msg, NULL })
+	uspawn((char *[]){ "/usr/bin/dunstify", "-r", "2120", "-t", t, "-u", "critical", "BatMon", msg, NULL })
 #define CNNOTIFY(t, msg) \
-	cspawn((char *[]) { "/usr/bin/dunstify", "-r", "2120", "-t", t, "BatMon", msg, NULL })
+	cspawn((char *[]){ "/usr/bin/dunstify", "-r", "2120", "-t", t, "BatMon", msg, NULL })
 #define CCNOTIFY(t, msg) \
-	cspawn((char *[]) { "/usr/bin/dunstify", "-r", "2120", "-t", t, "-u", "critical", "BatMon", msg, NULL })
+	cspawn((char *[]){ "/usr/bin/dunstify", "-r", "2120", "-t", t, "-u", "critical", "BatMon", msg, NULL })
 
 enum { Normal, Critical, Low, Plug, Unplug }; /* level */
 enum { Unknown, Discharging, Charging, Full, NotCharging }; /* state */
@@ -152,7 +152,7 @@ onbat:
                                 level = Critical;
                         }
                         if (bat <= BATM)
-                                uspawn((char *[]) { "/usr/bin/systemctl", "hibernate", NULL });
+                                uspawn((char *[]){ "/usr/bin/systemctl", "hibernate", NULL });
                 }
         }
 }

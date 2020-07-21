@@ -10,7 +10,7 @@
 #define	CPUTEMPFILE			"/sys/class/thermal/thermal_zone0/temp"
 
 #define TERMCMD(cmd) \
-	cspawn((char *[]) { "/usr/bin/termite", "-e", cmd, NULL })
+	cspawn((char *[]){ "/usr/bin/termite", "-e", cmd, NULL })
 
 void
 cputempu(char *str, int sigval)
