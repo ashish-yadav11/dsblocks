@@ -37,7 +37,7 @@
 enum { Normal, Critical, Low, Plug, Unplug }; /* level */
 enum { Unknown, Discharging, Charging, Full, NotCharging }; /* state */
 
-int
+static int
 chargingstatus()
 {
         int c;
