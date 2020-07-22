@@ -142,8 +142,11 @@ updatestatus()
 
         for (current = blocks; current->funcu; current++) {
                 if (EMPTYCMDOUT(current)) {
-                        if (current->cmdoutprv[0] != current->cmdoutcur[0])
-                                goto updatestrstrt;
+                        if (current->cmdoutprv[0] != current->cmdoutcur[0]) {
+                                current->cmdoutprv[0] = current->cmdoutcur[0];
+                                current++;
+                                goto update0;
+                        }
                         continue;
                 }
                 i = 0;
@@ -153,7 +156,7 @@ updatestatus()
                                 continue;
                         } else {
                                 str += i;
-                                goto updatestrmddl;
+                                goto update1;
                         }
                 } while (NOTATCMDOUTEND(current, i));
                 str += i;
@@ -162,15 +165,14 @@ updatestatus()
                 str += delimlength;
         }
 	return 1;
-updatestrstrt:
-        current->cmdoutprv[0] = current->cmdoutcur[0];
-        for (current++; current->funcu; current++) {
+update0:
+        for (; current->funcu; current++) {
                 if (EMPTYCMDOUT(current)) {
                         current->cmdoutprv[0] = current->cmdoutcur[0];
                         continue;
                 }
                 i = 0;
-updatestrmddl:
+update1:
                 do {
                         *(str++) = current->cmdoutcur[i];
                         current->cmdoutprv[i] = current->cmdoutcur[i];
@@ -182,6 +184,7 @@ updatestrmddl:
                         *(str++) = delim[i];
                 *(str++) = '\n';
         }
+        /* remove delimiter at the end if not all blocks are empty */
         if (str != statusstr)
                 *(str - delimlength) = '\0';
         return 0;
