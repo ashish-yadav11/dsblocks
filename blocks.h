@@ -4,6 +4,7 @@
 #include "blocks/cputemp.h"
 #include "blocks/calendar.h"
 #include "blocks/hotspot.h"
+#include "blocks/mail.h"
 #include "blocks/time.h"
 #include "blocks/volume.h"
 
@@ -24,7 +25,7 @@ static Block blocks[] = {
 
 	{ calendaru,		calendarc,		60,		5 },
 
-//	{ mailu,		mailc,			30,		2 },
+	{ mailu,		mailc,			180,		2 },
 
 	{ volumeu,		volumec,		0,		1 },
 
