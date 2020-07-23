@@ -9,6 +9,7 @@ if ping -c1 imap.gmail.com ; then
         sigdsblocks 2 3
     else
         sigdsblocks 2 4
+    fi
     notmuch new
 else
     sigdsblocks 5
