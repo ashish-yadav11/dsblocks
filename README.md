@@ -3,6 +3,10 @@
 Modular status monitor for dwm, written and meant to be extended in C, with
 features including clickability, cursor hinting and color.
 
+> The project is only meant for people comfortable with the C language. See
+> [dwmblocks](https://github.com/ashish-yadav11/dwmblocks) if you are not one
+> of those.
+
 # Usage
 
 `dsblocks [-d <delimiter>]`
@@ -13,6 +17,11 @@ Blocks are composed of two functions, one responsible for updating what is
 shown on the status and the other responsible for handling clicks. Take a look
 at `blocks.h` file. Functions defined in `util.c` might prove helpful when
 adding your own blocks.
+
+> * Many provided blocks and helpers will not work out of the box. Users will
+>   need to change some paths here and there for instance.
+> * Colors and icons for the blocks are defined in `util.h` and at the top of
+>   each block file.
 
 # Colored output and Clickability
 
@@ -45,9 +54,3 @@ Some ideas and code was taken from other projects. Credits for those go to -
 * torrinfail ([dwmblocks](https://github.com/torrinfail/dwmblocks))
 * Daniel Bylinka ([statuscmd patch for dwm](https://dwm.suckless.org/patches/statuscmd/))
 * Jeremy Jay ([statuscolors patch for dwm](https://dwm.suckless.org/patches/statuscolors/))
-
-# See also
-
-* [dwmblocks](https://github.com/ashish-yadav11/dwmblocks) - A clone of this
-project with the only difference being that external programs instead of C
-functions are used to update blocks and handle clicks.
