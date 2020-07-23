@@ -84,6 +84,7 @@ mailu(char *str, int sigval)
                         case 4:
                                 syncing = 0;
                         /* ping failed */
+                        /* fall through */
                         case 5:
                                 snprintf(str, CMDLENGTH, "%s%d", ICON4, n);
                                 break;
