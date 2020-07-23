@@ -2,8 +2,8 @@
 PREFIX = ${HOME}/.local
 
 CC = gcc
-CFLAGS1 = -Wall -Wextra -O3 -Wno-unused-parameter -Wno-missing-field-initializers
-CFLAGS2 = -Wall -Wextra -O3
+CFLAGS1 = -O3 -Wall -Wextra -Wno-missing-field-initializers -Wno-unused-parameter
+CFLAGS2 = -O3 -Wall -Wextra
 
 BLOCKS = ${wildcard blocks/*.c}
 
