@@ -13,7 +13,6 @@
 #define ICON4				COL1 "" COL0
 #define ICON5				COL1 "" COL0
 
-#define BATM				5   /* hibernate below this level */
 #define BATC				10  /* critical level */
 #define BATL				20  /* low level */
 #define BATP				40  /* warn to plug in charger below this level */
@@ -151,8 +150,6 @@ onbat:
                                 UCNOTIFY("0", "Battery level is critical!");
                                 level = Critical;
                         }
-                        if (bat <= BATM)
-                                uspawn((char *[]){ "/usr/bin/systemctl", "hibernate", NULL });
                 }
         }
 }
