@@ -18,10 +18,8 @@ shown on the status and the other responsible for handling clicks. Take a look
 at `blocks.h` file. Functions defined in `util.c` might prove helpful when
 adding your own blocks.
 
-> * The provided blocks and helpers are what I personally use. They may or may
->   not work for others. They are mainly provided for suggestion purposes.
-> * Colors and icons for the blocks are defined in `util.h` and at the top of
->   each block file.
+> The provided blocks and helpers are what I personally use. They may or may
+> not work for others. They are mainly provided for suggestion purposes.
 
 # Colored output and Clickability
 
