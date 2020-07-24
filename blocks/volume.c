@@ -15,9 +15,9 @@ volumeu(char *str, int sigval)
         char *arg[] = { "/usr/bin/pamixer", "--get-mute", "--get-volume", NULL };
 
         buf[getcmdout(arg, buf, BUFLENGTH) - 1] = '\0';
-        if (buf[0] == 'f') /* output was `false x..%` */
+        if (buf[0] == 'f') /* output was `false ...` */
                 snprintf(str, CMDLENGTH, ICON0 "%s%%", buf + 6);
-        else /* output was `true x..%` */
+        else /* output was `true ...` */
                 snprintf(str, CMDLENGTH, ICON1 "%s%%", buf + 5);
 }
 
