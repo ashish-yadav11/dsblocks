@@ -34,11 +34,11 @@ cputempc(int button)
                 case 1:
                         TERMCMD("htop -s PERCENT_CPU");
                         break;
-                case 2:
-                        TERMCMD("htop");
-                        break;
                 case 3:
                         TERMCMD("htop -s PERCENT_MEM");
+                        break;
+                case 2:
+                        TERMCMD("htop");
                         break;
         }
 }

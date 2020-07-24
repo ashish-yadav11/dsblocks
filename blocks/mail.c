@@ -102,14 +102,14 @@ mailc(int button)
                                 frozen = 1;
                         cspawn(MAILSYNC);
                         break;
-                case 2:
-                        cspawn((char *[]){ "/home/ashish/.scripts/neomutt.sh", NULL });
-                        break;
                 case 3:
                         if (frozen)
                                 frozen = 0;
                         else
                                 frozen = 1;
+                        break;
+                case 2:
+                        cspawn((char *[]){ "/home/ashish/.scripts/neomutt.sh", NULL });
                         break;
         }
 }
