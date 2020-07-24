@@ -3,7 +3,7 @@ if [ "$(create_ap --list-running | wc -l)" -gt 2 ] ; then
     sudo /home/ashish/.scripts/hotspot.sh terminate
     exit
 else
-    nmcli -t -f DEVICE,STATE device status | grep -E 'wlp5s0:(connected)|(connecting)' &&
+    nmcli -t -f DEVICE,STATE device status | grep -qE 'wlp5s0:(connected)|(connecting)' &&
         { dunstify -r 81520 -t 3000 "Hotspot" "Your adapter can not be a station and an AP at the same time"; exit ;}
     blockinfo=$(rfkill -nr -o SOFT,TYPE,HARD | grep -m1 " wlan ")
     if [ "${blockinfo##* }" = blocked ] ; then
