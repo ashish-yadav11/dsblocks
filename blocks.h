@@ -23,7 +23,7 @@ static Block blocks[] = {
 
 	{ timeu,		NULL,			30,		10 },
 
-	{ calendaru,		calendarc,		60,		5 },
+	{ calendaru,		calendarc,		30,		5 },
 
 	{ mailu,		mailc,			180,		2 },
 
