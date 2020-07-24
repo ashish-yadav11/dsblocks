@@ -43,7 +43,7 @@ mailu(char *str, int sigval)
                 if (n < 0)
                         *str = '\0';
                 else
-                        snprintf(str, CMDLENGTH, "%s%d", ICON0, n);
+                        snprintf(str, CMDLENGTH, ICON0 "%d", n);
                 frozen = 2;
                 return;
         }
@@ -55,7 +55,7 @@ mailu(char *str, int sigval)
                         }
                         /* syncing is in progress and another instance of MAILSYNC started */
                         if (syncing && sigval == 1) {
-                                snprintf(str, CMDLENGTH, "%s%d", ICON2, n);
+                                snprintf(str, CMDLENGTH, ICON2 "%d", n);
                                 return;
                         }
                 } else {
@@ -68,17 +68,17 @@ mailu(char *str, int sigval)
                 switch (sigval) {
                         /* MAILSYNC started */
                         case 1:
-                                snprintf(str, CMDLENGTH, "%s%d", ICON1, n);
+                                snprintf(str, CMDLENGTH, ICON1 "%d", n);
                                 break;
                         /* sync started */
                         case 2:
                                 syncing = 1;
-                                snprintf(str, CMDLENGTH, "%s%d", ICON2, n);
+                                snprintf(str, CMDLENGTH, ICON2 "%d", n);
                                 break;
                         /* sync successfull */
                         case 3:
                                 syncing = 0;
-                                snprintf(str, CMDLENGTH, "%s%d", ICON3, n);
+                                snprintf(str, CMDLENGTH, ICON3 "%d", n);
                                 break;
                         /* sync failed */
                         case 4:
@@ -86,7 +86,7 @@ mailu(char *str, int sigval)
                         /* ping failed */
                         /* fall through */
                         case 5:
-                                snprintf(str, CMDLENGTH, "%s%d", ICON4, n);
+                                snprintf(str, CMDLENGTH, ICON4 "%d", n);
                                 break;
                 }
         } else
