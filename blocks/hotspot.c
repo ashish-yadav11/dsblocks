@@ -17,5 +17,5 @@ hotspotu(char *str, int sigval)
 void
 hotspotc(int button)
 {
-//      TODO: turn off hotspot
+        cspawn((char *[]){ "/usr/bin/sudo", "/home/ashish/.scripts/hotspot.sh", "terminate", NULL });
 }
