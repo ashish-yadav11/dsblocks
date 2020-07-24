@@ -8,9 +8,9 @@
 void
 hotspotu(char *str, int sigval)
 {
-        if (sigval)
+        if (sigval == 1)
                 strcpy(str, ICON);
-        else
+        else if (sigval == 0)
                 *str = '\0';
 }
 
