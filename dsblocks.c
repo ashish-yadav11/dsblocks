@@ -215,7 +215,7 @@ writepid()
                         fputs("Error: another instance of dsblocks is already running.\n", stderr);
                         exit(2);
                 }
-                perror("lockfile - fcntl");
+                perror("writepid - fcntl");
                 exit(1);
         }
         if (ftruncate(fd, 0) == -1) {
