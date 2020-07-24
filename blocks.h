@@ -1,4 +1,4 @@
-#define SLEEPINTERVAL			1
+#define SLEEPINTERVAL			2
 
 #include "blocks/battery.h"
 #include "blocks/cputemp.h"
@@ -29,7 +29,7 @@ static Block blocks[] = {
 
 	{ volumeu,		volumec,		0,		1 },
 
-	{ cputempu,		cputempc,		1,		6 },
+	{ cputempu,		cputempc,		2,		6 },
 
 	{ batteryu,		batteryc,		10,		4 },
 
