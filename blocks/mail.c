@@ -20,8 +20,8 @@ static int frozen;
 static int
 numnewmails() {
         int n = 0;
-        DIR* dir = NULL;
-        struct dirent* rf = NULL;
+        DIR* dir;
+        struct dirent* rf;
 
         if (!(dir = opendir(NEWMAILDIR)))
                 return -1;
