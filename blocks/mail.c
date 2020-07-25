@@ -12,6 +12,7 @@
 #define ICON4				COL1 "" COL0 /* last sync failed */
 
 #define MAILSYNC			(char *[]){ "/home/ashish/.scripts/mailsync.sh", NULL }
+#define SIGUPDATE			(char *[]){ "/home/ashish/.local/bin/sigdsblocks", "2", NULL }
 #define NEWMAILDIR			"/home/ashish/.local/share/mail/iiser/INBOX/new"
 
 static int frozen;
@@ -37,14 +38,12 @@ mailu(char *str, int sigval)
         static int n;
         static int syncing;
 
-        if (frozen == 2)
-                return;
-        else if (frozen == 1) {
-                if (n < 0)
-                        *str = '\0';
-                else
-                        snprintf(str, CMDLENGTH, ICON0 "%d", n);
-                frozen = 2;
+        if (frozen) {
+                if (frozen == 1) {
+                        if (n >= 0)
+                                snprintf(str, CMDLENGTH, ICON0 "%d", n);
+                        frozen = 2;
+                }
                 return;
         }
         if (sigval != NILL) {
@@ -59,10 +58,8 @@ mailu(char *str, int sigval)
                                 return;
                         }
                 } else {
-                        if (n < 0) {
-                                *str = '\0';
+                        if (n < 0)
                                 return;
-                        }
                         sigval = -sigval;
                 }
                 switch (sigval) {
@@ -107,6 +104,7 @@ mailc(int button)
                                 frozen = 0;
                         else
                                 frozen = 1;
+                        cspawn(SIGUPDATE);
                         break;
         }
 }
