@@ -14,7 +14,6 @@
 #define NEWMAILDIR			"/home/ashish/.local/share/mail/iiser/INBOX/new"
 
 #define MAILSYNC			(char *[]){ "/home/ashish/.scripts/mailsync.sh", NULL }
-#define SIGUPDATE			(char *[]){ "/home/ashish/.local/bin/sigdsblocks", "2", NULL }
 
 static int frozen;
 
@@ -105,7 +104,7 @@ mailc(int button)
                                 frozen = 0;
                         else
                                 frozen = 1;
-                        cspawn(SIGUPDATE);
+                        csigself(2, NILL);
                         break;
         }
 }

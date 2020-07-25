@@ -1,3 +1,4 @@
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -10,6 +11,19 @@ cspawn(char *const *arg)
         execv(arg[0], arg);
         perror("cspawn - execv");
         _exit(127);
+}
+
+void
+csigself(int signal, int sigval)
+{
+        union sigval sv;
+
+        signal += SIGRTMIN;
+        sv.sival_int = sigval;
+        if (sigqueue(pid, signal, sv) == -1) {
+                perror("csigdsblocks - sigqueue");
+                exit(1);
+        }
 }
 
 ssize_t

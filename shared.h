@@ -5,3 +5,4 @@
 #define NILL				INT_MIN
 
 extern Display *dpy;
+extern pid_t pid;
