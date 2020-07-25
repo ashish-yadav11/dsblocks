@@ -8,13 +8,14 @@
 
 #define BUFLENGTH			10
 
+#define PAMIXER				(char *[]){ "/usr/bin/pamixer", "--get-mute", "--get-volume", NULL }
+
 void
 volumeu(char *str, int sigval)
 {
         char buf[BUFLENGTH];
-        char *arg[] = { "/usr/bin/pamixer", "--get-mute", "--get-volume", NULL };
 
-        buf[getcmdout(arg, buf, BUFLENGTH) - 1] = '\0';
+        buf[getcmdout(PAMIXER, buf, BUFLENGTH) - 1] = '\0';
         if (buf[0] == 'f') /* output was `false ...` */
                 snprintf(str, CMDLENGTH, ICON0 "%s%%", buf + 6);
         else /* output was `true ...` */

@@ -11,9 +11,10 @@
 #define ICON3				COL1 "" COL0 /* last sync successfull */
 #define ICON4				COL1 "" COL0 /* last sync failed */
 
+#define NEWMAILDIR			"/home/ashish/.local/share/mail/iiser/INBOX/new"
+
 #define MAILSYNC			(char *[]){ "/home/ashish/.scripts/mailsync.sh", NULL }
 #define SIGUPDATE			(char *[]){ "/home/ashish/.local/bin/sigdsblocks", "2", NULL }
-#define NEWMAILDIR			"/home/ashish/.local/share/mail/iiser/INBOX/new"
 
 static int frozen;
 
