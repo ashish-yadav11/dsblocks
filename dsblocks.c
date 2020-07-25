@@ -27,6 +27,7 @@ typedef struct {
 #include "blocks.h"
 
 static void buttonhandler(int signal, siginfo_t *si, void *ucontext);
+static void setroot();
 static void setupsignals();
 static void sighandler(int signal, siginfo_t *si, void *ucontext);
 static void statusloop();
@@ -54,6 +55,17 @@ buttonhandler(int signal, siginfo_t *si, void *ucontext)
                                 current->funcc(si->si_value.sival_int & 0xff);
                                 exit(0);
                         }
+}
+
+void
+setroot()
+{
+        if (updatestatus()) {
+                sigprocmask(SIG_BLOCK, &blocksigmask, NULL);
+                XStoreName(dpy, DefaultRootWindow(dpy), statusstr);
+                XSync(dpy, False);
+                sigprocmask(SIG_UNBLOCK, &blocksigmask, NULL);
+        }
 }
 
 void
@@ -90,7 +102,7 @@ setupsignals()
 
         /* to handle update signals for individual blocks */
         sa.sa_flags |= SA_NODEFER;
-        sa.sa_mask = blocksigmask;
+        // sigemptyset(&sa.sa_mask);
         sa.sa_sigaction = sighandler;
         for (Block *current = blocks; current->funcu; current++)
                 if (current->signal > 0)
@@ -102,18 +114,18 @@ sighandler(int signal, siginfo_t *si, void *ucontext)
 {
         signal -= SIGRTMIN;
         for (Block *current = blocks; current->funcu; current++)
-                if (current->signal == signal)
+                if (current->signal == signal) {
+                        sigprocmask(SIG_BLOCK, &blocksigmask, NULL);
                         current->funcu(current->cmdoutcur, si->si_value.sival_int);
-        if (updatestatus()) {
-                XStoreName(dpy, DefaultRootWindow(dpy), statusstr);
-                XSync(dpy, False);
-        }
+                        sigprocmask(SIG_UNBLOCK, &blocksigmask, NULL);
+                }
+        setroot();
 }
 
 void
 statusloop()
 {
-        int i = 0;
+        int i;
 
         /* first run */
         for (Block *current = blocks; current->funcu; current++)
@@ -122,7 +134,9 @@ statusloop()
                         current->funcu(current->cmdoutcur, NILL);
                         sigprocmask(SIG_UNBLOCK, &blocksigmask, NULL);
                 }
-        goto enterloop;
+        setroot();
+        sleep(SLEEPINTERVAL);
+        i = SLEEPINTERVAL;
         /* main loop */
         while (statuscontinue) {
                 for (Block *current = blocks; current->funcu; current++)
@@ -131,13 +145,7 @@ statusloop()
                                 current->funcu(current->cmdoutcur, NILL);
                                 sigprocmask(SIG_UNBLOCK, &blocksigmask, NULL);
                         }
-enterloop:
-                if (updatestatus()) {
-                        sigprocmask(SIG_BLOCK, &blocksigmask, NULL);
-                        XStoreName(dpy, DefaultRootWindow(dpy), statusstr);
-                        XSync(dpy, False);
-                        sigprocmask(SIG_UNBLOCK, &blocksigmask, NULL);
-                }
+                setroot();
                 sleep(SLEEPINTERVAL);
                 i += SLEEPINTERVAL;
         }
