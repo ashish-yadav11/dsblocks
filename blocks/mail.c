@@ -12,6 +12,7 @@
 #define ICON4				COL1 "" COL0 /* last sync failed */
 
 #define MAILSYNC			(char *[]){ "/home/ashish/.scripts/mailsync.sh", NULL }
+#define MAILCLIENT			(char *[]){ "/home/ashish/.scripts/neomutt.sh", NULL }
 #define NEWMAILDIR			"/home/ashish/.local/share/mail/iiser/INBOX/new"
 
 static int frozen;
@@ -98,8 +99,8 @@ mailc(int button)
 {
         switch (button) {
                 case 1:
-                        if (!frozen)
-                                frozen = 1;
+                        if (frozen)
+                                frozen = 0;
                         cspawn(MAILSYNC);
                         break;
                 case 3:
@@ -109,7 +110,7 @@ mailc(int button)
                                 frozen = 1;
                         break;
                 case 2:
-                        cspawn((char *[]){ "/home/ashish/.scripts/neomutt.sh", NULL });
+                        cspawn(MAILCLIENT);
                         break;
         }
 }
