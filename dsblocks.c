@@ -57,10 +57,10 @@ buttonhandler(int signal, siginfo_t *si, void *ucontext)
 void
 setroot()
 {
-        if (updatestatus()) /* only set root if block outputs have changed */
-                return;
-        XStoreName(dpy, DefaultRootWindow(dpy), statusstr);
-        XFlush(dpy);
+        if (updatestatus()) {
+                XStoreName(dpy, DefaultRootWindow(dpy), statusstr);
+                XFlush(dpy);
+        }
 }
 
 void
@@ -166,7 +166,7 @@ updatestatus()
                         goto update2;
                 str += delimlength;
         }
-        return 1;
+        return 0;
 update0:
         for (; current->funcu; current++) {
                 if (EMPTYCMDOUT(current)) {
@@ -190,7 +190,7 @@ update2:
         /* remove delimiter at the end if not all blocks are empty */
         if (str != statusstr)
                 *(str - delimlength) = '\0';
-        return 0;
+        return 1;
 }
 
 void
