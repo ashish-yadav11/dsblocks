@@ -2,28 +2,29 @@
 PREFIX = ${HOME}/.local
 
 CC = gcc
-CFLAGS1 = -O3 -Wall -Wextra -Wno-missing-field-initializers -Wno-unused-parameter
-CFLAGS2 = -O3 -Wall -Wextra
+CFLAGS = -O3 -Wall -Wextra
 
 BLOCKS = ${wildcard blocks/*.c}
 
 all: dsblocks sigdsblocks/sigdsblocks xgetrootname/xgetrootname
 
 dsblocks.o: dsblocks.c blocks.h shared.h
-util.o: util.c util.h shared.h
-${BLOCKS:c=o}: $@ ${@:c=h} util.h shared.h
+	${CC} -o $@ -c ${CFLAGS} -Wno-missing-field-initializers -Wno-unused-parameter $<
 
-%.o: %.c
-	${CC} -o $@ -c ${CFLAGS1} $<
+util.o: util.c util.h shared.h
+	${CC} -o $@ -c ${CFLAGS} $<
+
+blocks/%.o: blocks/%.c blocks/%.h util.h shared.h
+	${CC} -o $@ -c ${CFLAGS} -Wno-unused-parameter $<
 
 dsblocks: dsblocks.o util.o ${BLOCKS:c=o}
-	${CC} -o $@ -lX11 dsblocks.o util.o ${BLOCKS:c=o}
+	${CC} -o $@ -lX11 $^
 
 sigdsblocks/sigdsblocks: sigdsblocks/sigdsblocks.c
-	${CC} -o $@ ${CFLAGS2} sigdsblocks/sigdsblocks.c
+	${CC} -o $@ ${CFLAGS} $<
 
 xgetrootname/xgetrootname: xgetrootname/xgetrootname.c
-	${CC} -o $@ -lX11 ${CFLAGS2} xgetrootname/xgetrootname.c
+	${CC} -o $@ -lX11 ${CFLAGS} $<
 
 clean:
 	rm -f blocks/*.o *.o dsblocks sigdsblocks/sigdsblocks xgetrootname/xgetrootname
