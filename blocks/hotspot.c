@@ -1,9 +1,11 @@
 #include <string.h>
 
-#define ICON			COL1 "" COL0
-
 #include "../util.h"
 #include "hotspot.h"
+
+#define ICON			COL1 "" COL0
+
+#define TURNOFFHOTSPOT		(char *[]){ "/usr/bin/sudo", "/home/ashish/.scripts/hotspot.sh", "terminate", NULL }
 
 void
 hotspotu(char *str, int sigval)
@@ -17,5 +19,5 @@ hotspotu(char *str, int sigval)
 void
 hotspotc(int button)
 {
-        cspawn((char *[]){ "/usr/bin/sudo", "/home/ashish/.scripts/hotspot.sh", "terminate", NULL });
+        cspawn(TURNOFFHOTSPOT);
 }

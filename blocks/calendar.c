@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <time.h>
 
-#define ICON			COL1 "" COL0
-
 #include "../util.h"
 #include "calendar.h"
+
+#define ICON			COL1 "" COL0
 
 void
 calendaru(char *str, int sigval)
@@ -24,16 +24,10 @@ calendarc(int button)
 {
         switch (button) {
                 case 1:
-                {
-                }
                         break;
                 case 3:
-                {
-                }
                         break;
                 case 2:
-                {
-                }
                         break;
         }
 }

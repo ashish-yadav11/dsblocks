@@ -10,15 +10,19 @@
 
 #define PAMIXER				(char *[]){ "/usr/bin/pamixer", "--get-mute", "--get-volume", NULL }
 
+#define PAVUCONTROL			(char *[]){ "/usr/bin/pavucontrol-qt", NULL }
+#define SETDEFAULTVOL			(char *[]){ "/usr/bin/pamixer", "--set-volume", "50", NULL }
+#define TOGGLEMUTE			(char *[]){ "/usr/bin/pamixer", "--toggle-mute", NULL }
+
 void
 volumeu(char *str, int sigval)
 {
         char buf[BUFLENGTH];
 
         buf[getcmdout(PAMIXER, buf, BUFLENGTH) - 1] = '\0';
-        if (buf[0] == 'f') /* output was `false ...` */
+        if (buf[0] == 'f') /* output was `false <volume>' */
                 snprintf(str, CMDLENGTH, ICON0 "%s%%", buf + 6);
-        else /* output was `true ...` */
+        else /* output was `true <volume>' */
                 snprintf(str, CMDLENGTH, ICON1 "%s%%", buf + 5);
 }
 
@@ -27,13 +31,13 @@ volumec(int button)
 {
         switch(button) {
                 case 1:
-                        cspawn((char *[]){ "/usr/bin/pamixer", "--toggle-mute", NULL });
+                        cspawn(TOGGLEMUTE);
                         break;
                 case 3:
-                        cspawn((char *[]){ "/usr/bin/pamixer", "--set-volume", "50", NULL });
+                        cspawn(PAVUCONTROL);
                         break;
                 case 2:
-                        cspawn((char *[]){ "/usr/bin/pavucontrol-qt", NULL });
+                        cspawn(SETDEFAULTVOL);
                         break;
         }
 }
