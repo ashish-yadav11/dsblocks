@@ -1,7 +1,7 @@
 # dsblocks
 
 Modular status monitor for dwm, written and meant to be extended in C, with
-features including clickability, cursor hinting and color.
+features including signaling, clickability, cursor hinting and color.
 
 > The project is only meant for people comfortable with the C language. See
 > [dwmblocks](https://github.com/ashish-yadav11/dwmblocks) if you are not one
