@@ -12,7 +12,7 @@
 #define STTLENGTH			256
 #define LOCKFILE			"/tmp/dsblocks.pid"
 
-#define EMPTYCMDOUT(block)		(*(block->cmdoutcur) == '\0' || *(block->cmdoutcur) == '\n')
+#define EMPTYCMDOUT(block)		(*block->cmdoutcur == '\0' || *block->cmdoutcur == '\n')
 
 typedef struct {
         void (*funcu)(char *str, int sigval);
@@ -161,8 +161,8 @@ updatestatus()
         /* checking half of the function */
         /* skip empty blocks */
         while (current->funcu && EMPTYCMDOUT(current)) {
-                if (*(current->cmdoutprv) != *(current->cmdoutcur)) {
-                        *(current->cmdoutprv) = *(current->cmdoutcur);
+                if (*current->cmdoutcur != *current->cmdoutprv) {
+                        *current->cmdoutprv = *current->cmdoutcur;
                         current++;
                         goto update0;
                 }
@@ -180,12 +180,12 @@ skipdelimc:
                 c = current->cmdoutcur; p = current->cmdoutprv;
                 do {
                         if (*c != *p) {
-                                s += (c - current->cmdoutcur);
+                                s += c - current->cmdoutcur;
                                 goto update1;
                         }
                         c++; p++;
                 } while (*c != '\0' && *c != '\n');
-                s += (c - current->cmdoutcur);
+                s += c - current->cmdoutcur;
                 if (current->funcc && current->signal)
                         s++;
         }
@@ -194,7 +194,7 @@ update0:
         /* updating half of the function */
         /* skip empty blocks */
         while (current->funcu && EMPTYCMDOUT(current)) {
-                *(current->cmdoutprv) = *(current->cmdoutcur);
+                *current->cmdoutprv = *current->cmdoutcur;
                 current++;
         }
         /* skip delimiter in front of the first non-empty block */
@@ -214,7 +214,7 @@ update1:
                 do {
                         *(s++) = *c;
                         *p = *c;
-                        p++; c++;
+                        c++; p++;
                 } while (*c != '\0' && *c != '\n');
                 if (current->funcc && current->signal)
                         *(s++) = current->signal;
