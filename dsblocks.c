@@ -61,10 +61,8 @@ void
 setroot()
 {
         if (updatestatus()) {
-                sigprocmask(SIG_BLOCK, &blocksigmask, NULL);
                 XStoreName(dpy, DefaultRootWindow(dpy), statusstr);
                 XSync(dpy, False);
-                sigprocmask(SIG_UNBLOCK, &blocksigmask, NULL);
         }
 }
 
@@ -102,7 +100,7 @@ setupsignals()
 
         /* to handle update signals for individual blocks */
         sa.sa_flags |= SA_NODEFER;
-        // sigemptyset(&sa.sa_mask);
+        sa.sa_mask = blocksigmask;
         sa.sa_sigaction = sighandler;
         for (Block *current = blocks; current->funcu; current++)
                 if (current->signal > 0)
@@ -114,11 +112,8 @@ sighandler(int signal, siginfo_t *si, void *ucontext)
 {
         signal -= SIGRTMIN;
         for (Block *current = blocks; current->funcu; current++)
-                if (current->signal == signal) {
-                        sigprocmask(SIG_BLOCK, &blocksigmask, NULL);
+                if (current->signal == signal)
                         current->funcu(current->cmdoutcur, si->si_value.sival_int);
-                        sigprocmask(SIG_UNBLOCK, &blocksigmask, NULL);
-                }
         setroot();
 }
 
@@ -128,24 +123,22 @@ statusloop()
         int i;
 
         /* first run */
+        sigprocmask(SIG_BLOCK, &blocksigmask, NULL);
         for (Block *current = blocks; current->funcu; current++)
-                if (current->interval >= 0) {
-                        sigprocmask(SIG_BLOCK, &blocksigmask, NULL);
+                if (current->interval >= 0)
                         current->funcu(current->cmdoutcur, NILL);
-                        sigprocmask(SIG_UNBLOCK, &blocksigmask, NULL);
-                }
         setroot();
+        sigprocmask(SIG_UNBLOCK, &blocksigmask, NULL);
         sleep(SLEEPINTERVAL);
         i = SLEEPINTERVAL;
         /* main loop */
         while (statuscontinue) {
+                sigprocmask(SIG_BLOCK, &blocksigmask, NULL);
                 for (Block *current = blocks; current->funcu; current++)
-                        if (current->interval > 0 && i % current->interval == 0) {
-                                sigprocmask(SIG_BLOCK, &blocksigmask, NULL);
+                        if (current->interval > 0 && i % current->interval == 0)
                                 current->funcu(current->cmdoutcur, NILL);
-                                sigprocmask(SIG_UNBLOCK, &blocksigmask, NULL);
-                        }
                 setroot();
+                sigprocmask(SIG_UNBLOCK, &blocksigmask, NULL);
                 sleep(SLEEPINTERVAL);
                 i += SLEEPINTERVAL;
         }
