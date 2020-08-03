@@ -1,6 +1,6 @@
 diff -ruN dwm-6.2-ori/config.def.h dwm-6.2/config.def.h
 --- dwm-6.2-ori/config.def.h	2019-02-02 18:25:28.000000000 +0530
-+++ dwm-6.2/config.def.h	2020-07-30 00:12:30.279456468 +0530
++++ dwm-6.2/config.def.h	2020-08-03 23:46:09.260419125 +0530
 @@ -12,10 +12,34 @@
  static const char col_gray3[]       = "#bbbbbb";
  static const char col_gray4[]       = "#eeeeee";
@@ -22,7 +22,6 @@ diff -ruN dwm-6.2-ori/config.def.h dwm-6.2/config.def.h
 -	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
 -	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
 +	[SchemeNorm]  = { col_gray3, col_gray1, col_gray2 },
-+	[SchemeSel]   = { col_gray4, col_cyan,  col_cyan  },
 +	[SchemeCol1]  = { col1,      col_gray1, col_gray2 },
 +	[SchemeCol2]  = { col2,      col_gray1, col_gray2 },
 +	[SchemeCol3]  = { col3,      col_gray1, col_gray2 },
@@ -35,6 +34,7 @@ diff -ruN dwm-6.2-ori/config.def.h dwm-6.2/config.def.h
 +	[SchemeCol10] = { col10,     col_gray1, col_gray2 },
 +	[SchemeCol11] = { col11,     col_gray1, col_gray2 },
 +	[SchemeCol12] = { col12,     col_gray1, col_gray2 },
++	[SchemeSel]   = { col_gray4, col_cyan,  col_cyan  },
  };
  
  /* tagging */
@@ -51,7 +51,7 @@ diff -ruN dwm-6.2-ori/config.def.h dwm-6.2/config.def.h
  	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
 diff -ruN dwm-6.2-ori/dwm.c dwm-6.2/dwm.c
 --- dwm-6.2-ori/dwm.c	2019-02-02 18:25:28.000000000 +0530
-+++ dwm-6.2/dwm.c	2020-07-30 00:19:37.393738726 +0530
++++ dwm-6.2/dwm.c	2020-08-03 23:46:54.630478171 +0530
 @@ -40,6 +40,8 @@
  #include <X11/extensions/Xinerama.h>
  #endif /* XINERAMA */
@@ -73,9 +73,9 @@ diff -ruN dwm-6.2-ori/dwm.c dwm-6.2/dwm.c
 -enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
 -enum { SchemeNorm, SchemeSel }; /* color schemes */
 +enum { CurNormal, CurHand, CurResize, CurMove, CurLast }; /* cursor */
-+enum { SchemeNorm, SchemeSel, SchemeCol1, SchemeCol2, SchemeCol3,
-+       SchemeCol4, SchemeCol5, SchemeCol6, SchemeCol7, SchemeCol8,
-+       SchemeCol9, SchemeCol10, SchemeCol11, SchemeCol12 }; /* color schemes */
++enum { SchemeNorm, SchemeCol1, SchemeCol2, SchemeCol3, SchemeCol4,
++       SchemeCol5, SchemeCol6, SchemeCol7, SchemeCol8, SchemeCol9,
++       SchemeCol10, SchemeCol11, SchemeCol12, SchemeSel }; /* color schemes */
  enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
         NetWMFullscreen, NetActiveWindow, NetWMWindowType,
         NetWMWindowTypeDialog, NetClientList, NetLast }; /* EWMH atoms */
