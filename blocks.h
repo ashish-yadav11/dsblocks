@@ -25,7 +25,7 @@ static Block blocks[] = {
 
 	{ calendaru,		calendarc,		30,		5 },
 
-	{ mailu,		mailc,			180,		2 },
+	{ mailu,		mailc,			300,		2 },
 
 	{ volumeu,		volumec,		0,		1 },
 
