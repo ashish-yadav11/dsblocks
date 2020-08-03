@@ -219,6 +219,7 @@ update1:
                 if (current->funcc && current->signal)
                         *(s++) = current->signal;
         }
+        *s = '\0';
         return 1;
 }
 
