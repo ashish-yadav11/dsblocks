@@ -6,12 +6,12 @@
 
 #define UDEVNOTRELIABLE
 
-#define ICON0				COL1 "" COL0
-#define ICON1				COL1 "" COL0
-#define ICON2				COL1 "" COL0
-#define ICON3				COL1 "" COL0
-#define ICON4				COL1 "" COL0
-#define ICON5				COL1 "" COL0
+#define ICON0				COL4 "" COL0
+#define ICON1				COL4 "" COL0
+#define ICON2				COL4 "" COL0
+#define ICON3				COL4 "" COL0
+#define ICON4				COL4 "" COL0
+#define ICON5				COL4 "" COL0
 
 #define BATC				10  /* critical level */
 #define BATL				20  /* low level */

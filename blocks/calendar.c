@@ -4,7 +4,7 @@
 #include "../util.h"
 #include "calendar.h"
 
-#define ICON			COL1 "" COL0
+#define ICON			COL2 "" COL0
 
 void
 calendaru(char *str, int sigval)

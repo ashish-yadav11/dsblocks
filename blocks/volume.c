@@ -3,8 +3,8 @@
 #include "../util.h"
 #include "volume.h"
 
-#define ICON0				COL1 "" COL0
-#define ICON1				COL1 "" COL0
+#define ICON0				COL3 "" COL0
+#define ICON1				COL3 "" COL0
 
 #define BUFLENGTH			10
 
