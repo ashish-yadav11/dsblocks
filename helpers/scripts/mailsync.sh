@@ -3,8 +3,9 @@ exec >/dev/null 2>&1
 sigdsblocks 2 1
 if ping -c1 imap.gmail.com ; then
     sigdsblocks 2 -2
-    PID=$(pidof -s /usr/bin/mbsync)
-    [ -n "$PID" ] && tail --pid="$PID" -f /dev/null
+    while PID=$(pidof -s /usr/bin/mbsync) ; do
+        tail --pid="$PID" -f /dev/null
+    done
     if mbsync iiser ; then
         sigdsblocks 2 3
     else
