@@ -15,8 +15,6 @@
 
 #define MAILSYNC			(char *[]){ "/home/ashish/.scripts/mailsync.sh", NULL }
 
-static int frozen;
-
 static int
 numnewmails() {
         int n = 0;
@@ -37,16 +35,26 @@ mailu(char *str, int sigval)
 {
         static int n;
         static int syncing;
+        static int frozen;
 
-        if (frozen) {
-                if (frozen == 1) {
-                        if (n >= 0)
-                                snprintf(str, CMDLENGTH, ICON0 "%d", n);
-                        frozen = 2;
+        if (sigval == NILL) {
+                if (!frozen)
+                        uspawn(MAILSYNC);
+        } else {
+                if (sigval == 0) {
+                        if (frozen) {
+                                frozen = 0;
+                                uspawn(MAILSYNC);
+                        } else {
+                                if (n >= 0)
+                                        snprintf(str, CMDLENGTH, ICON0 "%d", n);
+                                frozen = 1;
+                        }
+                        return;
+                } else {
+                        if (frozen)
+                                frozen = 0;
                 }
-                return;
-        }
-        if (sigval != NILL) {
                 if (sigval > 0) {
                         if ((n = numnewmails()) < 0) {
                                 *str = '\0';
@@ -86,8 +94,7 @@ mailu(char *str, int sigval)
                                 snprintf(str, CMDLENGTH, ICON4 "%d", n);
                                 break;
                 }
-        } else
-                uspawn(MAILSYNC);
+        }
 }
 
 void
@@ -95,16 +102,10 @@ mailc(int button)
 {
         switch (button) {
                 case 1:
-                        if (frozen)
-                                frozen = 0;
                         cspawn(MAILSYNC);
                         break;
                 case 3:
-                        if (frozen)
-                                frozen = 0;
-                        else
-                                frozen = 1;
-                        csigself(2, NILL);
+                        csigself(2, 0);
                         break;
         }
 }
