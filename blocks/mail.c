@@ -41,7 +41,32 @@ mailu(char *str, int sigval)
                 if (!frozen)
                         uspawn(MAILSYNC);
         } else {
-                if (sigval == 0) {
+                if (sigval > 0) {
+                        if ((n = numnewmails()) < 0) {
+                                *str = '\0';
+                                return;
+                        }
+                        if (frozen) {
+                                /* unfreeze if frozen and MAILSYNC started */
+                                if (sigval == 1)
+                                        frozen = 0;
+                                else {
+                                        snprintf(str, CMDLENGTH, ICON0 "%d", n);
+                                        return;
+                                }
+                        }
+                        /* syncing is in progress and another instance of MAILSYNC started */
+                        if (syncing && sigval == 1) {
+                                snprintf(str, CMDLENGTH, ICON2 "%d", n);
+                                return;
+                        }
+                } else if (sigval < 0) {
+                        if (n < 0)
+                                return;
+                        if (frozen)
+                                return;
+                        sigval = -sigval;
+                } else {
                         if (frozen) {
                                 frozen = 0;
                                 uspawn(MAILSYNC);
@@ -51,23 +76,6 @@ mailu(char *str, int sigval)
                                 frozen = 1;
                         }
                         return;
-                }
-                if (frozen)
-                        return;
-                if (sigval > 0) {
-                        if ((n = numnewmails()) < 0) {
-                                *str = '\0';
-                                return;
-                        }
-                        /* syncing is in progress and another instance of MAILSYNC started */
-                        if (syncing && sigval == 1) {
-                                snprintf(str, CMDLENGTH, ICON2 "%d", n);
-                                return;
-                        }
-                } else {
-                        if (n < 0)
-                                return;
-                        sigval = -sigval;
                 }
                 switch (sigval) {
                         /* MAILSYNC started */
