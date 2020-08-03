@@ -51,10 +51,9 @@ mailu(char *str, int sigval)
                                 frozen = 1;
                         }
                         return;
-                } else {
-                        if (frozen)
-                                frozen = 0;
                 }
+                if (frozen)
+                        return;
                 if (sigval > 0) {
                         if ((n = numnewmails()) < 0) {
                                 *str = '\0';
