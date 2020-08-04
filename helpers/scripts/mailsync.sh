@@ -13,5 +13,5 @@ if ping -c1 imap.gmail.com ; then
     fi
     notmuch new
 else
-    sigdsblocks 5
+    sigdsblocks 2 5
 fi
