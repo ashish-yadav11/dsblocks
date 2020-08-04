@@ -6,6 +6,7 @@
 #define COL3			""
 #define COL4			""
 #define COL5			""
+#define COL6			""
 
 void cspawn(char *const *arg);
 void csigself(int signal, int sigval);

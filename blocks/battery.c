@@ -7,7 +7,7 @@
 #define UDEVNOTRELIABLE
 
 #define ICON0				COL1 "" COL0
-#define ICON1				COL1 "" COL0
+#define ICON1				COL2 "" COL0
 #define ICON2				COL1 "" COL0
 #define ICON3				COL1 "" COL0
 #define ICON4				COL1 "" COL0
