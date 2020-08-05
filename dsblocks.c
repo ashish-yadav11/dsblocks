@@ -12,8 +12,6 @@
 #define STTLENGTH			256
 #define LOCKFILE			"/tmp/dsblocks.pid"
 
-#define EMPTYCMDOUT(block)		(*block->cmdoutcur == '\0' || *block->cmdoutcur == '\n')
-
 typedef struct {
         void (*funcu)(char *str, int sigval);
         void (*funcc)(int button);
@@ -160,7 +158,12 @@ updatestatus()
 
         /* checking half of the function */
         /* skip empty blocks */
-        while (current->funcu && EMPTYCMDOUT(current)) {
+        for (;;) {
+                if (!current->funcu)
+                        return 0;
+                /* skip delimiter for the first non-empty block */
+                if (*current->cmdoutcur != '\n' && *current->cmdoutcur != '\0')
+                        goto skipdelimc;
                 if (*current->cmdoutcur != *current->cmdoutprv) {
                         *current->cmdoutprv = *current->cmdoutcur;
                         current++;
@@ -168,23 +171,31 @@ updatestatus()
                 }
                 current++;
         }
-        /* skip delimiter in front of the first non-empty block */
-        if (current->funcu)
-                goto skipdelimc;
-        else
-                return 0;
         /* main loop */
         for (; current->funcu; current++) {
-                s += delimlength;
-skipdelimc:
-                c = current->cmdoutcur; p = current->cmdoutprv;
-                do {
-                        if (*c != *p) {
-                                s += c - current->cmdoutcur;
+                /* handles delimiter */
+                if (*current->cmdoutcur != '\n' && *current->cmdoutcur != '\0')
+                        s += delimlength;
+                else {
+                        if (*current->cmdoutcur != *current->cmdoutprv) {
+                                *current->cmdoutprv = *current->cmdoutcur;
+                                current++;
                                 goto update1;
                         }
+                        continue;
+                }
+skipdelimc:
+                c = current->cmdoutcur; p = current->cmdoutprv;
+                if (*c != *p)
+                        goto update2;
+                else {
                         c++; p++;
-                } while (*c != '\0' && *c != '\n');
+                }
+                for (; *c != '\n' && *c != '\0'; c++, p++)
+                        if (*c != *p) {
+                                s += c - current->cmdoutcur;
+                                goto update2;
+                        }
                 s += c - current->cmdoutcur;
                 if (current->funcc && current->signal)
                         s++;
@@ -193,29 +204,36 @@ skipdelimc:
 update0:
         /* updating half of the function */
         /* skip empty blocks */
-        while (current->funcu && EMPTYCMDOUT(current)) {
+        for (;;) {
+                if (!current->funcu)
+                        return 1;
+                /* skip delimiter for the first non-empty block */
+                if (*current->cmdoutcur != '\n' && *current->cmdoutcur != '\0')
+                        goto skipdelimu;
                 *current->cmdoutprv = *current->cmdoutcur;
                 current++;
         }
-        /* skip delimiter in front of the first non-empty block */
-        if (current->funcu)
-                goto skipdelimu;
-        else
-                return 1;
+update1:
         /* main loop */
         for (; current->funcu; current++) {
-                d = delim;
-                while (*d)
-                        *(s++) = *(d++);
-                *(s++) = '\n'; /* to mark the end of delimiter */
+                /* handles delimiter */
+                if (*current->cmdoutcur != '\n' && *current->cmdoutcur != '\0') {
+                        d = delim;
+                        while (*d)
+                                *(s++) = *(d++);
+                        *(s++) = '\n'; /* to mark the end of delimiter */
+                } else {
+                        *current->cmdoutprv = *current->cmdoutcur;
+                        continue;
+                }
 skipdelimu:
                 c = current->cmdoutcur; p = current->cmdoutprv;
-update1:
+update2:
                 do {
                         *(s++) = *c;
                         *p = *c;
                         c++; p++;
-                } while (*c != '\0' && *c != '\n');
+                } while (*c != '\n' && *c != '\0');
                 if (current->funcc && current->signal)
                         *(s++) = current->signal;
         }
