@@ -22,12 +22,5 @@ calendaru(char *str, int sigval)
 void
 calendarc(int button)
 {
-        switch (button) {
-                case 1:
-                        break;
-                case 3:
-                        break;
-                case 2:
-                        break;
-        }
+        TERMCMD("/usr/bin/calcurse");
 }
