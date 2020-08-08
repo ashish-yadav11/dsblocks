@@ -8,6 +8,8 @@
 #define COL5			""
 #define COL6			""
 
+#define TERMCMD(cmd)			cspawn((char *[]){ "/usr/bin/termite", "-e", cmd, NULL })
+
 void cspawn(char *const *arg);
 void csigself(int signal, int sigval);
 ssize_t getcmdout(char *const *arg, char *cmdout, size_t cmdoutlen);
