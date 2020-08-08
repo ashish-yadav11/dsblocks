@@ -1,16 +1,6 @@
 #!/bin/dash
 exec >/dev/null 2>&1
 
-cleanup() {
-    if [ -n "$remove" ] ; then
-        rm -f /tmp/mailsync.lock
-    else
-        echo 0 >/tmp/mailsync.lock
-    fi
-}
-
-trap 'cleanup; exit' EXIT HUP INT TERM
-
 # allow only two instances of the script at one time
 if read -r lock </tmp/mailsync.lock ; then
     case "$lock" in
@@ -19,8 +9,19 @@ if read -r lock </tmp/mailsync.lock ; then
     esac
 else
     echo 0 >/tmp/mailsync.lock
-    remove=1
 fi
+
+# cleanup trap
+cleanup() {
+    read -r lock </tmp/mailsync.lock &&
+        if [ "$lock" -eq 0 ] ; then
+            rm -f /tmp/mailsync.lock
+        else
+            echo 0 >/tmp/mailsync.lock
+        fi
+}
+
+trap 'cleanup; exit' EXIT HUP INT TERM
 
 # main body
 sigdsblocks 2 1
