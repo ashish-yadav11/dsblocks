@@ -1,30 +1,18 @@
 #!/bin/dash
 exec >/dev/null 2>&1
 
-# to make sure no more than 2 instances can be active at the same time
-if read -r numactive </tmp/mailsync.num ; then
-    case "$numactive" in
-        0)
-            echo 1 >/tmp/mailsync.num
-            remove=1
-            ;;
-        1)
-            echo 2 >/tmp/mailsync.num
-            remove=0
-            ;;
-        *)
-            exit ;;
-    esac
-else
-    echo 1 >/tmp/mailsync.num
-    remove=1
-fi
+read -r lock </tmp/mailsync.lock
+[ -n "$lock" ] && exit
 
-# main body
 sigdsblocks 2 1
 if ping -c1 imap.gmail.com ; then
-    PID=$(pidof -s /usr/bin/mbsync) && tail --pid="$PID" -f /dev/null
+    if PID=$(pidof -s /usr/bin/mbsync) ; then
+        echo 1 >/tmp/mailsync.lock
+        remove=1
+        tail --pid="$PID" -f /dev/null
+    fi
     sigdsblocks 2 -2
+    [ -n "$remove" ] && rm -f /tmp/mailsync.lock
     if mbsync iiser ; then
         sigdsblocks 2 3
     else
@@ -34,13 +22,3 @@ if ping -c1 imap.gmail.com ; then
 else
     sigdsblocks 2 5
 fi
-
-# cleanup
-case "$remove" in
-    0)
-        echo 1 >/tmp/mailsync.num
-        ;;
-    1)
-        rm -f /tmp/mailsync.num
-        ;;
-esac
