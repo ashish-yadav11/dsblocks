@@ -9,7 +9,7 @@ cleanup() {
     fi
 }
 
-trap 'cleanup' EXIT HUP INT TERM
+trap 'cleanup; exit' EXIT HUP INT TERM
 
 # allow only two instances of the script at one time
 if read -r lock </tmp/mailsync.lock ; then
