@@ -1,6 +1,16 @@
 #!/bin/dash
 exec >/dev/null 2>&1
 
+cleanup() {
+    if [ -n "$remove" ] ; then
+        rm -f /tmp/mailsync.lock
+    else
+        echo 0 >/tmp/mailsync.lock
+    fi
+}
+
+trap 'cleanup' EXIT HUP INT TERM
+
 # allow only two instances of the script at one time
 if read -r lock </tmp/mailsync.lock ; then
     case "$lock" in
@@ -25,11 +35,4 @@ if ping -c1 imap.gmail.com ; then
     notmuch new
 else
     sigdsblocks 2 5
-fi
-
-# cleanup
-if [ -n "$remove" ] ; then
-    rm -f /tmp/mailsync.lock
-else
-    echo 0 >/tmp/mailsync.lock
 fi
