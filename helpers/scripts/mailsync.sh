@@ -14,7 +14,7 @@ fi
 # cleanup trap
 cleanup() {
     read -r lock </tmp/mailsync.lock &&
-        if [ "$lock" -eq 0 ] ; then
+        if [ "$lock" = 0 ] ; then
             rm -f /tmp/mailsync.lock
         else
             echo 0 >/tmp/mailsync.lock
