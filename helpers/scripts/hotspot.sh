@@ -2,10 +2,9 @@
 case "$1" in
     initiate)
         iwi=$(nmcli -t -f DEVICE connection show --active | head -n1)
-        [ -z "$iwi" ] && iwi=eno1
         trap 'sigdsblocks 3 0; exit' EXIT HUP INT TERM
         sigdsblocks 3 1
-        create_ap wlp5s0 "$iwi" hp 98761234
+        create_ap wlp5s0 "${iwi:-eno1}" hp 98761234
         ;;
     terminate)
         create_ap --stop wlp5s0
