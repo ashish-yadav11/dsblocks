@@ -23,10 +23,12 @@ adding your own blocks.
 
 # Colored output and Clickability
 
-The patches folder contains a patch for dwm which is required for dsblocks to
-function properly. It adds support for colored text (inspired by statuscolors
-patch for dwm), clickability (inspired by statuscmd patch for dwm) and cursor
-hinting when hovering on clickable blocks (inspired by polybar).
+The patches folder contains two patches for dwm, one for dwm already patched
+with systray patch and the other for dwm without systray. One of the patches,
+whichever appropriate, is essential for dsblocks to function properly. It will
+add support for colored text (inspired by statuscolors patch for dwm),
+clickability (inspired by statuscmd patch for dwm) and cursor hinting when
+hovering on clickable blocks (inspired by polybar).
 
 To add colors to the status have your functions output raw characters from
 '\x0b' to '\x31'. '\x0b' in status text switches the active colorscheme to the
