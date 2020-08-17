@@ -162,7 +162,7 @@ updatestatus()
                 if (!current->funcu)
                         return 0;
                 /* skip delimiter for the first non-empty block */
-                if (*current->cmdoutcur != '\n' && *current->cmdoutcur != '\0')
+                if (*current->cmdoutcur != '\0' && *current->cmdoutcur != '\n')
                         goto skipdelimc;
                 if (*current->cmdoutcur != *current->cmdoutprv) {
                         *current->cmdoutprv = *current->cmdoutcur;
@@ -174,7 +174,7 @@ updatestatus()
         /* main loop */
         for (; current->funcu; current++) {
                 /* handles delimiter */
-                if (*current->cmdoutcur != '\n' && *current->cmdoutcur != '\0')
+                if (*current->cmdoutcur != '\0' && *current->cmdoutcur != '\n')
                         s += delimlength;
                 else {
                         if (*current->cmdoutcur != *current->cmdoutprv) {
@@ -191,7 +191,7 @@ skipdelimc:
                 else {
                         c++; p++;
                 }
-                for (; *c != '\n' && *c != '\0'; c++, p++)
+                for (; *c != '\0' && *c != '\n'; c++, p++)
                         if (*c != *p) {
                                 s += c - current->cmdoutcur;
                                 goto update2;
@@ -208,7 +208,7 @@ update0:
                 if (!current->funcu)
                         return 1;
                 /* skip delimiter for the first non-empty block */
-                if (*current->cmdoutcur != '\n' && *current->cmdoutcur != '\0')
+                if (*current->cmdoutcur != '\0' && *current->cmdoutcur != '\n')
                         goto skipdelimu;
                 *current->cmdoutprv = *current->cmdoutcur;
                 current++;
@@ -217,7 +217,7 @@ update1:
         /* main loop */
         for (; current->funcu; current++) {
                 /* handles delimiter */
-                if (*current->cmdoutcur != '\n' && *current->cmdoutcur != '\0') {
+                if (*current->cmdoutcur != '\0' && *current->cmdoutcur != '\n') {
                         d = delim;
                         while (*d != '\0')
                                 *(s++) = *(d++);
@@ -233,7 +233,7 @@ update2:
                         *(s++) = *c;
                         *p = *c;
                         c++; p++;
-                } while (*c != '\n' && *c != '\0');
+                } while (*c != '\0' && *c != '\n');
                 if (current->funcc && current->signal)
                         *(s++) = current->signal;
         }
