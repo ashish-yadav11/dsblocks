@@ -51,7 +51,7 @@ diff -ruN dwm-6.2-ori/config.def.h dwm-6.2/config.def.h
  	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
 diff -ruN dwm-6.2-ori/dwm.c dwm-6.2/dwm.c
 --- dwm-6.2-ori/dwm.c	2019-02-02 18:25:28.000000000 +0530
-+++ dwm-6.2/dwm.c	2020-08-03 23:46:54.630478171 +0530
++++ dwm-6.2/dwm.c	2020-08-18 03:34:20.631035756 +0530
 @@ -40,6 +40,8 @@
  #include <X11/extensions/Xinerama.h>
  #endif /* XINERAMA */
@@ -67,7 +67,7 @@ diff -ruN dwm-6.2-ori/dwm.c dwm-6.2/dwm.c
  #define TEXTW(X)                (drw_fontset_getwidth(drw, (X)) + lrpad)
 +#define TTEXTW(X)               drw_fontset_getwidth(drw, (X))
 +
-+#define DSBLOCKSLOCKFILE       "/tmp/dsblocks.pid"
++#define DSBLOCKSLOCKFILE        "/tmp/dsblocks.pid"
  
  /* enums */
 -enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
@@ -107,7 +107,7 @@ diff -ruN dwm-6.2-ori/dwm.c dwm-6.2/dwm.c
 +static char stextc[256];
 +static char stexts[256];
 +static int wstext;
-+static int dsblockssig;
++static unsigned int dsblockssig;
  static int screen;
  static int sw, sh;           /* X display screen geometry width, height */
  static int bh, blw = 0;      /* bar geometry */
@@ -164,7 +164,7 @@ diff -ruN dwm-6.2-ori/dwm.c dwm-6.2/dwm.c
 +                        if (ctmp == '\0')
 +                                break;
 +                        /* - 11 to compensate for + 10 above */
-+                        drw_setscheme(drw, scheme[(unsigned char)ctmp - 11]);
++                        drw_setscheme(drw, scheme[ctmp - 11]);
 +                        *ts = ctmp;
 +                        tp = ++ts;
 +                }
@@ -213,7 +213,7 @@ diff -ruN dwm-6.2-ori/dwm.c dwm-6.2/dwm.c
 +        struct flock fl;
 +	union sigval sv;
 +
-+        if (dsblockssig <= 0 || dsblockssig >= 10)
++        if (!dsblockssig)
 +                return;
 +	sv.sival_int = (dsblockssig << 8) | arg->i;
 +        fd = open(DSBLOCKSLOCKFILE, O_RDONLY);
@@ -250,15 +250,15 @@ diff -ruN dwm-6.2-ori/dwm.c dwm-6.2/dwm.c
 +        static int currentcursor = 0;
 +        int x;
 +
-+        if (BETWEEN(cursorpos, (x = selmon->ww - wstext + lrpad / 2), x + wstext - lrpad)) {
++        if (cursorpos < selmon->ww - lrpad / 2 && cursorpos >= (x = selmon->ww - wstext + lrpad / 2)) {
 +                updatedsblockssig(x, cursorpos);
 +                if (currentcursor) {
-+                        if (dsblockssig <= 0 || dsblockssig >= 10) {
++                        if (!dsblockssig) {
 +                                currentcursor = 0;
 +                                XDefineCursor(dpy, selmon->barwin, cursor[CurNormal]->cursor);
 +                        }
 +                } else {
-+                        if (dsblockssig > 0 && dsblockssig < 10) {
++                        if (dsblockssig) {
 +                                currentcursor = 1;
 +                                XDefineCursor(dpy, selmon->barwin, cursor[CurHand]->cursor);
 +                        }
@@ -275,7 +275,7 @@ diff -ruN dwm-6.2-ori/dwm.c dwm-6.2/dwm.c
  updatebarpos(Monitor *m)
  {
  	m->wy = m->my;
-@@ -1847,6 +1938,31 @@
+@@ -1847,6 +1938,34 @@
  				(unsigned char *) &(c->win), 1);
  }
  
@@ -296,7 +296,10 @@ diff -ruN dwm-6.2-ori/dwm.c dwm-6.2/dwm.c
 +                x += TTEXTW(tp);
 +                *ts = ctmp;
 +                if (x >= e) {
-+                        dsblockssig = (unsigned char)ctmp;
++                        if (ctmp != 10)
++                                dsblockssig = ctmp;
++                        else
++                                dsblockssig = 0;
 +                        return;
 +                }
 +                tp = ++ts;
@@ -307,7 +310,7 @@ diff -ruN dwm-6.2-ori/dwm.c dwm-6.2/dwm.c
  int
  updategeom(void)
  {
-@@ -1987,9 +2103,27 @@
+@@ -1987,9 +2106,27 @@
  void
  updatestatus(void)
  {
