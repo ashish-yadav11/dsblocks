@@ -1,30 +1,33 @@
-#PREFIX = /usr/local
-PREFIX = ${HOME}/.local
+#PREFIX := /usr/local
+PREFIX := ${HOME}/.local
 
-CC = gcc
-CFLAGS = -O3 -Wall -Wextra
+CC := gcc
+CFLAGS := -O3 -Wall -Wextra
 
-BLOCKS = ${wildcard blocks/*.c}
+X11CFLAGS := $(shell pkg-config --cflags x11)
+X11LIBS := $(shell pkg-config --libs x11)
+
+BLOCKS := $(wildcard blocks/*.c)
 
 all: dsblocks sigdsblocks/sigdsblocks xgetrootname/xgetrootname
 
 dsblocks.o: dsblocks.c blocks.h shared.h
-	${CC} -o $@ -c ${CFLAGS} -Wno-missing-field-initializers -Wno-unused-parameter `pkg-config --cflags x11` $<
+	${CC} -o $@ -c ${CFLAGS} -Wno-missing-field-initializers -Wno-unused-parameter ${X11CFLAGS} $<
 
 util.o: util.c util.h shared.h
-	${CC} -o $@ -c ${CFLAGS} $<
+	${CC} -o $@ -c ${CFLAGS} ${X11CFLAGS} $<
 
 blocks/%.o: blocks/%.c blocks/%.h util.h shared.h
 	${CC} -o $@ -c ${CFLAGS} -Wno-unused-parameter $<
 
 dsblocks: dsblocks.o util.o ${BLOCKS:c=o}
-	${CC} -o $@ $^ `pkg-config --libs x11`
+	${CC} -o $@ $^ ${X11LIBS}
 
 sigdsblocks/sigdsblocks: sigdsblocks/sigdsblocks.c
 	${CC} -o $@ ${CFLAGS} $<
 
 xgetrootname/xgetrootname: xgetrootname/xgetrootname.c
-	${CC} -o $@ ${CFLAGS} `pkg-config --cflags x11` $< `pkg-config --libs x11`
+	${CC} -o $@ ${CFLAGS} ${X11CFLAGS} $< ${X11LIBS}
 
 clean:
 	rm -f blocks/*.o *.o dsblocks sigdsblocks/sigdsblocks xgetrootname/xgetrootname
