@@ -6,7 +6,6 @@
 #define COL3                            "" /* mail block - frozen */
 #define COL4                            "" /* mail block - MAILSYNC started */
 #define COL5                            "" /* mail block - syncing */
-#define COL6                            "" /* mail block - last sync failed */
 
 #define TERMCMD(cmd)                    cspawn((char *[]){ "/usr/bin/termite", "-e", cmd, NULL })
 

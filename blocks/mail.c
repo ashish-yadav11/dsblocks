@@ -9,7 +9,7 @@
 #define ICON1                           COL4 "" COL0 /* MAILSYNC started */
 #define ICON2                           COL5 "" COL0 /* syncing */
 #define ICON3                           COL1 "" COL0 /* last sync successfull */
-#define ICON4                           COL6 "" COL0 /* last sync failed */
+#define ICON4                           COL2 "" COL0 /* last sync failed */
 
 #define NEWMAILDIR                      "/home/ashish/.local/share/mail/iiser/INBOX/new"
 
