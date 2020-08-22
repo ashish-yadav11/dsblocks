@@ -9,7 +9,7 @@ BLOCKS = ${wildcard blocks/*.c}
 all: dsblocks sigdsblocks/sigdsblocks xgetrootname/xgetrootname
 
 dsblocks.o: dsblocks.c blocks.h shared.h
-	${CC} -o $@ -c ${CFLAGS} -Wno-missing-field-initializers -Wno-unused-parameter $<
+	${CC} -o $@ -c ${CFLAGS} -Wno-missing-field-initializers -Wno-unused-parameter `pkg-config --cflags x11` $<
 
 util.o: util.c util.h shared.h
 	${CC} -o $@ -c ${CFLAGS} $<
@@ -18,13 +18,13 @@ blocks/%.o: blocks/%.c blocks/%.h util.h shared.h
 	${CC} -o $@ -c ${CFLAGS} -Wno-unused-parameter $<
 
 dsblocks: dsblocks.o util.o ${BLOCKS:c=o}
-	${CC} -o $@ -lX11 $^
+	${CC} -o $@ $^ `pkg-config --libs x11`
 
 sigdsblocks/sigdsblocks: sigdsblocks/sigdsblocks.c
 	${CC} -o $@ ${CFLAGS} $<
 
 xgetrootname/xgetrootname: xgetrootname/xgetrootname.c
-	${CC} -o $@ -lX11 ${CFLAGS} $<
+	${CC} -o $@ ${CFLAGS} `pkg-config --cflags x11` $< `pkg-config --libs x11`
 
 clean:
 	rm -f blocks/*.o *.o dsblocks sigdsblocks/sigdsblocks xgetrootname/xgetrootname
