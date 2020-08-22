@@ -4,22 +4,21 @@
 #include "../util.h"
 #include "battery.h"
 
-#define UDEVNOTRELIABLE
+#define ICONe                           COL2 "" COL0 /* error reading ACSTATEFILE */
+#define ICON0                           COL1 "" COL0 /* no battery */
+#define ICON1                           COL1 "" COL0 /* battery low */
+#define ICON2                           COL1 "" COL0 /* battery intermediate 1 */
+#define ICON3                           COL1 "" COL0 /* battery intermediate 2 */
+#define ICON4                           COL1 "" COL0 /* battery full */
+#define ICON5                           COL1 "" COL0 /* battery charging */
 
-#define ICON0                           COL1 "" COL0
-#define ICON1                           COL2 "" COL0
-#define ICON2                           COL1 "" COL0
-#define ICON3                           COL1 "" COL0
-#define ICON4                           COL1 "" COL0
-#define ICON5                           COL1 "" COL0
-
-#define BATC                            10  /* critical level */
-#define BATL                            20  /* low level */
-#define BATP                            40  /* warn to plug in charger below this level */
-#define BATU                            80  /* warn to unplug charger below this level */
+#define BATC                            10 /* critical level */
+#define BATL                            20 /* low level */
+#define BATP                            40 /* warn to plug in charger below this level */
+#define BATU                            80 /* warn to unplug charger below this level */
 
 #define BATCAPFILE                      "/sys/class/power_supply/BAT0/capacity"
-#define BATSTATEFILE                    "/sys/class/power_supply/BAT0/status"
+#define ACSTATEFILE                     "/sys/class/power_supply/AC/online"
 #define BATCFULLFILE                    "/sys/class/power_supply/BAT0/charge_full"
 #define BATCNOWFILE                     "/sys/class/power_supply/BAT0/charge_now"
 #define BATRATEFILE                     "/sys/class/power_supply/BAT0/current_now"
@@ -33,40 +32,11 @@
 #define CCNOTIFY(t, msg) \
         cspawn((char *[]){ "/usr/bin/dunstify", "-r", "2120", "-t", t, "-u", "critical", "BatMon", msg, NULL })
 
-enum { Normal, Critical, Low, Plug, Unplug }; /* level */
-enum { Unknown, Discharging, Charging, Full, NotCharging }; /* state */
-
-static int
-chargingstatus()
-{
-        int c;
-        FILE *fp;
-
-        if (!(fp = fopen(BATSTATEFILE, "r")))
-                return Unknown;
-        if ((c = fgetc(fp)) == EOF) {
-                fclose(fp);
-                return Unknown;
-        }
-        fclose(fp);
-        if (c == 'D') /* Discharging */
-                return Discharging;
-        else if (c == 'C') /* Charging */
-                return Charging;
-        else if (c == 'F') /* Full */
-                return Full;
-        else if (c == 'U') /* Unknown */
-                return Unknown;
-        else /* Not Charging */
-                return NotCharging;
-}
+enum { Normal, Critical, Low, Plug, Unplug }; /* battery level */
 
 void
 batteryu(char *str, int ac)
 {
-#ifdef UDEVNOTRELIABLE
-        static int charging = -1;
-#endif
         static int level = Normal;
         int bat;
 
@@ -75,43 +45,22 @@ batteryu(char *str, int ac)
                 return;
         }
         if (ac == NILL) {
-                switch (chargingstatus()) {
-                        case Charging:
-                        case Full:
-#ifdef UDEVNOTRELIABLE
-                                if (charging != 1) {
-                                        if (charging != -1 && bat < BATU)
-                                                UNNOTIFY("1000", "Charger plugged in");
-                                        charging = 1;
-                                }
-#endif
-                                goto onac;
-                        default:
-#ifdef UDEVNOTRELIABLE
-                                if (charging != 0) {
-                                        if (charging != -1 && bat > BATP)
-                                                UNNOTIFY("1000", "Charger plugged out");
-                                        charging = 0;
-                                }
-#endif
-                                goto onbat;
+                if (!readint(ACSTATEFILE, &ac)) {
+                        snprintf(str, CMDLENGTH, ICONe "%d%%", bat);
+                        return;
                 }
-        } else {
-                if (ac) {
-                        if (bat < BATU)
-                                UNNOTIFY("1000", "Charger plugged in");
-#ifdef UDEVNOTRELIABLE
-                        charging = 1;
-#endif
+                if (ac)
                         goto onac;
-                } else {
-                        if (bat > BATP)
-                                UNNOTIFY("1000", "Charger plugged out");
-#ifdef UDEVNOTRELIABLE
-                        charging = 0;
-#endif
+                else
                         goto onbat;
-                }
+        } else if (ac) {
+                if (bat < BATU)
+                        UNNOTIFY("1000", "Charger plugged in");
+                goto onac;
+        } else {
+                if (bat > BATP)
+                        UNNOTIFY("1000", "Charger plugged out");
+                goto onbat;
         }
 onac:
         snprintf(str, CMDLENGTH, ICON5 "%d%%", bat);
@@ -157,40 +106,33 @@ onbat:
 void
 batteryc(int button)
 {
+        int ac;
         int cur, rate;
         int hr, mn;
 
-        switch (chargingstatus()) {
-                case Unknown:
-                        CCNOTIFY("0", "Battery status is unknown!");
-                        return;
-                case Full:
-                        CNNOTIFY("2000", "Battery fully charged");
-                        return;
-                case Discharging:
-                case NotCharging:
-                        if (!readint(BATCNOWFILE, &cur)) {
-                                CCNOTIFY("0", "Couldn't read" BATCNOWFILE);
-                                return;
-                        }
-                        break;
-                case Charging:
-                {
-                        int cnow;
-
-                        if (!readint(BATCFULLFILE, &cur)) {
-                                CCNOTIFY("0", "Couldn't read" BATCFULLFILE);
-                                return;
-                        }
-                        if (!readint(BATCNOWFILE, &cnow)) {
-                                CCNOTIFY("0", "Couldn't read" BATCNOWFILE);
-                                return;
-                        }
-                        cur -= cnow;
-                }
+        if (!readint(ACSTATEFILE, &ac)) {
+                CCNOTIFY("0", "Couldn't read " ACSTATEFILE);
+                return;
         }
+        if (ac) {
+                int cnow;
+
+                if (!readint(BATCFULLFILE, &cur)) {
+                        CCNOTIFY("0", "Couldn't read " BATCFULLFILE);
+                        return;
+                }
+                if (!readint(BATCNOWFILE, &cnow)) {
+                        CCNOTIFY("0", "Couldn't read " BATCNOWFILE);
+                        return;
+                }
+                cur -= cnow;
+        } else
+                if (!readint(BATCNOWFILE, &cur)) {
+                        CCNOTIFY("0", "Couldn't read " BATCNOWFILE);
+                        return;
+                }
         if (!readint(BATRATEFILE, &rate)) {
-                CCNOTIFY("0", "Couldn't read" BATRATEFILE);
+                CCNOTIFY("0", "Couldn't read " BATRATEFILE);
                 return;
         }
         if (!rate) {
