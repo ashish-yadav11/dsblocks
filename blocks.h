@@ -1,4 +1,4 @@
-#define SLEEPINTERVAL			2
+#define SLEEPINTERVAL                   2
 
 #include "blocks/battery.h"
 #include "blocks/cputemp.h"
@@ -18,20 +18,20 @@
  * funcc - function responsible for handling clicks on the block */
 
 static Block blocks[] = {
-/*	funcu			funcc			interval	signal */
-	{ hotspotu,		hotspotc,		-1,		3 },
+/*      funcu                   funcc                   interval        signal */
+        { hotspotu,             hotspotc,               -1,             3 },
 
-	{ timeu,		NULL,			30,		10 },
+        { timeu,                NULL,                   30,             10 },
 
-	{ calendaru,		calendarc,		30,		5 },
+        { calendaru,            calendarc,              30,             5 },
 
-	{ mailu,		mailc,			300,		2 },
+        { mailu,                mailc,                  300,            2 },
 
-	{ volumeu,		volumec,		0,		1 },
+        { volumeu,              volumec,                0,              1 },
 
-	{ cputempu,		cputempc,		2,		6 },
+        { cputempu,             cputempc,               2,              6 },
 
-	{ batteryu,		batteryc,		10,		4 },
+        { batteryu,             batteryc,               10,             4 },
 
         { NULL } /* just to mark the end of the array */
 };

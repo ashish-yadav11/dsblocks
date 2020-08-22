@@ -3,9 +3,9 @@
 #include "../util.h"
 #include "hotspot.h"
 
-#define ICON			COL1 ""
+#define ICON                    COL1 ""
 
-#define TURNOFFHOTSPOT		(char *[]){ "/usr/bin/sudo", "/home/ashish/.scripts/hotspot.sh", "terminate", NULL }
+#define TURNOFFHOTSPOT          (char *[]){ "/usr/bin/sudo", "/home/ashish/.scripts/hotspot.sh", "terminate", NULL }
 
 void
 hotspotu(char *str, int sigval)

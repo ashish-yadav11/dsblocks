@@ -3,16 +3,16 @@
 #include "../util.h"
 #include "volume.h"
 
-#define ICON0				COL1 "" COL0
-#define ICON1				COL1 "" COL0
+#define ICON0                           COL1 "" COL0
+#define ICON1                           COL1 "" COL0
 
-#define BUFLENGTH			10
+#define BUFLENGTH                       10
 
-#define PAMIXER				(char *[]){ "/usr/bin/pamixer", "--get-mute", "--get-volume", NULL }
+#define PAMIXER                         (char *[]){ "/usr/bin/pamixer", "--get-mute", "--get-volume", NULL }
 
-#define PAVUCONTROL			(char *[]){ "/usr/bin/pavucontrol-qt", NULL }
-#define SETDEFAULTVOL			(char *[]){ "/usr/bin/pamixer", "--set-volume", "50", NULL }
-#define TOGGLEMUTE			(char *[]){ "/usr/bin/pamixer", "--toggle-mute", NULL }
+#define PAVUCONTROL                     (char *[]){ "/usr/bin/pavucontrol-qt", NULL }
+#define SETDEFAULTVOL                   (char *[]){ "/usr/bin/pamixer", "--set-volume", "50", NULL }
+#define TOGGLEMUTE                      (char *[]){ "/usr/bin/pamixer", "--toggle-mute", NULL }
 
 void
 volumeu(char *str, int sigval)

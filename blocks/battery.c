@@ -6,32 +6,32 @@
 
 #define UDEVNOTRELIABLE
 
-#define ICON0				COL1 "" COL0
-#define ICON1				COL2 "" COL0
-#define ICON2				COL1 "" COL0
-#define ICON3				COL1 "" COL0
-#define ICON4				COL1 "" COL0
-#define ICON5				COL1 "" COL0
+#define ICON0                           COL1 "" COL0
+#define ICON1                           COL2 "" COL0
+#define ICON2                           COL1 "" COL0
+#define ICON3                           COL1 "" COL0
+#define ICON4                           COL1 "" COL0
+#define ICON5                           COL1 "" COL0
 
-#define BATC				10  /* critical level */
-#define BATL				20  /* low level */
-#define BATP				40  /* warn to plug in charger below this level */
-#define BATU				80  /* warn to unplug charger below this level */
+#define BATC                            10  /* critical level */
+#define BATL                            20  /* low level */
+#define BATP                            40  /* warn to plug in charger below this level */
+#define BATU                            80  /* warn to unplug charger below this level */
 
-#define BATCAPFILE			"/sys/class/power_supply/BAT0/capacity"
-#define BATSTATEFILE			"/sys/class/power_supply/BAT0/status"
-#define BATCFULLFILE			"/sys/class/power_supply/BAT0/charge_full"
-#define BATCNOWFILE			"/sys/class/power_supply/BAT0/charge_now"
-#define BATRATEFILE			"/sys/class/power_supply/BAT0/current_now"
+#define BATCAPFILE                      "/sys/class/power_supply/BAT0/capacity"
+#define BATSTATEFILE                    "/sys/class/power_supply/BAT0/status"
+#define BATCFULLFILE                    "/sys/class/power_supply/BAT0/charge_full"
+#define BATCNOWFILE                     "/sys/class/power_supply/BAT0/charge_now"
+#define BATRATEFILE                     "/sys/class/power_supply/BAT0/current_now"
 
 #define UNNOTIFY(t, msg) \
-	uspawn((char *[]){ "/usr/bin/dunstify", "-r", "2120", "-t", t, "BatMon", msg, NULL })
+        uspawn((char *[]){ "/usr/bin/dunstify", "-r", "2120", "-t", t, "BatMon", msg, NULL })
 #define UCNOTIFY(t, msg) \
-	uspawn((char *[]){ "/usr/bin/dunstify", "-r", "2120", "-t", t, "-u", "critical", "BatMon", msg, NULL })
+        uspawn((char *[]){ "/usr/bin/dunstify", "-r", "2120", "-t", t, "-u", "critical", "BatMon", msg, NULL })
 #define CNNOTIFY(t, msg) \
-	cspawn((char *[]){ "/usr/bin/dunstify", "-r", "2120", "-t", t, "BatMon", msg, NULL })
+        cspawn((char *[]){ "/usr/bin/dunstify", "-r", "2120", "-t", t, "BatMon", msg, NULL })
 #define CCNOTIFY(t, msg) \
-	cspawn((char *[]){ "/usr/bin/dunstify", "-r", "2120", "-t", t, "-u", "critical", "BatMon", msg, NULL })
+        cspawn((char *[]){ "/usr/bin/dunstify", "-r", "2120", "-t", t, "-u", "critical", "BatMon", msg, NULL })
 
 enum { Normal, Critical, Low, Plug, Unplug }; /* level */
 enum { Unknown, Discharging, Charging, Full, NotCharging }; /* state */

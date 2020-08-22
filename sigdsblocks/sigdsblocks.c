@@ -7,7 +7,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#define LOCKFILE			"/tmp/dsblocks.pid"
+#define LOCKFILE                        "/tmp/dsblocks.pid"
 
 void
 sendsignal(int signum, union sigval sv)

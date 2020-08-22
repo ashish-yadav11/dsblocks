@@ -4,7 +4,7 @@
 #include "../util.h"
 #include "time.h"
 
-#define ICON			COL1 "" COL0
+#define ICON                    COL1 "" COL0
 
 void
 timeu(char *str, int sigval)

@@ -9,8 +9,8 @@
 
 #include "shared.h"
 
-#define STTLENGTH			256
-#define LOCKFILE			"/tmp/dsblocks.pid"
+#define STTLENGTH                       256
+#define LOCKFILE                        "/tmp/dsblocks.pid"
 
 typedef struct {
         void (*funcu)(char *str, int sigval);

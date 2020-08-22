@@ -87,5 +87,5 @@ uspawn(char *const *arg)
                 execv(arg[0], arg);
                 perror("uspawn - child - execv");
                 _exit(127);
-	}
+        }
 }
