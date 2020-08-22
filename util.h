@@ -1,12 +1,12 @@
 #include "shared.h"
 
-#define COL0                            ""
-#define COL1                            ""
-#define COL2                            "\r"
-#define COL3                            ""
-#define COL4                            ""
-#define COL5                            ""
-#define COL6                            ""
+#define COL0                            "" /* default status color */
+#define COL1                            "" /* default icon color */
+#define COL2                            "\r" /* warning icon color */
+#define COL3                            "" /* mail block - frozen */
+#define COL4                            "" /* mail block - MAILSYNC started */
+#define COL5                            "" /* mail block - syncing */
+#define COL6                            "" /* mail block - last sync failed */
 
 #define TERMCMD(cmd)                    cspawn((char *[]){ "/usr/bin/termite", "-e", cmd, NULL })
 
