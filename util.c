@@ -44,11 +44,13 @@ getcmdout(char *const *arg, char *cmdout, size_t cmdoutlen)
                 case 0:
                         close(ConnectionNumber(dpy));
                         close(fd[0]);
-                        if (dup2(fd[1], STDOUT_FILENO) != STDOUT_FILENO) {
-                                perror("getcmdout - child - dup2");
-                                exit(1);
+                        if (fd[1] != STDOUT_FILENO) {
+                                if (dup2(fd[1], STDOUT_FILENO) != STDOUT_FILENO) {
+                                        perror("getcmdout - child - dup2");
+                                        exit(1);
+                                }
+                                close(fd[1]);
                         }
-                        close(fd[1]);
                         execv(arg[0], arg);
                         perror("getcmdout - child - execv");
                         _exit(127);
