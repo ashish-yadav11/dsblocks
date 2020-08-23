@@ -34,7 +34,6 @@ void
 mailu(char *str, int sigval)
 {
         static int n;
-        static int syncing;
         static int frozen;
 
         if (sigval == NILL) {
@@ -54,11 +53,6 @@ mailu(char *str, int sigval)
                                         snprintf(str, CMDLENGTH, ICON0 "%d", n);
                                         return;
                                 }
-                        }
-                        /* syncing is in progress and another instance of MAILSYNC started */
-                        if (syncing && sigval == 1) {
-                                snprintf(str, CMDLENGTH, ICON2 "%d", n);
-                                return;
                         }
                 } else if (sigval < 0) {
                         if (n < 0)
@@ -84,20 +78,14 @@ mailu(char *str, int sigval)
                                 break;
                         /* sync started */
                         case 2:
-                                syncing = 1;
                                 snprintf(str, CMDLENGTH, ICON2 "%d", n);
                                 break;
                         /* sync successfull */
                         case 3:
-                                syncing = 0;
                                 snprintf(str, CMDLENGTH, ICON3 "%d", n);
                                 break;
-                        /* sync failed */
+                        /* ping or sync failed */
                         case 4:
-                                syncing = 0;
-                        /* ping failed */
-                        /* fall through */
-                        case 5:
                                 snprintf(str, CMDLENGTH, ICON4 "%d", n);
                                 break;
                 }
