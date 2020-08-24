@@ -15,11 +15,15 @@ features including signaling, clickability, cursor hinting and color.
 
 Blocks are composed of two functions, one responsible for updating what is
 shown on the status and the other responsible for handling clicks. Take a look
-at `blocks.h` file. Functions defined in `util.c` might prove helpful when
-adding your own blocks.
+at [blocks.h](blocks.h) file and files in [blocks folder](blocks). Functions
+defined in [util.c](util.c) might prove helpful when adding your own blocks.
 
 > The provided blocks and helpers are what I personally use. They may or may
 > not work for others. They are mainly provided for suggestion purposes.
+
+If you want to contribute to the project and have written a block which might
+prove helpful to others, add a pull request putting your block in contrib
+folder.
 
 # Colored output and Clickability
 
@@ -32,7 +36,7 @@ hovering on clickable blocks (inspired by polybar).
 
 To add colors to the status have your functions output raw characters from
 '\x0b' to '\x31'. '\x0b' in status text switches the active colorscheme to the
-first one in the scheme array in dwm and so on. See `util.h` file and
+first one in the scheme array in dwm and so on. See [util.h](util.h) file and
 [statuscolors patch](https://dwm.suckless.org/patches/statuscolors/)
 for more info. Keep in mind that you have to start from '\x0b' instead of '\x01'
 as instructed on statuscolors patch's page.
