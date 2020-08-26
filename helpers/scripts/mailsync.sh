@@ -10,12 +10,12 @@ exec 9>/tmp/mailsync.2.lock
 # Check if some other instance of the script is already
 # running which has crossed the pinging state
 if flock -n 9 ; then
-    sigdsblock 2 1
+    sigdsblocks 2 1
 else
     sigdsblocks 2 2
     # Wait for the other script to finish
     flock 9 || exit
-    sigdsblock 2 -1
+    sigdsblocks 2 -1
 fi
 
 if ping -c1 imap.gmail.com ; then
