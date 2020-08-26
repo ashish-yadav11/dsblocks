@@ -1,22 +1,17 @@
 #!/bin/dash
 exec >/dev/null 2>&1
 
+sigdsblocks 2 1
+
 exec 8>/tmp/mailsync.1.lock
-# Check if some other instance of the script is already
+# Exit if some other instance of the script is
 # running which hasn't crossed the pinging stage
-flock -n 8 || { sigdsblocks 2 1; exit ;}
+flock -n 8 || exit
 
 exec 9>/tmp/mailsync.2.lock
-# Check if some other instance of the script is already
+# Wait while some other instance of the script is
 # running which has crossed the pinging state
-if flock -n 9 ; then
-    sigdsblocks 2 1
-else
-    sigdsblocks 2 2
-    # Wait for the other script to finish
-    flock 9 || exit
-    sigdsblocks 2 -1
-fi
+flock 9 || exit
 
 if ping -c1 imap.gmail.com ; then
     exec 8>/dev/null
@@ -29,5 +24,5 @@ if ping -c1 imap.gmail.com ; then
     notmuch new
 else
     exec 8>/dev/null
-    sigdsblocks 2 -4
+    sigdsblocks 2 -5
 fi
