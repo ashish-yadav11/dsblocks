@@ -33,11 +33,11 @@ volumec(int button)
                 case 1:
                         cspawn(TOGGLEMUTE);
                         break;
-                case 3:
-                        cspawn(PAVUCONTROL);
-                        break;
                 case 2:
                         cspawn(SETDEFAULTVOL);
+                        break;
+                case 3:
+                        cspawn(PAVUCONTROL);
                         break;
         }
 }

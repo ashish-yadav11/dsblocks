@@ -32,11 +32,11 @@ cputempc(int button)
                 case 1:
                         TERMCMD("/usr/bin/htop -s PERCENT_CPU");
                         break;
-                case 3:
-                        TERMCMD("/usr/bin/htop -s PERCENT_MEM");
-                        break;
                 case 2:
                         TERMCMD("/usr/bin/htop");
+                        break;
+                case 3:
+                        TERMCMD("/usr/bin/htop -s PERCENT_MEM");
                         break;
         }
 }
