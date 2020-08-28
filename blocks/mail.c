@@ -41,76 +41,78 @@ mailu(char *str, int sigval)
                 if (!frozen)
                         uspawn(MAILSYNC);
         } else {
+                /* update mail count */
                 if (sigval > 0) {
                         if ((n = numnewmails()) < 0) {
                                 *str = '\0';
                                 return;
                         }
-                        /* MAILSYNC started */
-                        if (sigval == 1) {
-                                /* unfreeze if frozen */
-                                if (frozen)
-                                        frozen = 0;
-                                /* syncing is in progress in another instance of MAILSYNC */
-                                if (syncing) {
-                                        syncing = -1;
-                                        snprintf(str, CMDLENGTH, ICON2 "%d", n);
-                                } else
-                                        snprintf(str, CMDLENGTH, ICON1 "%d", n);
-                                return;
-                        } else
-                                if (frozen) {
-                                        snprintf(str, CMDLENGTH, ICON0 "%d", n);
-                                        return;
-                                }
+                /* don't update mail count */
                 } else if (sigval < 0) {
                         if (n < 0)
                                 return;
-                        if (frozen)
-                                return;
                         sigval = -sigval;
+                /* toggle frozen */
                 } else {
                         if (frozen) {
                                 frozen = 0;
                                 uspawn(MAILSYNC);
                         } else {
+                                frozen = 1;
                                 if (n >= 0)
                                         snprintf(str, CMDLENGTH, ICON0 "%d", n);
-                                frozen = 1;
                         }
                         return;
                 }
                 switch (sigval) {
                         /* MAILSYNC started */
                         case 1:
-                                snprintf(str, CMDLENGTH, ICON1 "%d", n);
+                                /* unfreeze if frozen */
+                                if (frozen)
+                                        frozen = 0;
+                                /* syncing is in progress in another instance of MAILSYNC */
+                                if (syncing) {
+                                        snprintf(str, CMDLENGTH, ICON2 "%d", n);
+                                        syncing = -1;
+                                } else
+                                        snprintf(str, CMDLENGTH, ICON1 "%d", n);
                                 break;
                         /* sync started */
                         case 2:
-                                snprintf(str, CMDLENGTH, ICON2 "%d", n);
+                                if (frozen)
+                                        snprintf(str, CMDLENGTH, ICON0 "%d", n);
+                                else
+                                        snprintf(str, CMDLENGTH, ICON2 "%d", n);
                                 syncing = 1;
                                 break;
                         /* sync successfull */
                         case 3:
-                                if (syncing > 0)
+                                if (frozen)
+                                        snprintf(str, CMDLENGTH, ICON0 "%d", n);
+                                else if (syncing > 0)
                                         snprintf(str, CMDLENGTH, ICON3 "%d", n);
-                                /* the other instance of MAILSYNC is going to ping */
+                                /* the other instance of MAILSYNC was waiting to ping */
                                 else
                                         snprintf(str, CMDLENGTH, ICON1 "%d", n);
                                 syncing = 0;
                                 break;
                         /* sync failed */
                         case 4:
-                                if (syncing > 0)
+                                if (frozen)
+                                        snprintf(str, CMDLENGTH, ICON0 "%d", n);
+                                else if (syncing > 0)
                                         snprintf(str, CMDLENGTH, ICON4 "%d", n);
-                                /* the other instance of MAILSYNC is going to ping */
+                                /* the other instance of MAILSYNC was waiting to ping */
                                 else
                                         snprintf(str, CMDLENGTH, ICON1 "%d", n);
                                 syncing = 0;
                                 break;
                         /* ping failed */
                         case 5:
-                                snprintf(str, CMDLENGTH, ICON4 "%d", n);
+                                if (frozen)
+                                        snprintf(str, CMDLENGTH, ICON0 "%d", n);
+                                else
+                                        snprintf(str, CMDLENGTH, ICON4 "%d", n);
                                 break;
                 }
         }
