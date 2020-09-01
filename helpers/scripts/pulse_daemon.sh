@@ -1,5 +1,7 @@
 #!/bin/dash
 pactl subscribe |
     while read -r output ; do
-        [ -z "${output##*sink *}" ] && sigdsblocks 1
+        case "$output" in
+            *"sink "*) sigdsblocks 1 ;;
+        esac
     done
