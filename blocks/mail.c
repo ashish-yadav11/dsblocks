@@ -16,7 +16,8 @@
 #define MAILSYNC                        (char *[]){ "/home/ashish/.scripts/mailsync.sh", NULL }
 
 static int
-numnewmails() {
+numnewmails()
+{
         int n = 0;
         DIR* dir;
         struct dirent* rf;
