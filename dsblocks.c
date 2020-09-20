@@ -183,7 +183,7 @@ updatestatus()
                         continue;
 skipdelimc:
                 /* checking for the first byte has been done */
-                c = current->cmdoutcur + 1; p = current->cmdoutprv + 1;
+                c = current->cmdoutcur + 1, p = current->cmdoutprv + 1;
                 for (; *c != '\0' && *c != '\n'; c++, p++)
                         /* contents of the current block just changed */
                         if (*c != *p) {
@@ -225,12 +225,12 @@ update1:
                         continue;
                 }
 skipdelimu:
-                c = current->cmdoutcur; p = current->cmdoutprv;
+                c = current->cmdoutcur, p = current->cmdoutprv;
 update2:
                 do {
                         *(s++) = *c;
                         *p = *c;
-                        c++; p++;
+                        c++, p++;
                 } while (*c != '\0' && *c != '\n');
                 if (current->funcc && current->signal)
                         *(s++) = current->signal;
