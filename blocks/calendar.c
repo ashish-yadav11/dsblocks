@@ -6,6 +6,8 @@
 
 #define ICON                    COL1 "" COL0
 
+#define SHOWCALCURSE            (char *[]){ "/usr/bin/xsetroot", "-name", "z:tscr i 4", NULL }
+
 void
 calendaru(char *str, int sigval)
 {
@@ -22,5 +24,5 @@ calendaru(char *str, int sigval)
 void
 calendarc(int button)
 {
-        TERMCMD("/usr/bin/calcurse");
+        cspawn(SHOWCALCURSE);
 }
