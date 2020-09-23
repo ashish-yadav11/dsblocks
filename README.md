@@ -34,7 +34,7 @@ add support for colored text (inspired by statuscolors patch for dwm),
 clickability (inspired by statuscmd patch for dwm) and cursor hinting when
 hovering on clickable blocks (inspired by polybar).
 
-To add colors to the status have your functions output raw characters from
+To add colors to the status, have your functions output raw characters from
 '\x0b' to '\x31'. '\x0b' in status text switches the active colorscheme to the
 first one in the scheme array in dwm and so on. See [util.h](util.h) file and
 [statuscolors patch](https://dwm.suckless.org/patches/statuscolors/)
