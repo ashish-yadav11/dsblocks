@@ -1,7 +1,6 @@
 #!/bin/dash
 if [ "$(create_ap --list-running | wc -l)" -gt 2 ] ; then
     sudo /home/ashish/.scripts/hotspot.sh terminate
-    exit
 else
     if nmcli -t -f DEVICE,STATE device status | grep -qE 'wlp5s0:(connected)|(connecting)' ; then
         dunstify -r 81520 -t 3000 "Hotspot" "Your adapter can not be a station and an AP at the same time"
