@@ -8,6 +8,7 @@
 void
 cspawn(char *const *arg)
 {
+        setsid();
         execv(arg[0], arg);
         perror("cspawn - execv");
         _exit(127);
@@ -21,7 +22,7 @@ csigself(int signal, int sigval)
         signal += SIGRTMIN;
         sv.sival_int = sigval;
         if (sigqueue(pid, signal, sv) == -1) {
-                perror("csigdsblocks - sigqueue");
+                perror("csigself - sigqueue");
                 exit(1);
         }
 }
@@ -83,11 +84,15 @@ readint(const char *path, int *var) {
 void
 uspawn(char *const *arg)
 {
-        if (fork() == 0) {
-                close(ConnectionNumber(dpy));
-                setsid();
-                execv(arg[0], arg);
-                perror("uspawn - child - execv");
-                _exit(127);
+        switch (fork()) {
+                case -1:
+                        perror("uspawn - fork");
+                        break;
+                case 0:
+                        close(ConnectionNumber(dpy));
+                        setsid();
+                        execv(arg[0], arg);
+                        perror("uspawn - child - execv");
+                        _exit(127);
         }
 }

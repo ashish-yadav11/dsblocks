@@ -46,11 +46,14 @@ buttonhandler(int signal, siginfo_t *si, void *ucontext)
         signal = si->si_value.sival_int >> 8;
         for (Block *current = blocks; current->funcu; current++)
                 if (current->signal == signal)
-                        if (fork() == 0) {
-                                close(ConnectionNumber(dpy));
-                                setsid();
-                                current->funcc(si->si_value.sival_int & 0xff);
-                                exit(0);
+                        switch (fork()) {
+                                case -1:
+                                        perror("buttonhandler - fork");
+                                        break;
+                                case 0:
+                                        close(ConnectionNumber(dpy));
+                                        current->funcc(si->si_value.sival_int & 0xff);
+                                        exit(0);
                         }
 }
 
