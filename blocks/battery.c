@@ -14,8 +14,8 @@
 
 #define BATC                            10 /* critical level */
 #define BATL                            20 /* low level */
-#define BATP                            40 /* warn to plug in charger below this level */
-#define BATU                            80 /* warn to unplug charger below this level */
+#define BATP                            40 /* warn to plug in the charger at/below this level */
+#define BATU                            80 /* warn to unplug the charger at/over this level */
 
 #define BATCAPFILE                      "/sys/class/power_supply/BAT0/capacity"
 #define ACSTATEFILE                     "/sys/class/power_supply/AC/online"
@@ -44,61 +44,84 @@ batteryu(char *str, int ac)
                 strcpy(str, ICON0);
                 return;
         }
+        /* routine update */
         if (ac == NILL) {
                 if (!readint(ACSTATEFILE, &ac)) {
                         snprintf(str, CMDLENGTH, ICONe "%d%%", bat);
                         return;
                 }
-                if (ac)
-                        goto onac;
-                else
-                        goto onbat;
+                if (ac) {
+                        if (bat < BATU) {
+                                if (level != Normal)
+                                        level = Normal;
+                        } else if (level != Unplug) {
+                                UNNOTIFY("0", "Unplug the charger");
+                                level = Unplug;
+                        }
+                        snprintf(str, CMDLENGTH, ICON5 "%d%%", bat);
+                } else {
+                        if (bat > BATP) {
+                                if (level != Normal)
+                                        level = Normal;
+                                if (bat < BATU)
+                                        snprintf(str, CMDLENGTH, ICON3 "%d%%", bat);
+                                else
+                                        snprintf(str, CMDLENGTH, ICON4 "%d%%", bat);
+                        } else if (bat > BATL) {
+                                if (level != Plug) {
+                                        UNNOTIFY("0", "Plug in the charger");
+                                        level = Plug;
+                                }
+                                snprintf(str, CMDLENGTH, ICON2 "%d%%", bat);
+                        } else {
+                                if (bat > BATC) {
+                                        if (level != Low) {
+                                                UNNOTIFY("0", "Battery level is low!");
+                                                level = Low;
+                                        }
+                                } else if (level != Critical) {
+                                        UCNOTIFY("0", "Battery level is critical!");
+                                        level = Critical;
+                                }
+                                snprintf(str, CMDLENGTH, ICON1 "%d%%", bat);
+                        }
+                }
+        /* charger plugged in */
         } else if (ac) {
-                if (bat < BATU)
+                if (bat < BATU) {
                         UNNOTIFY("1000", "Charger plugged in");
-                goto onac;
-        } else {
-                if (bat > BATP)
-                        UNNOTIFY("1000", "Charger plugged out");
-                goto onbat;
-        }
-onac:
-        snprintf(str, CMDLENGTH, ICON5 "%d%%", bat);
-        if (bat >= BATU) {
-                if (level != Unplug) {
+                        if (level != Normal)
+                                level = Normal;
+                } else {
                         UNNOTIFY("0", "Unplug the charger");
                         level = Unplug;
                 }
-        } else if (level != Normal)
-                level = Normal;
-        return;
-onbat:
-        if (bat >= BATU) {
-                snprintf(str, CMDLENGTH, ICON4 "%d%%", bat);
-                if (level != Normal)
-                        level = Normal;
-        } else if (bat > BATP) {
-                snprintf(str, CMDLENGTH, ICON3 "%d%%", bat);
-                if (level != Normal)
-                        level = Normal;
-        } else if (bat > BATL) {
-                snprintf(str, CMDLENGTH, ICON2 "%d%%", bat);
-                if (level != Plug) {
+                snprintf(str, CMDLENGTH, ICON5 "%d%%", bat);
+        /* charger plugged out */
+        } else {
+                if (bat > BATP) {
+                        UNNOTIFY("1000", "Charger plugged out");
+                        if (level != Normal)
+                                level = Normal;
+                        if (bat < BATU)
+                                snprintf(str, CMDLENGTH, ICON3 "%d%%", bat);
+                        else
+                                snprintf(str, CMDLENGTH, ICON4 "%d%%", bat);
+                } else if (bat > BATL) {
                         UNNOTIFY("0", "Plug in the charger");
                         level = Plug;
-                }
-        } else {
-                snprintf(str, CMDLENGTH, ICON1 "%d%%", bat);
-                if (bat > BATC) {
-                        if (level != Low) {
-                                UNNOTIFY("0", "Battery level is low!");
-                                level = Low;
-                        }
+                        snprintf(str, CMDLENGTH, ICON2 "%d%%", bat);
                 } else {
-                        if (level != Critical) {
+                        if (bat > BATC) {
+                                if (level != Low) {
+                                        UNNOTIFY("0", "Battery level is low!");
+                                        level = Low;
+                                }
+                        } else if (level != Critical) {
                                 UCNOTIFY("0", "Battery level is critical!");
                                 level = Critical;
                         }
+                        snprintf(str, CMDLENGTH, ICON1 "%d%%", bat);
                 }
         }
 }
