@@ -8,7 +8,7 @@
 #define ICON0                           COL3 "" COL0 /* frozen */
 #define ICON1                           COL4 "" COL0 /* MAILSYNC started */
 #define ICON2                           COL5 "" COL0 /* syncing */
-#define ICON3                           COL1 "" COL0 /* last sync successfull */
+#define ICON3                           COL1 "" COL0 /* last sync successful */
 #define ICON4                           COL2 "" COL0 /* last sync failed */
 
 #define NEWMAILDIR                      "/home/ashish/.local/share/mail/iiser/INBOX/new"
@@ -38,9 +38,21 @@ mailu(char *str, int sigval)
         static int frozen;
         static int syncing;
 
+        /* routine update */
         if (sigval == NILL) {
                 if (!frozen)
                         uspawn(MAILSYNC);
+        /* toggle frozen */
+        } else if (sigval == 0) {
+                if (frozen) {
+                        frozen = 0;
+                        uspawn(MAILSYNC);
+                } else {
+                        frozen = 1;
+                        if (n >= 0)
+                                snprintf(str, CMDLENGTH, ICON0 "%d", n);
+                }
+        /* handle signals from MAILSYNC */
         } else {
                 /* update mail count */
                 if (sigval > 0) {
@@ -49,21 +61,10 @@ mailu(char *str, int sigval)
                                 return;
                         }
                 /* don't update mail count */
-                } else if (sigval < 0) {
+                } else {
                         if (n < 0)
                                 return;
                         sigval = -sigval;
-                /* toggle frozen */
-                } else {
-                        if (frozen) {
-                                frozen = 0;
-                                uspawn(MAILSYNC);
-                        } else {
-                                frozen = 1;
-                                if (n >= 0)
-                                        snprintf(str, CMDLENGTH, ICON0 "%d", n);
-                        }
-                        return;
                 }
                 switch (sigval) {
                         /* MAILSYNC started */
@@ -86,7 +87,7 @@ mailu(char *str, int sigval)
                                         snprintf(str, CMDLENGTH, ICON2 "%d", n);
                                 syncing = 1;
                                 break;
-                        /* sync successfull */
+                        /* sync successful */
                         case 3:
                                 if (frozen)
                                         snprintf(str, CMDLENGTH, ICON0 "%d", n);
