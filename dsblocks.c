@@ -165,20 +165,19 @@ updatestatus()
                 /* all blocks are empty */
                 if (!current->funcu)
                         return 0;
-                /* contents of the current block just changed */
+                /* contents of the current block changed */
                 if (*current->cmdoutcur != *current->cmdoutprv)
                         goto update0;
-                /* no delimiter before the first non-empty block */
+                /* skip delimiter handler for the first non-empty block */
                 if (*current->cmdoutcur != '\0' && *current->cmdoutcur != '\n')
                         goto skipdelimc;
         }
         /* main loop */
         for (; current->funcu; current++) {
-                /* contents of the current block just changed */
+                /* contents of the current block changed */
                 if (*current->cmdoutcur != *current->cmdoutprv)
                         goto update1;
                 /* delimiter handler */
-                /* current block is non-empty */
                 if (*current->cmdoutcur != '\0' && *current->cmdoutcur != '\n')
                         s += delimlength;
                 /* skip over empty blocks */
@@ -188,7 +187,7 @@ skipdelimc:
                 /* checking for the first byte has been done */
                 c = current->cmdoutcur + 1, p = current->cmdoutprv + 1;
                 for (; *c != '\0' && *c != '\n'; c++, p++)
-                        /* contents of the current block just changed */
+                        /* contents of the current block changed */
                         if (*c != *p) {
                                 s += c - current->cmdoutcur;
                                 goto update2;
@@ -207,7 +206,7 @@ skipdelimc:
                 if (!current->funcu)
                         return 1;
 update0:
-                /* skip delimiter before the first non-empty block */
+                /* don't add delimiter before the first non-empty block */
                 if (*current->cmdoutcur != '\0' && *current->cmdoutcur != '\n')
                         goto skipdelimu;
                 *current->cmdoutprv = *current->cmdoutcur;
@@ -216,7 +215,6 @@ update0:
         for (; current->funcu; current++) {
 update1:
                 /* delimiter handler */
-                /* current block is non-empty */
                 if (*current->cmdoutcur != '\0' && *current->cmdoutcur != '\n') {
                         d = delim;
                         while (*d != '\0')
