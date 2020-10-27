@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <time.h>
 
 #include "../util.h"
@@ -11,14 +10,10 @@
 void
 calendaru(char *str, int sigval)
 {
-        static char *days[] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
-        static char *months[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
-                                  "Aug", "Sep", "Oct", "Nov", "Dec" };
         time_t t = time(NULL);
         struct tm tm = *localtime(&t);
 
-        snprintf(str, CMDLENGTH, ICON "%s, %02d %s",
-                 days[tm.tm_wday], tm.tm_mday, months[tm.tm_mon]);
+        strftime(str, CMDLENGTH, ICON "%a, %d %b", &tm);
 }
 
 void

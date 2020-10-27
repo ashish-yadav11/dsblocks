@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <time.h>
 
 #include "../util.h"
@@ -12,5 +11,5 @@ timeu(char *str, int sigval)
         time_t t = time(NULL);
         struct tm tm = *localtime(&t);
 
-        snprintf(str, CMDLENGTH, ICON "%02d:%02d", tm.tm_hour, tm.tm_min);
+        strftime(str, CMDLENGTH, ICON "%R", &tm);
 }
