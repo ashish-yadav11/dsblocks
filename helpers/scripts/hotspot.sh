@@ -1,5 +1,5 @@
 #!/bin/dash
-case "$1" in
+case $1 in
     initiate)
         iwi=$(nmcli -t -f DEVICE connection show --active | head -n1)
         trap 'sigdsblocks 3 0; exit' HUP INT TERM
