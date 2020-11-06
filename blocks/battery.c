@@ -159,7 +159,7 @@ batteryc(int button)
                 return;
         }
         if (!rate) {
-                CCNOTIFY("0", "Unexpected current value!");
+                CNNOTIFY("2000", "Battery fully charged");
                 return;
         }
         hr = cur / rate;
