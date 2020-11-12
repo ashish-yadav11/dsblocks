@@ -128,7 +128,7 @@ mailc(int button)
                         cspawn(MAILSYNC);
                         break;
                 case 3:
-                        csigself(2, 0);
+                        csigself(3, 0);
                         break;
         }
 }
