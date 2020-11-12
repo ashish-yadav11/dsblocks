@@ -1,11 +1,10 @@
-#define SLEEPINTERVAL                   2
+#define SLEEPINTERVAL                   1
 
 #include "blocks/battery.h"
 #include "blocks/cputemp.h"
 #include "blocks/calendar.h"
 #include "blocks/hotspot.h"
 #include "blocks/mail.h"
-#include "blocks/time.h"
 #include "blocks/volume.h"
 
 /* If interval of a block is set to 0, the block will only be updated once at startup.
@@ -20,19 +19,17 @@
 
 static Block blocks[] = {
 /*      funcu                   funcc                   interval        signal */
-        { hotspotu,             hotspotc,               -1,             3 },
+        { hotspotu,             hotspotc,               -1,             4 },
 
-        { timeu,                NULL,                   30,             10 },
+        { calendaru,            calendarc,              1,              1 },
 
-        { calendaru,            calendarc,              30,             5 },
+        { mailu,                mailc,                  300,            3 },
 
-        { mailu,                mailc,                  300,            2 },
-
-        { volumeu,              volumec,                0,              1 },
+        { volumeu,              volumec,                0,              2 },
 
         { cputempu,             cputempc,               2,              6 },
 
-        { batteryu,             batteryc,               10,             4 },
+        { batteryu,             batteryc,               10,             5 },
 
         { NULL } /* just to mark the end of the array */
 };

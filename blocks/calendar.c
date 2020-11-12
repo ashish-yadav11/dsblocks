@@ -13,7 +13,7 @@ calendaru(char *str, int sigval)
         time_t t = time(NULL);
         struct tm tm = *localtime(&t);
 
-        strftime(str, CMDLENGTH, ICON "%a, %d %b", &tm);
+        strftime(str, CMDLENGTH, ICON "%R, %a, %d %b", &tm);
 }
 
 void
