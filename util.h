@@ -2,7 +2,7 @@
 
 #define COL0                            "" /* default status color */
 #define COL1                            "" /* default icon color */
-#define COL2                            "\r" /* warning icon color */
+#define COL2                            "\r" /* alternate icon color */
 #define COL3                            "" /* mail block - frozen */
 #define COL4                            "" /* mail block - MAILSYNC started */
 #define COL5                            "" /* mail block - syncing */
