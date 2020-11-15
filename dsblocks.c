@@ -44,15 +44,15 @@ void
 buttonhandler(int signal, siginfo_t *si, void *ucontext)
 {
         signal = si->si_value.sival_int >> 8;
-        for (Block *current = blocks; current->funcu; current++)
-                if (current->signal == signal)
+        for (Block *block = blocks; block->funcu; block++)
+                if (block->signal == signal)
                         switch (fork()) {
                                 case -1:
                                         perror("buttonhandler - fork");
                                         break;
                                 case 0:
                                         close(ConnectionNumber(dpy));
-                                        current->funcc(si->si_value.sival_int & 0xff);
+                                        block->funcc(si->si_value.sival_int & 0xff);
                                         exit(0);
                         }
 }
@@ -102,18 +102,18 @@ setupsignals()
         sa.sa_flags |= SA_NODEFER;
         sa.sa_mask = blocksigmask;
         sa.sa_sigaction = sighandler;
-        for (Block *current = blocks; current->funcu; current++)
-                if (current->signal > 0)
-                        sigaction(SIGRTMIN + current->signal, &sa, NULL);
+        for (Block *block = blocks; block->funcu; block++)
+                if (block->signal > 0)
+                        sigaction(SIGRTMIN + block->signal, &sa, NULL);
 }
 
 void
 sighandler(int signal, siginfo_t *si, void *ucontext)
 {
         signal -= SIGRTMIN;
-        for (Block *current = blocks; current->funcu; current++)
-                if (current->signal == signal)
-                        current->funcu(current->cmdoutcur, si->si_value.sival_int);
+        for (Block *block = blocks; block->funcu; block++)
+                if (block->signal == signal)
+                        block->funcu(block->cmdoutcur, si->si_value.sival_int);
         setroot();
 }
 
@@ -124,9 +124,9 @@ statusloop()
 
         /* first run */
         sigprocmask(SIG_BLOCK, &blocksigmask, NULL);
-        for (Block *current = blocks; current->funcu; current++)
-                if (current->interval >= 0)
-                        current->funcu(current->cmdoutcur, NILL);
+        for (Block *block = blocks; block->funcu; block++)
+                if (block->interval >= 0)
+                        block->funcu(block->cmdoutcur, NILL);
         setroot();
         sigprocmask(SIG_UNBLOCK, &blocksigmask, NULL);
         sleep(SLEEPINTERVAL);
@@ -134,9 +134,9 @@ statusloop()
         /* main loop */
         while (statuscontinue) {
                 sigprocmask(SIG_BLOCK, &blocksigmask, NULL);
-                for (Block *current = blocks; current->funcu; current++)
-                        if (current->interval > 0 && i % current->interval == 0)
-                                current->funcu(current->cmdoutcur, NILL);
+                for (Block *block = blocks; block->funcu; block++)
+                        if (block->interval > 0 && i % block->interval == 0)
+                                block->funcu(block->cmdoutcur, NILL);
                 setroot();
                 sigprocmask(SIG_UNBLOCK, &blocksigmask, NULL);
                 sleep(SLEEPINTERVAL);
@@ -157,84 +157,84 @@ updatestatus()
         char *s = statusstr;
         char *c, *p; /* for cmdoutcur and cmdoutprv */
         const char *d; /* for delimiter */
-        Block *current = blocks;
+        Block *block = blocks;
 
         /* checking half of the function */
         /* find the first non-empty block */
-        for (;; current++) {
+        for (;; block++) {
                 /* all blocks are empty */
-                if (!current->funcu)
+                if (!block->funcu)
                         return 0;
-                /* contents of the current block changed */
-                if (*current->cmdoutcur != *current->cmdoutprv)
+                /* contents of the block changed */
+                if (*block->cmdoutcur != *block->cmdoutprv)
                         goto update0;
                 /* skip delimiter handler for the first non-empty block */
-                if (*current->cmdoutcur != '\0' && *current->cmdoutcur != '\n')
+                if (*block->cmdoutcur != '\0' && *block->cmdoutcur != '\n')
                         goto skipdelimc;
         }
         /* main loop */
-        for (; current->funcu; current++) {
-                /* contents of the current block changed */
-                if (*current->cmdoutcur != *current->cmdoutprv)
+        for (; block->funcu; block++) {
+                /* contents of the block changed */
+                if (*block->cmdoutcur != *block->cmdoutprv)
                         goto update1;
                 /* delimiter handler */
-                if (*current->cmdoutcur != '\0' && *current->cmdoutcur != '\n')
+                if (*block->cmdoutcur != '\0' && *block->cmdoutcur != '\n')
                         s += delimlength;
                 /* skip over empty blocks */
                 else
                         continue;
 skipdelimc:
                 /* checking for the first byte has been done */
-                c = current->cmdoutcur + 1, p = current->cmdoutprv + 1;
+                c = block->cmdoutcur + 1, p = block->cmdoutprv + 1;
                 for (; *c != '\0' && *c != '\n'; c++, p++)
-                        /* contents of the current block changed */
+                        /* contents of the block changed */
                         if (*c != *p) {
-                                s += c - current->cmdoutcur;
+                                s += c - block->cmdoutcur;
                                 goto update2;
                         }
-                s += c - current->cmdoutcur;
+                s += c - block->cmdoutcur;
                 /* byte containing info about signal number for the block */
-                if (current->funcc && current->signal)
+                if (block->funcc && block->signal)
                         s++;
         }
         return 0;
 
         /* updating half of the function */
         /* find the first non-empty block */
-        for (;; current++) {
+        for (;; block++) {
                 /* all blocks are empty */
-                if (!current->funcu)
+                if (!block->funcu)
                         return 1;
 update0:
                 /* don't add delimiter before the first non-empty block */
-                if (*current->cmdoutcur != '\0' && *current->cmdoutcur != '\n')
+                if (*block->cmdoutcur != '\0' && *block->cmdoutcur != '\n')
                         goto skipdelimu;
-                *current->cmdoutprv = *current->cmdoutcur;
+                *block->cmdoutprv = *block->cmdoutcur;
         }
         /* main loop */
-        for (; current->funcu; current++) {
+        for (; block->funcu; block++) {
 update1:
                 /* delimiter handler */
-                if (*current->cmdoutcur != '\0' && *current->cmdoutcur != '\n') {
+                if (*block->cmdoutcur != '\0' && *block->cmdoutcur != '\n') {
                         d = delim;
                         while (*d != '\0')
                                 *(s++) = *(d++);
                         *(s++) = '\n'; /* to mark the end of delimiter */
                 /* skip over empty blocks */
                 } else {
-                        *current->cmdoutprv = *current->cmdoutcur;
+                        *block->cmdoutprv = *block->cmdoutcur;
                         continue;
                 }
 skipdelimu:
-                c = current->cmdoutcur, p = current->cmdoutprv;
+                c = block->cmdoutcur, p = block->cmdoutprv;
 update2:
                 do {
                         *(s++) = *c;
                         *p = *c;
                         c++, p++;
                 } while (*c != '\0' && *c != '\n');
-                if (current->funcc && current->signal)
-                        *(s++) = current->signal;
+                if (block->funcc && block->signal)
+                        *(s++) = block->signal;
         }
         *s = '\0';
         return 1;
@@ -290,9 +290,9 @@ main(int argc, char *argv[])
         sigaddset(&blocksigmask, SIGHUP);
         sigaddset(&blocksigmask, SIGINT);
         sigaddset(&blocksigmask, SIGTERM);
-        for (Block *current = blocks; current->funcu; current++)
-                if (current->signal > 0)
-                        sigaddset(&blocksigmask, SIGRTMIN + current->signal);
+        for (Block *block = blocks; block->funcu; block++)
+                if (block->signal > 0)
+                        sigaddset(&blocksigmask, SIGRTMIN + block->signal);
         setupsignals();
         statusloop();
         unlink(LOCKFILE);
