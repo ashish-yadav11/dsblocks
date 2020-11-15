@@ -21,7 +21,7 @@
 #define ICON8                           "" COL0
 #define ICON9                           "" COL0
 
-#define ICON(bat)                       icons[(bat * sizeof icons) / (101 * sizeof icons[0])]
+#define ICON(bat)                       icons[(bat * (LENGTH(icons) - 1) + 50) / 100]
 
 #define BATC                            10 /* critical level */
 #define BATL                            20 /* low level */

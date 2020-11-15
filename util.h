@@ -7,6 +7,7 @@
 #define COL4                            "" /* mail block - MAILSYNC started */
 #define COL5                            "" /* mail block - syncing */
 
+#define LENGTH(X)                       (sizeof X / sizeof X[0])
 #define TERMCMD(cmd)                    cspawn((char *[]){ "/usr/bin/termite", "-e", cmd, NULL })
 
 void cspawn(char *const *arg);
