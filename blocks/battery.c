@@ -34,14 +34,29 @@
 #define BATCNOWFILE                     "/sys/class/power_supply/BAT0/charge_now"
 #define BATRATEFILE                     "/sys/class/power_supply/BAT0/current_now"
 
-#define UNNOTIFY(t, msg) \
-        uspawn((char *[]){ "/usr/bin/dunstify", "-r", "2120", "-t", t, "BatMon", msg, NULL })
-#define UCNOTIFY(t, msg) \
-        uspawn((char *[]){ "/usr/bin/dunstify", "-r", "2120", "-t", t, "-u", "critical", "BatMon", msg, NULL })
-#define CNNOTIFY(t, msg) \
-        cspawn((char *[]){ "/usr/bin/dunstify", "-r", "2120", "-t", t, "BatMon", msg, NULL })
-#define CCNOTIFY(t, msg) \
-        cspawn((char *[]){ "/usr/bin/dunstify", "-r", "2120", "-t", t, "-u", "critical", "BatMon", msg, NULL })
+#define CNOTIFY(t, msg)                (char *[]){ "/usr/bin/notify-send", \
+                                                   "-h", "string:x-canonical-private-synchronous:batmon", \
+                                                   "-u", "critical", \
+                                                   "-t", t, \
+                                                   "BatMon", msg, NULL }
+
+#define NNOTIFY(t, msg)                (char *[]){ "/usr/bin/notify-send", \
+                                                   "-h", "string:x-canonical-private-synchronous:batmon", \
+                                                   "-t", t, \
+                                                   "BatMon", msg, NULL }
+
+#define TNOTIFY(t, msg)                (char *[]){ "/usr/bin/notify-send", \
+                                                   "-h", "string:x-canonical-private-synchronous:batmon", \
+                                                   "-h", "int:transient:1", \
+                                                   "-t", t, \
+                                                   "BatMon", msg, NULL }
+
+#define UCNOTIFY(t, msg)                uspawn(CNOTIFY(t, msg))
+#define UNNOTIFY(t, msg)                uspawn(NNOTIFY(t, msg))
+#define UTNOTIFY(t, msg)                uspawn(TNOTIFY(t, msg))
+#define CCNOTIFY(t, msg)                cspawn(CNOTIFY(t, msg))
+#define CNNOTIFY(t, msg)                cspawn(NNOTIFY(t, msg))
+#define CTNOTIFY(t, msg)                cspawn(TNOTIFY(t, msg))
 
 enum { Normal, Critical, Low, Plug, Unplug };
 
@@ -97,7 +112,7 @@ batteryu(char *str, int ac)
         /* charger plugged in */
         } else if (ac) {
                 if (bat < BATU) {
-                        UNNOTIFY("1000", "Charger plugged in");
+                        UTNOTIFY("1000", "Charger plugged in");
                         level = Normal;
                 } else {
                         UNNOTIFY("0", "Unplug the charger");
@@ -107,7 +122,7 @@ batteryu(char *str, int ac)
         /* charger plugged out */
         } else {
                 if (bat > BATP) {
-                        UNNOTIFY("1000", "Charger plugged out");
+                        UTNOTIFY("1000", "Charger plugged out");
                         level = Normal;
                 } else if (bat > BATL) {
                         UNNOTIFY("0", "Plug in the charger");

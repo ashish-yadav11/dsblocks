@@ -1,19 +1,21 @@
 #!/bin/dash
+notify="notify-send -h string:x-canonical-private-synchronous:hotspot"
+
 if [ "$(create_ap --list-running | wc -l)" -gt 2 ] ; then
     sudo /home/ashish/.scripts/hotspot.sh terminate
 else
     if nmcli -t -f DEVICE,STATE device status | grep -qE 'wlp5s0:(connected)|(connecting)' ; then
-        dunstify -r 81520 -t 3000 Hotspot "Your adapter can not be a station and an AP at the same time"
+        $notify -t 3000 Hotspot "Your adapter can not be a station and an AP at the same time"
         exit
     fi
     blockinfo=$(rfkill -nr -o SOFT,TYPE,HARD | grep -m1 ' wlan ')
     if [ "${blockinfo##* }" = blocked ] ; then
-        dunstify -r 81520 -t 1000 Hotspot "Wifi is soft blocked"
+        $notify -t 1000 Hotspot "Wifi is soft blocked"
         exit
     elif [ "${blockinfo%% *}" = blocked ] ; then
-        dunstify -r 81520 -t 1000 Hotspot "Wifi is hard blocked"
+        $notify -t 1000 Hotspot "Wifi is hard blocked"
         exit
     fi
     sudo /home/ashish/.scripts/hotspot.sh initiate ||
-        dunstify -r 81520 -u critical Hotspot "Some error occured in initiating hotspot"
+        $notify -u critical Hotspot "Some error occured in initiating hotspot"
 fi
