@@ -1,8 +1,9 @@
 #!/bin/dash
+hotspot=/home/ashish/.scripts/hotspot.sh
 notify="notify-send -h string:x-canonical-private-synchronous:hotspot"
 
 if [ "$(create_ap --list-running | wc -l)" -gt 2 ] ; then
-    sudo /home/ashish/.scripts/hotspot.sh terminate
+    sudo $hotspot terminate
 else
     if nmcli -t -f DEVICE,STATE device status | grep -qE 'wlp5s0:(connected)|(connecting)' ; then
         $notify -t 3000 Hotspot "Your adapter can not be a station and an AP at the same time"
@@ -16,6 +17,6 @@ else
         $notify -t 1000 Hotspot "Wifi is hard blocked"
         exit
     fi
-    sudo /home/ashish/.scripts/hotspot.sh initiate ||
+    sudo $hotspot initiate ||
         $notify -u critical Hotspot "Some error occured in initiating hotspot"
 fi

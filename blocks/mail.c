@@ -13,7 +13,7 @@
 
 #define NEWMAILDIR                      "/home/ashish/.local/share/mail/iiser/INBOX/new"
 
-#define MAILSYNC                        (char *[]){ "/home/ashish/.scripts/mailsync.sh", NULL }
+#define MAILSYNC                        (char *[]){ SCRIPT("mailsync.sh"), NULL }
 
 static int
 numnewmails()
