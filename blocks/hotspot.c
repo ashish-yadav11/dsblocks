@@ -8,11 +8,11 @@
 #define TURNOFFHOTSPOT          (char *[]){ "/usr/bin/sudo", SCRIPT("hotspot.sh"), "terminate", NULL }
 
 void
-hotspotu(char *str, int sigval)
+hotspotu(char *str, int enabled)
 {
-        if (sigval == 1)
+        if (enabled)
                 strcpy(str, ICON);
-        else if (sigval == 0)
+        else
                 *str = '\0';
 }
 

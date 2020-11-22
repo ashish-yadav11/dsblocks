@@ -1,2 +1,2 @@
-void hotspotu(char *str, int sigval);
+void hotspotu(char *str, int enabled);
 void hotspotc(int button);
