@@ -12,7 +12,7 @@ case $1 in
         create_ap --stop wlp5s0
         ;;
     fix-unmanaged)
-        [ "$(create_ap --list-running | wc -l)" -le 2 ] && create_ap --fix-unmanaged
+        [ -z "$(create_ap --list-running)" ] && create_ap --fix-unmanaged
         ;;
     *)
         echo "Usage: $0 initiate|terminate|fix-unmanaged"
