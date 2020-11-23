@@ -3,43 +3,27 @@
 #include "../util.h"
 #include "volume.h"
 
-#define ICONh0                          COL1 "" COL0
-#define ICONh1                          COL2 "" COL0
-#define ICONs0                          COL1 "" COL0
-#define ICONs1                          COL2 "" COL0
+#define ICONhm                          COL2 "" COL0
+#define ICONhn                          COL1 "" COL0
+#define ICONsm                          COL2 "" COL0
+#define ICONsn                          COL1 "" COL0
 
-#define BUFLENGTH                       10
+#define BUFLENGTH                       16
 
-#define HEADPHONESTATUS                 (char *[]){ SCRIPT("headphone_status.sh"), NULL }
-#define PAMIXER                         (char *[]){ "/usr/bin/pamixer", "--get-mute", "--get-volume", NULL }
+#define PULSEINFO                       (char *[]){ SCRIPT("pulse_info.sh"), NULL }
 
 #define PAVUCONTROL                     (char *[]){ "/usr/bin/pavucontrol-qt", NULL }
-#define SETDEFAULTVOL                   (char *[]){ "/usr/bin/pamixer", "--set-volume", "50", NULL }
-#define TOGGLEMUTE                      (char *[]){ "/usr/bin/pamixer", "--toggle-mute", NULL }
-
-static int headphone;
-
-static void
-updateheadphone()
-{
-        char buf[1];
-
-        getcmdout(HEADPHONESTATUS, buf, 1);
-        headphone = buf[0] == '1' ? 1 : 0;
-}
+#define SETDEFAULTVOL                   (char *[]){ "/usr/bin/pactl", "set-sink-volume", "@DEFAULT_SINK@", "50%", NULL }
+#define TOGGLEMUTE                      (char *[]){ "/usr/bin/pactl", "set-sink-mute", "@DEFAULT_SINK@", "toggle", NULL }
 
 void
 volumeu(char *str, int sigval)
 {
+        static char *icons[] = { ICONsn, ICONsm, ICONhn, ICONhm };
         char buf[BUFLENGTH];
 
-        if (sigval < 0 || sigval == NILL)
-                updateheadphone();
-        buf[getcmdout(PAMIXER, buf, BUFLENGTH) - 1] = '\0';
-        if (buf[0] == 'f') /* output was `false <volume>' */
-                snprintf(str, CMDLENGTH, "%s%s%%", headphone ? ICONh0 : ICONs0, buf + 6);
-        else /* output was `true <volume>' */
-                snprintf(str, CMDLENGTH, "%s%s%%", headphone ? ICONh1 : ICONs1, buf + 5);
+        buf[getcmdout(PULSEINFO, buf, BUFLENGTH)] = '\0';
+        snprintf(str, CMDLENGTH, "%s%s", icons[buf[0] - '0'], buf + 1);
 }
 
 void
