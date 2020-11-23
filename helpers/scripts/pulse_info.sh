@@ -9,16 +9,16 @@ pacmd list-sinks | awk '
         } else if ($1 == "muted:" && $2 == "yes") {
             mp += 1
         } else if ($1 == "volume:") {
-            volumel = $3
-            volumer = $10
+            volumela = $3
             volumelp = $5
+            volumera = $10
             volumerp = $12
         } else if ($1 == "active" && $2 == "port:" && $3 ~ /headphones/) {
             mp += 2
         }
     }
     END {
-        if (volumel == volumer) {
+        if (volumela == volumera) {
             printf "%d%s", mp, volumelp
         } else {
             printf "%dL%s R%s", mp, volumelp, volumerp
