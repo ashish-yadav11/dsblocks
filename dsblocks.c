@@ -24,6 +24,7 @@ typedef struct {
 #include "blocks.h"
 
 static void buttonhandler(int signal, siginfo_t *si, void *ucontext);
+static void cleanup();
 static void setroot();
 static void setupsignals();
 static void sighandler(int signal, siginfo_t *si, void *ucontext);
@@ -35,7 +36,6 @@ static void writepid();
 Display *dpy;
 pid_t pid;
 
-static int statuscontinue = 1;
 static char statustext[STTLENGTH];
 static size_t delimlength;
 static sigset_t blocksigmask;
@@ -58,6 +58,14 @@ buttonhandler(int signal, siginfo_t *si, void *ucontext)
 }
 
 void
+cleanup()
+{
+        unlink(LOCKFILE);
+        XStoreName(dpy, DefaultRootWindow(dpy), "");
+        XCloseDisplay(dpy);
+}
+
+void
 setroot()
 {
         if (updatestatus()) {
@@ -71,6 +79,16 @@ setupsignals()
 {
         struct sigaction sa;
 
+        /* populate blocksigmask */
+        sigemptyset(&blocksigmask);
+        sigaddset(&blocksigmask, SIGHUP);
+        sigaddset(&blocksigmask, SIGINT);
+        sigaddset(&blocksigmask, SIGTERM);
+        for (Block *block = blocks; block->funcu; block++)
+                if (block->signal > 0)
+                        sigaddset(&blocksigmask, SIGRTMIN + block->signal);
+
+        /* setup signal handlers */
         /* to handle HUP, INT and TERM */
         sa.sa_flags = SA_RESTART;
         sigemptyset(&sa.sa_mask);
@@ -132,7 +150,7 @@ statusloop()
         sleep(SLEEPINTERVAL);
         i = SLEEPINTERVAL;
         /* main loop */
-        while (statuscontinue) {
+        for (;; i += SLEEPINTERVAL) {
                 sigprocmask(SIG_BLOCK, &blocksigmask, NULL);
                 for (Block *block = blocks; block->funcu; block++)
                         if (block->interval > 0 && i % block->interval == 0)
@@ -140,14 +158,14 @@ statusloop()
                 setroot();
                 sigprocmask(SIG_UNBLOCK, &blocksigmask, NULL);
                 sleep(SLEEPINTERVAL);
-                i += SLEEPINTERVAL;
         }
 }
 
 void
 termhandler(int signum)
 {
-        statuscontinue = 0;
+        cleanup();
+        exit(0);
 }
 
 /* returns whether block outputs have changed and updates statustext if they have */
@@ -286,17 +304,8 @@ main(int argc, char *argv[])
                 fputs("Error: could not open display.\n", stderr);
                 return 1;
         }
-        sigemptyset(&blocksigmask);
-        sigaddset(&blocksigmask, SIGHUP);
-        sigaddset(&blocksigmask, SIGINT);
-        sigaddset(&blocksigmask, SIGTERM);
-        for (Block *block = blocks; block->funcu; block++)
-                if (block->signal > 0)
-                        sigaddset(&blocksigmask, SIGRTMIN + block->signal);
         setupsignals();
         statusloop();
-        unlink(LOCKFILE);
-        XStoreName(dpy, DefaultRootWindow(dpy), "");
-        XCloseDisplay(dpy);
+        cleanup();
         return 0;
 }
