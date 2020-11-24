@@ -17,8 +17,8 @@ typedef struct {
         void (*funcc)(int button);
         const int interval;
         const int signal;
-        char cmdoutcur[BLOCKLENGTH];
-        char cmdoutprv[BLOCKLENGTH];
+        char curtext[BLOCKLENGTH];
+        char prvtext[BLOCKLENGTH];
 } Block;
 
 #include "blocks.h"
@@ -131,7 +131,7 @@ sighandler(int signal, siginfo_t *si, void *ucontext)
         signal -= SIGRTMIN;
         for (Block *block = blocks; block->funcu; block++)
                 if (block->signal == signal)
-                        block->funcu(block->cmdoutcur, si->si_value.sival_int);
+                        block->funcu(block->curtext, si->si_value.sival_int);
         setroot();
 }
 
@@ -144,7 +144,7 @@ statusloop()
         sigprocmask(SIG_BLOCK, &blocksigmask, NULL);
         for (Block *block = blocks; block->funcu; block++)
                 if (block->interval >= 0)
-                        block->funcu(block->cmdoutcur, NILL);
+                        block->funcu(block->curtext, NILL);
         setroot();
         sigprocmask(SIG_UNBLOCK, &blocksigmask, NULL);
         sleep(SLEEPINTERVAL);
@@ -154,7 +154,7 @@ statusloop()
                 sigprocmask(SIG_BLOCK, &blocksigmask, NULL);
                 for (Block *block = blocks; block->funcu; block++)
                         if (block->interval > 0 && i % block->interval == 0)
-                                block->funcu(block->cmdoutcur, NILL);
+                                block->funcu(block->curtext, NILL);
                 setroot();
                 sigprocmask(SIG_UNBLOCK, &blocksigmask, NULL);
                 sleep(SLEEPINTERVAL);
@@ -173,7 +173,7 @@ int
 updatestatus()
 {
         char *s = statustext;
-        char *c, *p; /* for cmdoutcur and cmdoutprv */
+        char *c, *p; /* for curtext and prvtext */
         const char *d; /* for delimiter */
         Block *block = blocks;
 
@@ -184,33 +184,33 @@ updatestatus()
                 if (!block->funcu)
                         return 0;
                 /* contents of the block changed */
-                if (*block->cmdoutcur != *block->cmdoutprv)
+                if (*block->curtext != *block->prvtext)
                         goto update0;
                 /* skip delimiter handler for the first non-empty block */
-                if (*block->cmdoutcur != '\0' && *block->cmdoutcur != '\n')
+                if (*block->curtext != '\0' && *block->curtext != '\n')
                         goto skipdelimc;
         }
         /* main loop */
         for (; block->funcu; block++) {
                 /* contents of the block changed */
-                if (*block->cmdoutcur != *block->cmdoutprv)
+                if (*block->curtext != *block->prvtext)
                         goto update1;
                 /* delimiter handler */
-                if (*block->cmdoutcur != '\0' && *block->cmdoutcur != '\n')
+                if (*block->curtext != '\0' && *block->curtext != '\n')
                         s += delimlength;
                 /* skip over empty blocks */
                 else
                         continue;
 skipdelimc:
                 /* checking for the first byte has been done */
-                c = block->cmdoutcur + 1, p = block->cmdoutprv + 1;
+                c = block->curtext + 1, p = block->prvtext + 1;
                 for (; *c != '\0' && *c != '\n'; c++, p++)
                         /* contents of the block changed */
                         if (*c != *p) {
-                                s += c - block->cmdoutcur;
+                                s += c - block->curtext;
                                 goto update2;
                         }
-                s += c - block->cmdoutcur;
+                s += c - block->curtext;
                 /* byte containing info about signal number for the block */
                 if (block->funcc && block->signal)
                         s++;
@@ -225,26 +225,26 @@ skipdelimc:
                         return 1;
 update0:
                 /* don't add delimiter before the first non-empty block */
-                if (*block->cmdoutcur != '\0' && *block->cmdoutcur != '\n')
+                if (*block->curtext != '\0' && *block->curtext != '\n')
                         goto skipdelimu;
-                *block->cmdoutprv = *block->cmdoutcur;
+                *block->prvtext = *block->curtext;
         }
         /* main loop */
         for (; block->funcu; block++) {
 update1:
                 /* delimiter handler */
-                if (*block->cmdoutcur != '\0' && *block->cmdoutcur != '\n') {
+                if (*block->curtext != '\0' && *block->curtext != '\n') {
                         d = delim;
                         while (*d != '\0')
                                 *(s++) = *(d++);
                         *(s++) = '\n'; /* to mark the end of delimiter */
                 /* skip over empty blocks */
                 } else {
-                        *block->cmdoutprv = *block->cmdoutcur;
+                        *block->prvtext = *block->curtext;
                         continue;
                 }
 skipdelimu:
-                c = block->cmdoutcur, p = block->cmdoutprv;
+                c = block->curtext, p = block->prvtext;
 update2:
                 do {
                         *(s++) = *c;
