@@ -50,7 +50,7 @@ mailu(char *str, int sigval)
                 } else {
                         frozen = 1;
                         if (n >= 0)
-                                snprintf(str, CMDLENGTH, ICON0 "%d", n);
+                                snprintf(str, BLOCKLENGTH, ICON0 "%d", n);
                 }
         /* handle signals from MAILSYNC */
         } else {
@@ -74,47 +74,47 @@ mailu(char *str, int sigval)
                                         frozen = 0;
                                 /* syncing is in progress in another instance of MAILSYNC */
                                 if (syncing) {
-                                        snprintf(str, CMDLENGTH, ICON2 "%d", n);
+                                        snprintf(str, BLOCKLENGTH, ICON2 "%d", n);
                                         syncing = -1;
                                 } else
-                                        snprintf(str, CMDLENGTH, ICON1 "%d", n);
+                                        snprintf(str, BLOCKLENGTH, ICON1 "%d", n);
                                 break;
                         /* sync started */
                         case 2:
                                 if (frozen)
-                                        snprintf(str, CMDLENGTH, ICON0 "%d", n);
+                                        snprintf(str, BLOCKLENGTH, ICON0 "%d", n);
                                 else
-                                        snprintf(str, CMDLENGTH, ICON2 "%d", n);
+                                        snprintf(str, BLOCKLENGTH, ICON2 "%d", n);
                                 syncing = 1;
                                 break;
                         /* sync successful */
                         case 3:
                                 if (frozen)
-                                        snprintf(str, CMDLENGTH, ICON0 "%d", n);
+                                        snprintf(str, BLOCKLENGTH, ICON0 "%d", n);
                                 else if (syncing > 0)
-                                        snprintf(str, CMDLENGTH, ICON3 "%d", n);
+                                        snprintf(str, BLOCKLENGTH, ICON3 "%d", n);
                                 /* the other instance of MAILSYNC was waiting to ping */
                                 else
-                                        snprintf(str, CMDLENGTH, ICON1 "%d", n);
+                                        snprintf(str, BLOCKLENGTH, ICON1 "%d", n);
                                 syncing = 0;
                                 break;
                         /* sync failed */
                         case 4:
                                 if (frozen)
-                                        snprintf(str, CMDLENGTH, ICON0 "%d", n);
+                                        snprintf(str, BLOCKLENGTH, ICON0 "%d", n);
                                 else if (syncing > 0)
-                                        snprintf(str, CMDLENGTH, ICON4 "%d", n);
+                                        snprintf(str, BLOCKLENGTH, ICON4 "%d", n);
                                 /* the other instance of MAILSYNC was waiting to ping */
                                 else
-                                        snprintf(str, CMDLENGTH, ICON1 "%d", n);
+                                        snprintf(str, BLOCKLENGTH, ICON1 "%d", n);
                                 syncing = 0;
                                 break;
                         /* ping failed */
                         case 5:
                                 if (frozen)
-                                        snprintf(str, CMDLENGTH, ICON0 "%d", n);
+                                        snprintf(str, BLOCKLENGTH, ICON0 "%d", n);
                                 else
-                                        snprintf(str, CMDLENGTH, ICON4 "%d", n);
+                                        snprintf(str, BLOCKLENGTH, ICON4 "%d", n);
                                 break;
                 }
         }

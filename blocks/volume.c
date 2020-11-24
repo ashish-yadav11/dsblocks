@@ -23,7 +23,7 @@ volumeu(char *str, int sigval)
         char buf[BUFLENGTH];
 
         buf[getcmdout(PULSEINFO, buf, BUFLENGTH)] = '\0';
-        snprintf(str, CMDLENGTH, "%s%s", icons[buf[0] - '0'], buf + 1);
+        snprintf(str, BLOCKLENGTH, "%s%s", icons[buf[0] - '0'], buf + 1);
 }
 
 void

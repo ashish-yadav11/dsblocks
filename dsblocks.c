@@ -9,7 +9,7 @@
 
 #include "shared.h"
 
-#define STTLENGTH                       256
+#define STATUSLENGTH                    256
 #define LOCKFILE                        "/tmp/dsblocks.pid"
 
 typedef struct {
@@ -17,8 +17,8 @@ typedef struct {
         void (*funcc)(int button);
         const int interval;
         const int signal;
-        char cmdoutcur[CMDLENGTH];
-        char cmdoutprv[CMDLENGTH];
+        char cmdoutcur[BLOCKLENGTH];
+        char cmdoutprv[BLOCKLENGTH];
 } Block;
 
 #include "blocks.h"
@@ -36,7 +36,7 @@ static void writepid();
 Display *dpy;
 pid_t pid;
 
-static char statustext[STTLENGTH];
+static char statustext[STATUSLENGTH];
 static size_t delimlength;
 static sigset_t blocksigmask;
 

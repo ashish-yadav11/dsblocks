@@ -20,9 +20,9 @@ cputempu(char *str, int sigval)
                 return;
         }
         if (temp < WARNCPUTEMP)
-                snprintf(str, CMDLENGTH, ICON0 "%d°C", temp / 1000);
+                snprintf(str, BLOCKLENGTH, ICON0 "%d°C", temp / 1000);
         else
-                snprintf(str, CMDLENGTH, ICON1 "%d°C", temp / 1000);
+                snprintf(str, BLOCKLENGTH, ICON1 "%d°C", temp / 1000);
 }
 
 void

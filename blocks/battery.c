@@ -75,7 +75,7 @@ batteryu(char *str, int ac)
         /* routine update */
         if (ac == NILL) {
                 if (!readint(ACSTATEFILE, &ac)) {
-                        snprintf(str, CMDLENGTH, ICONe "%d%%", bat);
+                        snprintf(str, BLOCKLENGTH, ICONe "%d%%", bat);
                         return;
                 }
                 if (ac) {
@@ -87,7 +87,7 @@ batteryu(char *str, int ac)
                                         level = Unplug;
                                 }
                         }
-                        snprintf(str, CMDLENGTH, PUP "%s%d%%", ICON(bat), bat);
+                        snprintf(str, BLOCKLENGTH, PUP "%s%d%%", ICON(bat), bat);
                 } else {
                         if (bat > BATP)
                                 level = Normal;
@@ -107,7 +107,7 @@ batteryu(char *str, int ac)
                                         level = Critical;
                                 }
                         }
-                        snprintf(str, CMDLENGTH, PDN "%s%d%%", ICON(bat), bat);
+                        snprintf(str, BLOCKLENGTH, PDN "%s%d%%", ICON(bat), bat);
                 }
         /* charger plugged in */
         } else if (ac) {
@@ -118,7 +118,7 @@ batteryu(char *str, int ac)
                         UNNOTIFY("0", "Unplug the charger");
                         level = Unplug;
                 }
-                snprintf(str, CMDLENGTH, PUP "%s%d%%", ICON(bat), bat);
+                snprintf(str, BLOCKLENGTH, PUP "%s%d%%", ICON(bat), bat);
         /* charger plugged out */
         } else {
                 if (bat > BATP) {
@@ -134,7 +134,7 @@ batteryu(char *str, int ac)
                         UCNOTIFY("0", "Battery level is critical!");
                         level = Critical;
                 }
-                snprintf(str, CMDLENGTH, PDN "%s%d%%", ICON(bat), bat);
+                snprintf(str, BLOCKLENGTH, PDN "%s%d%%", ICON(bat), bat);
         }
 }
 
