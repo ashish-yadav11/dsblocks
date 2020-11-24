@@ -5,7 +5,7 @@
 
 #define ICON                    COL1 "" COL0
 
-#define SHOWCALCURSE            (char *[]){ "/usr/bin/xsetroot", "-name", "z:tscr i 4", NULL }
+#define SHOWCALCURSE            (char *[]){ SCRIPT("sigdwm"), "tscr i 4", NULL }
 
 void
 calendaru(char *str, int sigval)
