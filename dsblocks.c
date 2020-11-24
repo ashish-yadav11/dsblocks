@@ -36,7 +36,7 @@ Display *dpy;
 pid_t pid;
 
 static int statuscontinue = 1;
-static char statusstr[STTLENGTH];
+static char statustext[STTLENGTH];
 static size_t delimlength;
 static sigset_t blocksigmask;
 
@@ -61,7 +61,7 @@ void
 setroot()
 {
         if (updatestatus()) {
-                XStoreName(dpy, DefaultRootWindow(dpy), statusstr);
+                XStoreName(dpy, DefaultRootWindow(dpy), statustext);
                 XSync(dpy, False);
         }
 }
@@ -150,11 +150,11 @@ termhandler(int signum)
         statuscontinue = 0;
 }
 
-/* returns whether block outputs have changed and updates statusstr if they have */
+/* returns whether block outputs have changed and updates statustext if they have */
 int
 updatestatus()
 {
-        char *s = statusstr;
+        char *s = statustext;
         char *c, *p; /* for cmdoutcur and cmdoutprv */
         const char *d; /* for delimiter */
         Block *block = blocks;
