@@ -5,7 +5,7 @@
 
 #define ICON                    COL1 "" COL0
 
-#define SHOWCALCURSE            (char *[]){ SCRIPT("sigdwm"), "tscr i 4", NULL }
+#define TOGGLECALCURSE          (char *[]){ SCRIPT("sigdwm"), "scrt i 4", NULL }
 
 void
 calendaru(char *str, int sigval)
@@ -19,5 +19,5 @@ calendaru(char *str, int sigval)
 void
 calendarc(int button)
 {
-        cspawn(SHOWCALCURSE);
+        cspawn(TOGGLECALCURSE);
 }
