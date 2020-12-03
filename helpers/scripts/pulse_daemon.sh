@@ -1,4 +1,4 @@
-#!/bin/dash
+#!/bin/sh
 pactl subscribe |
     while read -r event ; do
         case $event in

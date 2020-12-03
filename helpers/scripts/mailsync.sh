@@ -1,4 +1,6 @@
-#!/bin/dash
+#!/bin/sh
+mbsync_channel=iiser
+
 exec >/dev/null 2>&1
 
 sigdsblocks 3 1
@@ -16,7 +18,7 @@ flock 9 || exit
 if ping -c1 imap.gmail.com ; then
     exec 8>/dev/null
     sigdsblocks 3 -2
-    if mbsync iiser ; then
+    if mbsync "$mbsync_channel" ; then
         sigdsblocks 3 3
     else
         sigdsblocks 3 4

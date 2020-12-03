@@ -1,4 +1,4 @@
-#!/bin/dash
+#!/bin/sh
 
 # This script is only for systemd-logind users
 # It should be placed in /usr/lib/systemd/system-sleep/

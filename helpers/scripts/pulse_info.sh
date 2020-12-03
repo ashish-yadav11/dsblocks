@@ -1,4 +1,4 @@
-#!/bin/dash
+#!/bin/sh
 pacmd list-sinks | awk '
     BEGIN {
         mp = 0

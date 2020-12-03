@@ -1,4 +1,4 @@
-#!/bin/dash
+#!/bin/sh
 case $1 in
     initiate)
         iwi=$(nmcli -t -f DEVICE connection show --active | head -n1)

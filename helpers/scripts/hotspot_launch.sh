@@ -1,4 +1,4 @@
-#!/bin/dash
+#!/bin/sh
 hotspot=/home/ashish/.scripts/hotspot.sh
 notify="notify-send -h string:x-canonical-private-synchronous:hotspot"
 
