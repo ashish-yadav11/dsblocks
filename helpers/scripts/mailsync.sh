@@ -10,7 +10,7 @@ flock -n 8 || exit
 
 exec 9>/tmp/mailsync.2.lock
 # Wait while some other instance of the script is
-# running which has crossed the pinging state
+# running which has crossed the pinging stage
 flock 9 || exit
 
 if ping -c1 imap.gmail.com ; then
