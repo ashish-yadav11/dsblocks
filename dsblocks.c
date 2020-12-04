@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <unistd.h>
 #include <X11/Xlib.h>
 
@@ -139,6 +140,7 @@ void
 statusloop()
 {
         int i;
+        struct timespec t;
 
         /* first run */
         sigprocmask(SIG_BLOCK, &blocksigmask, NULL);
@@ -147,17 +149,19 @@ statusloop()
                         block->funcu(block->curtext, NILL);
         setroot();
         sigprocmask(SIG_UNBLOCK, &blocksigmask, NULL);
-        sleep(SLEEPINTERVAL);
-        i = SLEEPINTERVAL;
         /* main loop */
-        for (;; i += SLEEPINTERVAL) {
+        for (i = 1;; t.tv_sec = INTERVALs, t.tv_nsec = INTERVALn, i += 1) {
+                while (nanosleep(&t, &t) == -1)
+                        if (errno != EINTR) {
+                                perror("statusloop - nanosleep");
+                                exit(1);
+                        }
                 sigprocmask(SIG_BLOCK, &blocksigmask, NULL);
                 for (Block *block = blocks; block->funcu; block++)
                         if (block->interval > 0 && i % block->interval == 0)
                                 block->funcu(block->curtext, NILL);
                 setroot();
                 sigprocmask(SIG_UNBLOCK, &blocksigmask, NULL);
-                sleep(SLEEPINTERVAL);
         }
 }
 

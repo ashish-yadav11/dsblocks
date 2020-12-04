@@ -1,6 +1,3 @@
-/* time interval in seconds to sleep before looking for updates in the main loop */
-#define SLEEPINTERVAL                   1
-
 #include "blocks/battery.h"
 #include "blocks/cputemp.h"
 #include "blocks/calendar.h"
@@ -17,6 +14,10 @@
 
 /* funcu - function responsible for updating what is shown on the status
  * funcc - function responsible for handling clicks on the block */
+
+/* 1 interval = INTERVALs seconds, INTERVALn nanoseconds */
+#define INTERVALs                       1
+#define INTERVALn                       0
 
 static Block blocks[] = {
 /*      funcu                   funcc                   interval        signal */
