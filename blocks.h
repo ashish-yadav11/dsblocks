@@ -1,3 +1,4 @@
+/* time interval in seconds to sleep before looking for updates in the main loop */
 #define SLEEPINTERVAL                   1
 
 #include "blocks/battery.h"
