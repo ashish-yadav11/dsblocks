@@ -13,6 +13,8 @@
 #define STATUSLENGTH                    256
 #define LOCKFILE                        "/tmp/dsblocks.pid"
 
+#define LENGTH(X)                       (sizeof X / sizeof X[0])
+
 typedef struct {
         void (*funcu)(char *str, int sigval);
         void (*funcc)(int button);
@@ -38,6 +40,7 @@ Display *dpy;
 pid_t pid;
 
 static char statustext[STATUSLENGTH];
+static char *delim;
 static size_t delimlength;
 static sigset_t blocksigmask;
 
@@ -300,10 +303,13 @@ main(int argc, char *argv[])
 {
         pid = getpid();
         writepid();
-        if (argc > 2)
-                if (strcmp(argv[1], "-d") == 0)
-                        delim = argv[2];
-        delimlength = strlen(delim) + 1;
+        if (argc == 3 && strcmp(argv[1], "-d") == 0) {
+                delim = argv[2];
+                delimlength = strlen(delim) + 1;
+        } else {
+                delim = DELIMITER;
+                delimlength = LENGTH(DELIMITER);
+        }
         if (!(dpy = XOpenDisplay(NULL))) {
                 fputs("Error: could not open display.\n", stderr);
                 return 1;
