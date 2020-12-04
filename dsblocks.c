@@ -16,8 +16,8 @@
 #define LENGTH(X)                       (sizeof X / sizeof X[0])
 
 typedef struct {
-        void (*funcu)(char *str, int sigval);
-        void (*funcc)(int button);
+        void (*const funcu)(char *str, int sigval);
+        void (*const funcc)(int button);
         const int interval;
         const int signal;
         char curtext[BLOCKLENGTH];
