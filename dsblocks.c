@@ -13,8 +13,6 @@
 #define STATUSLENGTH                    256
 #define LOCKFILE                        "/tmp/dsblocks.pid"
 
-#define LENGTH(X)                       (sizeof X / sizeof X[0])
-
 typedef struct {
         void (*const funcu)(char *str, int sigval);
         void (*const funcc)(int button);
@@ -308,7 +306,7 @@ main(int argc, char *argv[])
                 delimlength = strlen(delim) + 1;
         } else {
                 delim = DELIMITER;
-                delimlength = LENGTH(DELIMITER);
+                delimlength = sizeof DELIMITER;
         }
         if (!(dpy = XOpenDisplay(NULL))) {
                 fputs("Error: could not open display.\n", stderr);
