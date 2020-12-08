@@ -8,8 +8,6 @@
 #define ICONsm                          COL2 "" COL0
 #define ICONsn                          COL1 "" COL0
 
-#define BUFLENGTH                       16
-
 #define PULSEINFO                       (char *[]){ SCRIPT("pulse_info.sh"), NULL }
 
 #define PAVUCONTROL                     (char *[]){ "/usr/bin/pavucontrol-qt", NULL }
@@ -20,9 +18,9 @@ void
 volumeu(char *str, int sigval)
 {
         static char *icons[] = { ICONsn, ICONsm, ICONhn, ICONhm };
-        char buf[BUFLENGTH];
+        char buf[15];
 
-        buf[getcmdout(PULSEINFO, buf, BUFLENGTH)] = '\0';
+        buf[getcmdout(PULSEINFO, buf, sizeof buf - 1)] = '\0';
         snprintf(str, BLOCKLENGTH, "%s%s", icons[buf[0] - '0'], buf + 1);
 }
 
