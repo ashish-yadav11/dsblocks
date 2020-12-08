@@ -15,13 +15,13 @@ cspawn(char *const *arg)
 }
 
 void
-csigself(int signal, int sigval)
+csigself(int sig, int sigval)
 {
         union sigval sv;
 
-        signal += SIGRTMIN;
+        sig += SIGRTMIN;
         sv.sival_int = sigval;
-        if (sigqueue(pid, signal, sv) == -1) {
+        if (sigqueue(pid, sig, sv) == -1) {
                 perror("csigself - sigqueue");
                 exit(1);
         }

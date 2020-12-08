@@ -12,7 +12,7 @@
 #define TERMCMD(cmd)                    cspawn((char *[]){ "/usr/bin/termite", "-e", cmd, NULL })
 
 void cspawn(char *const *arg);
-void csigself(int signal, int sigval);
+void csigself(int sig, int sigval);
 ssize_t getcmdout(char *const *arg, char *cmdout, size_t cmdoutlen);
 int readint(const char *path, int *var);
 void uspawn(char *const *arg);
