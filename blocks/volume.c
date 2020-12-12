@@ -19,9 +19,13 @@ volumeu(char *str, int sigval)
 {
         static char *icons[] = { ICONsn, ICONsm, ICONhn, ICONhm };
         char buf[15];
+        size_t l;
 
-        buf[getcmdout(PULSEINFO, buf, sizeof buf - 1)] = '\0';
-        snprintf(str, BLOCKLENGTH, "%s%s", icons[buf[0] - '0'], buf + 1);
+        if ((l = getcmdout(PULSEINFO, buf, sizeof buf - 1))) {
+                buf[l] = '\0';
+                snprintf(str, BLOCKLENGTH, "%s%s", icons[buf[0] - '0'], buf + 1);
+        } else
+                *str = '\0';
 }
 
 void

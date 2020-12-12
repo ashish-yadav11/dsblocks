@@ -28,7 +28,7 @@ csigself(int sig, int sigval)
 }
 
 /* getcmdout doesn't null terminate */
-ssize_t
+size_t
 getcmdout(char *const *arg, char *cmdout, size_t cmdoutlen)
 {
         int fd[2];

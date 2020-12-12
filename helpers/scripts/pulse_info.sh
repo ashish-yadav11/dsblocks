@@ -1,27 +1,33 @@
 #!/bin/sh
 pacmd list-sinks | awk '
-    BEGIN {
-        mp = 0
+    $1 == "*" && $2 == "index:" {
+        f = 1
+        next
     }
-    /\* index: /,0 {
+    f {
         if ($1 == "index:") {
             exit
-        } else if ($1 == "muted:" && $2 == "yes") {
-            mp += 1
+        }
+        if ($1 == "muted:" && $2 == "yes") {
+            i += 1
         } else if ($1 == "volume:") {
-            volumela = $3
-            volumelp = $5
-            volumera = $10
-            volumerp = $12
-        } else if ($1 == "active" && $2 == "port:" && $3 ~ /headphones/) {
-            mp += 2
+            if ($3 == $10) {
+                vb = $5
+            } else {
+                vl = $5
+                vr = $12
+            }
+        } else if ($1 == "active" && $2 == "port:" && $3 ~ /headphone/) {
+            i += 2
         }
     }
     END {
-        if (volumela == volumera) {
-            printf "%d%s", mp, volumelp
-        } else {
-            printf "%dL%s R%s", mp, volumelp, volumerp
+        if (f) {
+            if (vb) {
+                printf "%d%s", i, vb
+            } else {
+                printf "%dL%s R%s", i, vl, vr
+            }
         }
     }
 '

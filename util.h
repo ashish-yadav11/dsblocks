@@ -13,6 +13,6 @@
 
 void cspawn(char *const *arg);
 void csigself(int sig, int sigval);
-ssize_t getcmdout(char *const *arg, char *cmdout, size_t cmdoutlen);
+size_t getcmdout(char *const *arg, char *cmdout, size_t cmdoutlen);
 int readint(const char *path, int *var);
 void uspawn(char *const *arg);
