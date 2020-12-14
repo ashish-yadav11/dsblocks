@@ -1,24 +1,24 @@
 #!/bin/sh
 pacmd list-sinks | awk '
-    $1 == "*" && $2 == "index:" {
-        f = 1
-        next
-    }
-    f {
-        if ($1 == "index:") {
-            exit
-        }
-        if ($1 == "muted:" && $2 == "yes") {
-            i += 1
-        } else if ($1 == "volume:") {
-            if ($3 == $10) {
-                vb = $5
-            } else {
-                vl = $5
-                vr = $12
+    {
+        if (f) {
+            if ($1 == "index:") {
+                exit
             }
-        } else if ($1 == "active" && $2 == "port:" && $3 ~ /headphone/) {
-            i += 2
+            if ($1 == "muted:" && $2 == "yes") {
+                i += 1
+            } else if ($1 == "volume:") {
+                if ($3 == $10) {
+                    vb = $5
+                } else {
+                    vl = $5
+                    vr = $12
+                }
+            } else if ($1 == "active" && $2 == "port:" && $3 ~ /headphone/) {
+                i += 2
+            }
+        } else if ($1 == "*" && $2 == "index:") {
+            f = 1
         }
     }
     END {
