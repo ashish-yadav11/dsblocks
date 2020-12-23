@@ -49,8 +49,7 @@ To signal a specific block to update, run `sigdsblocks <signal> [<sigval>]`.
 
 # xgetrootname
 
-It is a tiny program to get the current root name. May prove helpful in
-debugging.
+A tiny program to get the current root name. May prove helpful in debugging.
 
 # Acknowledgements
 
