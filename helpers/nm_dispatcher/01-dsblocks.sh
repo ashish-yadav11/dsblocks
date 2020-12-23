@@ -4,5 +4,5 @@
 # It should be placed in /etc/NetworkManager/dispatcher.d/
 
 case $2 in
-    up|down) /home/ashish/.local/bin/sigdsblocks 3 ;;
+    up|down) sigdsblocks 3 ;;
 esac

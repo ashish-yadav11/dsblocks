@@ -5,11 +5,9 @@
 
 case $1 in
     post)
-        sigdsblocks=/home/ashish/.local/bin/sigdsblocks
-
-        $sigdsblocks 1 # calendar
-        $sigdsblocks 2 # volume
-        $sigdsblocks 4 # battery
-        $sigdsblocks 6 # cpu temperature
+        sigdsblocks 1 # calendar
+        sigdsblocks 2 # volume
+        sigdsblocks 4 # battery
+        sigdsblocks 6 # cpu temperature
         ;;
 esac
