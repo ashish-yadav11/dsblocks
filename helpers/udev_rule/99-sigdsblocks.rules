@@ -1,2 +1,2 @@
-# Place this file in /etc/udev/rules.d/ after changing the path to sigdsblocks appropriately
+# place this in /etc/udev/rules.d/
 ACTION=="change", SUBSYSTEM=="power_supply", ATTR{type}=="Mains", RUN+="/usr/local/bin/sigdsblocks 5 $attr{online}"
