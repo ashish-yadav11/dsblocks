@@ -47,16 +47,19 @@ mailu(char *str, int sigval)
                 }
                 if (frozen)
                         snprintf(str, BLOCKLENGTH, ICONz "%d", n);
+                else if (sigval == 1)
+                        snprintf(str, BLOCKLENGTH, ICONn "%d", n);
                 else
-                        snprintf(str, BLOCKLENGTH, "%s%d", sigval == 1 ? ICONn : ICONe, n);
+                        snprintf(str, BLOCKLENGTH, ICONe "%d", n);
         } else {
                 if (n < 0)
                         return;
                 /* sync started */
-                if (sigval == 0)
-                        snprintf(str, BLOCKLENGTH, ICONs "%d", n);
+                if (sigval == 0) {
+                        if (!frozen)
+                                snprintf(str, BLOCKLENGTH, ICONs "%d", n);
                 /* toggle frozen */
-                else {
+                } else {
                         if (frozen) {
                                 frozen = 0;
                                 uspawn(MAILSYNC);
