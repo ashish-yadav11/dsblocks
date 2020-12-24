@@ -19,8 +19,8 @@ look at [blocks.h](blocks.h) and files in [blocks](blocks) folder. Functions
 defined in [util.c](util.c) might prove helpful when adding your own blocks.
 
 > The provided blocks and helpers are what I personally use. They may or may
-> not work for others. They are mainly provided for suggestion purposes. They
-> use siji font for icons.
+> not work for others. They are mainly provided for suggestion purposes. (They
+> use siji font for icons.)
 
 If you want to contribute to the project and have written a block which might
 prove helpful to others, add a pull request putting your block in contrib
