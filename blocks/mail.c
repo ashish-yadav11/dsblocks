@@ -1,5 +1,6 @@
 #include <dirent.h>
 #include <stdio.h>
+#include <sys/stat.h>
 
 #include "../util.h"
 #include "mail.h"
@@ -14,16 +15,31 @@
 #define MAILSYNC                        (char *[]){ SCRIPT("mailsync.sh"), NULL }
 
 static int
+countnewmails()
+{
+        static time_t lastmtime = 0;
+        struct stat buf;
+
+        if (stat(NEWMAILDIR, &buf) == -1)
+                return -1;
+        if (buf.st_mtime == lastmtime)
+                return 0;
+        lastmtime = buf.st_mtime;
+        return 1;
+}
+
+static int
 numnewmails()
 {
-        int n = 0;
+        int n;
         DIR* dir;
-        struct dirent* rf;
+        struct dirent* entry;
 
         if (!(dir = opendir(NEWMAILDIR)))
                 return -1;
-        while ((rf = readdir(dir)))
-                if (rf->d_type == DT_REG)
+        n = 0;
+        while ((entry = readdir(dir)))
+                if (entry->d_type == DT_REG)
                         n++;
         closedir(dir);
         return n;
@@ -39,34 +55,46 @@ mailu(char *str, int sigval)
         if (sigval == NILL) {
                 if (!frozen)
                         uspawn(MAILSYNC);
-        /* sync finished */
-        } else if (sigval > 0) {
-                if ((n = numnewmails()) < 0) {
+        /* handle signals from MAILSYNC */
+        } else if (sigval >= 0) {
+                if (n < 0)
+                        n = numnewmails();
+                else {
+                         switch (countnewmails()) {
+                                 case -1:
+                                         n = -1;
+                                         break;
+                                 case 1:
+                                         n = numnewmails();
+                                         break;
+                         }
+                }
+                if (n < 0) {
                         *str = '\0';
                         return;
                 }
-                if (frozen)
-                        snprintf(str, BLOCKLENGTH, ICONz "%d", n);
-                else if (sigval == 1)
-                        snprintf(str, BLOCKLENGTH, ICONn "%d", n);
-                else
-                        snprintf(str, BLOCKLENGTH, ICONe "%d", n);
-        } else {
-                if (n < 0)
-                        return;
-                /* sync started */
+                /* MAILSYNC started */
                 if (sigval == 0) {
                         frozen = 0;
                         snprintf(str, BLOCKLENGTH, ICONs "%d", n);
-                /* toggle frozen */
+                /* sync finished */
                 } else {
-                        if (frozen) {
-                                frozen = 0;
-                                uspawn(MAILSYNC);
-                        } else {
-                                frozen = 1;
+                        if (frozen)
                                 snprintf(str, BLOCKLENGTH, ICONz "%d", n);
-                        }
+                        else if (sigval == 1)
+                                snprintf(str, BLOCKLENGTH, ICONn "%d", n);
+                        else
+                                snprintf(str, BLOCKLENGTH, ICONe "%d", n);
+                }
+        /* toggle frozen */
+        } else {
+                if (n < 0)
+                        return;
+                if (frozen)
+                        uspawn(MAILSYNC);
+                else {
+                        frozen = 1;
+                        snprintf(str, BLOCKLENGTH, ICONz "%d", n);
                 }
         }
 }
