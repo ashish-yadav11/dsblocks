@@ -1,30 +1,23 @@
 #!/bin/sh
-mbsync_channel=iiser
+mbsync_channel=-a
 
 exec >/dev/null 2>&1
 
-sigdsblocks 3 1
-
+# At max two instances of the script are allowed to run simultaneously,
+# one syncing and one waiting for the other to finish syncing.
 exec 8>/tmp/mailsync.1.lock
-# Exit if some other instance of the script is
-# running which hasn't crossed the pinging stage
-flock -n 8 || exit
+if ! flock -n 8 ; then
+    exec 9>/tmp/mailsync.2.lock
+    flock -n 9 || exit
+    flock 8
+fi
 
-exec 9>/tmp/mailsync.2.lock
-# Wait while some other instance of the script is
-# running which has crossed the pinging stage
-flock 9 || exit
+sigdsblocks 3 0
 
-if ping -c1 imap.gmail.com ; then
-    exec 8>/dev/null
-    sigdsblocks 3 -2
-    if mbsync "$mbsync_channel" ; then
-        sigdsblocks 3 3
-    else
-        sigdsblocks 3 4
-    fi
+if mbsync "$mbsync_channel" ; then
     notmuch new
+    sigdsblocks 3 1
 else
-    exec 8>/dev/null
-    sigdsblocks 3 -5
+    notmuch new
+    sigdsblocks 3 2
 fi
