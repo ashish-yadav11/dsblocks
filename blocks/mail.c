@@ -56,8 +56,8 @@ mailu(char *str, int sigval)
                         return;
                 /* sync started */
                 if (sigval == 0) {
-                        if (!frozen)
-                                snprintf(str, BLOCKLENGTH, ICONs "%d", n);
+                        frozen = 0;
+                        snprintf(str, BLOCKLENGTH, ICONs "%d", n);
                 /* toggle frozen */
                 } else {
                         if (frozen) {
