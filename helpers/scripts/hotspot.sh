@@ -16,5 +16,5 @@ case $1 in
         ;;
     *)
         echo "Usage: $0 initiate|terminate|fix-unmanaged"
-    ;;
+        ;;
 esac
