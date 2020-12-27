@@ -3,10 +3,10 @@
 #include "../util.h"
 #include "volume.h"
 
-#define ICONhm                          COL2 "" COL0
-#define ICONhn                          COL1 "" COL0
-#define ICONsm                          COL2 "" COL0
 #define ICONsn                          COL1 "" COL0
+#define ICONsm                          COL2 "" COL0
+#define ICONhn                          COL1 "" COL0
+#define ICONhm                          COL2 "" COL0
 
 #define PULSEINFO                       (char *[]){ SCRIPT("pulse_info.sh"), NULL }
 
