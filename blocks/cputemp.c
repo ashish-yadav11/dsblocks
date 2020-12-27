@@ -4,7 +4,7 @@
 #include "cputemp.h"
 
 #define ICONn                           COL1 "" COL0
-#define ICONh                           COL2 "" COL0
+#define ICONc                           COL2 "" COL0
 
 #define WARNCPUTEMP                     70000
 
@@ -22,7 +22,7 @@ cputempu(char *str, int sigval)
         if (temp < WARNCPUTEMP)
                 snprintf(str, BLOCKLENGTH, ICONn "%d°C", temp / 1000);
         else
-                snprintf(str, BLOCKLENGTH, ICONh "%d°C", temp / 1000);
+                snprintf(str, BLOCKLENGTH, ICONc "%d°C", temp / 1000);
 }
 
 void
