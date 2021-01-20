@@ -32,6 +32,7 @@ size_t
 getcmdout(char *const *arg, char *cmdout, size_t cmdoutlen)
 {
         int fd[2];
+        size_t trd;
         ssize_t rd;
 
         if (pipe(fd) == -1) {
@@ -57,14 +58,17 @@ getcmdout(char *const *arg, char *cmdout, size_t cmdoutlen)
                         _exit(127);
                 default:
                         close(fd[1]);
-                        rd = read(fd[0], cmdout, cmdoutlen);
+                        trd = 0;
+                        do
+                                rd = read(fd[0], cmdout + trd, cmdoutlen - trd);
+                        while (rd > 0 && (trd += rd) < cmdoutlen);
                         if (rd == -1) {
                                 perror("getcmdout - read");
                                 exit(1);
                         }
                         close(fd[0]);
         }
-        return rd;
+        return trd;
 }
 
 int
