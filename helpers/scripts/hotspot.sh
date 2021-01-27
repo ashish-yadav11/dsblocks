@@ -9,7 +9,7 @@ case $1 in
         active_interface=$(nmcli -t -f DEVICE connection show --active)
         newline='
 '
-        active_interface=${active_interface%%$newline*}
+        active_interface=${active_interface%%"$newline"*}
         trap 'sigdsblocks 4 0; exit 0' HUP INT TERM
         sigdsblocks 4 1
         create_ap "$wifi_interface" "${active_interface:-$fallback_interface}" pc 11111111
