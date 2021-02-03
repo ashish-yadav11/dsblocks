@@ -11,7 +11,7 @@
 #define PULSEINFO                       (char *[]){ SCRIPT("pulse_info.sh"), NULL }
 
 #define PAVUCONTROL                     (char *[]){ "/usr/bin/pavucontrol-qt", NULL }
-#define SETDEFAULTVOL                   (char *[]){ "/usr/bin/pactl", "set-sink-volume", "@DEFAULT_SINK@", "50%", NULL }
+#define NORMALIZEVOLUME                 (char *[]){ SCRIPT("pulse_normalize.sh"), NULL }
 #define TOGGLEMUTE                      (char *[]){ "/usr/bin/pactl", "set-sink-mute", "@DEFAULT_SINK@", "toggle", NULL }
 
 void
@@ -36,7 +36,7 @@ volumec(int button)
                         cspawn(TOGGLEMUTE);
                         break;
                 case 2:
-                        cspawn(SETDEFAULTVOL);
+                        cspawn(NORMALIZEVOLUME);
                         break;
                 case 3:
                         cspawn(PAVUCONTROL);
