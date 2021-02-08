@@ -45,5 +45,4 @@ static Block blocks[] = {
         { NULL } /* just to mark the end of the array */
 };
 
-/* default delimiter string */
 #define DELIMITER                       "   "

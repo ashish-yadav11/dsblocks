@@ -9,7 +9,7 @@ features including signaling, clickability, cursor hinting and color.
 
 # Usage
 
-`dsblocks [-d <delimiter>]`
+`dsblocks`
 
 # Modifying blocks
 

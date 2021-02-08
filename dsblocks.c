@@ -13,6 +13,8 @@
 #define STATUSLENGTH                    256
 #define LOCKFILE                        "/tmp/dsblocks.pid"
 
+#define DELIMITERLENGTH                 sizeof DELIMITER
+
 typedef struct {
         void (*const funcu)(char *str, int sigval);
         void (*const funcc)(int button);
@@ -37,9 +39,7 @@ static void writepid();
 Display *dpy;
 pid_t pid;
 
-static char statustext[STATUSLENGTH];
-static char *delim;
-static size_t delimlength;
+static char statustext[STATUSLENGTH + DELIMITERLENGTH];
 static sigset_t blocksigmask;
 
 void
@@ -182,88 +182,40 @@ int
 updatestatus()
 {
         char *s = statustext;
-        char *c, *p; /* for curtext and prvtext */
-        const char *d; /* for delimiter */
+        char *c, *p;
         Block *block = blocks;
 
         /* checking half of the function */
-        /* find the first non-empty block */
-        for (;; block++) {
-                /* all blocks are empty */
-                if (!block->funcu)
-                        return 0;
-                /* contents of the block changed */
-                if (*block->curtext != *block->prvtext)
-                        goto update0;
-                /* skip delimiter handler for the first non-empty block */
-                if (*block->curtext != '\0' && *block->curtext != '\n')
-                        goto skipdelimc;
-        }
-        /* main loop */
         for (; block->funcu; block++) {
-                /* contents of the block changed */
-                if (*block->curtext != *block->prvtext)
-                        goto update1;
-                /* delimiter handler */
-                if (*block->curtext != '\0' && *block->curtext != '\n')
-                        s += delimlength;
-                /* skip over empty blocks */
-                else
-                        continue;
-skipdelimc:
-                /* checking for the first byte has been done */
-                c = block->curtext + 1, p = block->prvtext + 1;
-                for (; *c != '\0' && *c != '\n'; c++, p++)
-                        /* contents of the block changed */
-                        if (*c != *p) {
-                                s += c - block->curtext;
-                                goto update2;
-                        }
+                c = block->curtext, p = block->prvtext;
+                for (; *c == *p && *c != '\0' && *c != '\n'; c++, p++);
                 s += c - block->curtext;
-                /* byte containing info about signal number for the block */
-                if (block->funcc && block->signal)
+                if (*c != *p)
+                        goto update;
+                if (c == block->curtext)
+                        continue;
+                if (block->funcc /* && block->signal */)
                         s++;
+                s += DELIMITERLENGTH;
         }
         return 0;
 
         /* updating half of the function */
-        /* find the first non-empty block */
-        for (;; block++) {
-                /* all blocks are empty */
-                if (!block->funcu)
-                        return 1;
-update0:
-                /* don't add delimiter before the first non-empty block */
-                if (*block->curtext != '\0' && *block->curtext != '\n')
-                        goto skipdelimu;
-                *block->prvtext = *block->curtext;
-        }
-        /* main loop */
-        for (; block->funcu; block++) {
-update1:
-                /* delimiter handler */
-                if (*block->curtext != '\0' && *block->curtext != '\n') {
-                        d = delim;
-                        while (*d != '\0')
-                                *(s++) = *(d++);
-                        *(s++) = DELIMITERENDCHAR;
-                /* skip over empty blocks */
-                } else {
-                        *block->prvtext = *block->curtext;
-                        continue;
-                }
-skipdelimu:
+        for (; block->funcc; block++) {
                 c = block->curtext, p = block->prvtext;
-update2:
-                do {
+update:
+                for (; *p = *c, *c != '\0' && *c != '\n'; c++, p++)
                         *(s++) = *c;
-                        *p = *c;
-                        c++, p++;
-                } while (*c != '\0' && *c != '\n');
-                if (block->funcc && block->signal)
+                if (c == block->curtext)
+                        continue;
+                if (block->funcc /* && block->signal */)
                         *(s++) = block->signal;
+                for (const char *d = DELIMITER; *d != '\0'; d++)
+                        *(s++) = *d;
+                *(s++) = DELIMITERENDCHAR;
         }
-        *s = '\0';
+        if (s != statustext)
+                *(s -= DELIMITERLENGTH) = '\0';
         return 1;
 }
 
@@ -302,19 +254,12 @@ writepid()
 int
 main(int argc, char *argv[])
 {
-        pid = getpid();
-        writepid();
-        if (argc == 3 && strcmp(argv[1], "-d") == 0) {
-                delim = argv[2];
-                delimlength = strlen(delim) + 1;
-        } else {
-                delim = DELIMITER;
-                delimlength = sizeof DELIMITER;
-        }
         if (!(dpy = XOpenDisplay(NULL))) {
                 fputs("Error: could not open display.\n", stderr);
                 return 1;
         }
+        pid = getpid();
+        writepid();
         setupsignals();
         statusloop();
         cleanup();
