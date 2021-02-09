@@ -181,33 +181,30 @@ int
 updatestatus()
 {
         char *s = statustext;
-        char *c, *p;
+        size_t len;
         Block *block = blocks;
 
         /* checking half of the function */
         for (; block->funcu; block++) {
-                c = block->curtext, p = block->prvtext;
-                for (; *c != '\0' && *c == *p; c++, p++);
-                s += c - block->curtext;
-                if (*c != *p)
+                len = strlen(block->curtext);
+                if (memcmp(block->curtext, block->prvtext, len + 1) != 0)
                         goto update;
-                if (c == block->curtext)
+                if (len == 0)
                         continue;
-                if (block->funcc /* && block->signal */)
-                        s++;
-                s += DELIMITERLENGTH;
+                s += len + (block->funcc ? 1 : 0) + DELIMITERLENGTH;
         }
         return 0;
 
         /* updating half of the function */
         for (; block->funcu; block++) {
-                c = block->curtext, p = block->prvtext;
+                len = strlen(block->curtext);
 update:
-                for (; (*p = *c) != '\0'; c++, p++)
-                        *(s++) = *c;
-                if (c == block->curtext)
+                memcpy(block->prvtext, block->curtext, len + 1);
+                if (len == 0)
                         continue;
-                if (block->funcc /* && block->signal */)
+                memcpy(s, block->curtext, len);
+                s += len;
+                if (block->funcc)
                         *(s++) = block->signal;
                 memcpy(s, delimiter, DELIMITERLENGTH);
                 s += DELIMITERLENGTH;
