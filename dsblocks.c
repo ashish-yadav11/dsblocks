@@ -201,7 +201,7 @@ updatestatus()
         return 0;
 
         /* updating half of the function */
-        for (; block->funcc; block++) {
+        for (; block->funcu; block++) {
                 c = block->curtext, p = block->prvtext;
 update:
                 for (; *p = *c, *c != '\0' && *c != '\n'; c++, p++)
