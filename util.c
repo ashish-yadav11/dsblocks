@@ -27,7 +27,8 @@ csigself(int sig, int sigval)
         }
 }
 
-/* getcmdout doesn't null terminate */
+/* getcmdout doesn't null terminate cmdout
+ * make sure that terminal newline character is handled if the command spits one */
 size_t
 getcmdout(char *const *arg, char *cmdout, size_t cmdoutlen)
 {

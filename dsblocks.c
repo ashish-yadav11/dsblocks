@@ -187,7 +187,7 @@ updatestatus()
         /* checking half of the function */
         for (; block->funcu; block++) {
                 c = block->curtext, p = block->prvtext;
-                for (; *c == *p && *c != '\0' && *c != '\n'; c++, p++);
+                for (; *c == *p && *c != '\0'; c++, p++);
                 s += c - block->curtext;
                 if (*c != *p)
                         goto update;
@@ -203,7 +203,7 @@ updatestatus()
         for (; block->funcu; block++) {
                 c = block->curtext, p = block->prvtext;
 update:
-                for (; *p = *c, *c != '\0' && *c != '\n'; c++, p++)
+                for (; *p = *c, *c != '\0'; c++, p++)
                         *(s++) = *c;
                 if (c == block->curtext)
                         continue;
