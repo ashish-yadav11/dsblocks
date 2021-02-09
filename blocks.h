@@ -45,4 +45,4 @@ static Block blocks[] = {
         { NULL } /* just to mark the end of the array */
 };
 
-#define DELIMITER                       "   "
+static const char delimiter[] = { ' ', ' ', ' ', DELIMITERENDCHAR };

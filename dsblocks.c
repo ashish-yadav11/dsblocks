@@ -13,7 +13,7 @@
 #define STATUSLENGTH                    256
 #define LOCKFILE                        "/tmp/dsblocks.pid"
 
-#define DELIMITERLENGTH                 sizeof DELIMITER
+#define DELIMITERLENGTH                 sizeof delimiter
 
 typedef struct {
         void (*const funcu)(char *str, int sigval);
@@ -210,12 +210,12 @@ update:
                         continue;
                 if (block->funcc /* && block->signal */)
                         *(s++) = block->signal;
-                for (const char *d = DELIMITER; *d != '\0'; d++)
-                        *(s++) = *d;
-                *(s++) = DELIMITERENDCHAR;
+                memcpy(s, delimiter, DELIMITERLENGTH);
+                s += DELIMITERLENGTH;
         }
         if (s != statustext)
-                *(s -= DELIMITERLENGTH) = '\0';
+                s -= DELIMITERLENGTH;
+        *s = '\0';
         return 1;
 }
 
