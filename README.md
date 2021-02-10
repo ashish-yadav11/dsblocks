@@ -15,7 +15,7 @@ features including signaling, clickability, cursor hinting and color.
 
 Each block has two functions associated with it, one responsible for updating
 what is shown in status and the other responsible for handling clicks. Take a
-look at [blocks.h](blocks.h) and files in [blocks](blocks) folder. Functions
+look at [config.h](config.h) and files in [blocks](blocks) folder. Functions
 defined in [util.c](util.c) might prove helpful when adding your own blocks.
 
 > The provided blocks and helpers are what I personally use. They may or may

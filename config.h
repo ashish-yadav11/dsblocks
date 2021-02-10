@@ -16,6 +16,10 @@
    dwm.c and color codes in util.h. */
 #define DELIMITERENDCHAR                10
 
+static const char delimiter[] = { ' ', ' ', ' ', DELIMITERENDCHAR };
+
+#include "block.h"
+
 /* If interval of a block is set to 0, the block will only be updated once at
    startup.
  * If interval is set to a negative value, the block will never be updated in
@@ -44,5 +48,3 @@ static Block blocks[] = {
         { batteryu,             batteryc,               10,             5 },
         { NULL } /* just to mark the end of the array */
 };
-
-static const char delimiter[] = { ' ', ' ', ' ', DELIMITERENDCHAR };

@@ -10,7 +10,7 @@ BLOCKS := $(wildcard blocks/*.c)
 
 all: dsblocks sigdsblocks/sigdsblocks xgetrootname/xgetrootname
 
-dsblocks.o: dsblocks.c blocks.h shared.h
+dsblocks.o: dsblocks.c shared.h config.h block.h
 	${CC} -o $@ -c -Wno-missing-field-initializers -Wno-unused-parameter ${CFLAGS} ${X11CFLAGS} $<
 
 util.o: util.c util.h shared.h

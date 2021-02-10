@@ -15,31 +15,22 @@
 
 #define DELIMITERLENGTH                 sizeof delimiter
 
-typedef struct {
-        void (*const funcu)(char *str, int sigval);
-        void (*const funcc)(int button);
-        const int interval;
-        const int signal;
-        char curtext[BLOCKLENGTH];
-        char prvtext[BLOCKLENGTH];
-} Block;
-
-#include "blocks.h"
+#include "config.h"
 
 static void buttonhandler(int sig, siginfo_t *info, void *ucontext);
 static void cleanup();
-static void setroot();
 static void setupsignals();
 static void sighandler(int sig, siginfo_t *info, void *ucontext);
 static void statusloop();
 static void termhandler(int sig);
-static int updatestatus();
+static void updateblock(Block *block, int sigval);
+static void updatestatus();
 static void writepid();
 
 Display *dpy;
 pid_t pid;
 
-static char statustext[STATUSLENGTH + DELIMITERLENGTH];
+static Block *dirtyblock;
 static sigset_t blocksigmask;
 
 void
@@ -65,15 +56,6 @@ cleanup()
         unlink(LOCKFILE);
         XStoreName(dpy, DefaultRootWindow(dpy), "");
         XCloseDisplay(dpy);
-}
-
-void
-setroot()
-{
-        if (updatestatus()) {
-                XStoreName(dpy, DefaultRootWindow(dpy), statustext);
-                XSync(dpy, False);
-        }
 }
 
 void
@@ -133,8 +115,8 @@ sighandler(int sig, siginfo_t *info, void *ucontext)
         sig -= SIGRTMIN;
         for (Block *block = blocks; block->funcu; block++)
                 if (block->signal == sig)
-                        block->funcu(block->curtext, info->si_value.sival_int);
-        setroot();
+                        updateblock(block, info->si_value.sival_int);
+        updatestatus();
 }
 
 void
@@ -147,8 +129,8 @@ statusloop()
         sigprocmask(SIG_BLOCK, &blocksigmask, NULL);
         for (Block *block = blocks; block->funcu; block++)
                 if (block->interval >= 0)
-                        block->funcu(block->curtext, NILL);
-        setroot();
+                        updateblock(block, NILL);
+        updatestatus();
         sigprocmask(SIG_UNBLOCK, &blocksigmask, NULL);
         t.tv_sec = INTERVALs, t.tv_nsec = INTERVALn;
         while (nanosleep(&t, &t) == -1)
@@ -161,8 +143,8 @@ statusloop()
                 sigprocmask(SIG_BLOCK, &blocksigmask, NULL);
                 for (Block *block = blocks; block->funcu; block++)
                         if (block->interval > 0 && i % block->interval == 0)
-                                block->funcu(block->curtext, NILL);
-                setroot();
+                                updateblock(block, NILL);
+                updatestatus();
                 sigprocmask(SIG_UNBLOCK, &blocksigmask, NULL);
                 t.tv_sec = INTERVALs, t.tv_nsec = INTERVALn;
                 while (nanosleep(&t, &t) == -1);
@@ -176,43 +158,47 @@ termhandler(int sig)
         exit(0);
 }
 
-/* returns whether block outputs have changed and updates statustext if they have */
-int
+void
+updateblock(Block *block, int sigval)
+{
+        size_t l;
+
+        block->funcu(block->curtext, sigval);
+        l = strlen(block->curtext);
+        if (memcmp(block->curtext, block->prvtext, l + 1) != 0) {
+                memcpy(block->prvtext, block->curtext, l + 1);
+                if (!dirtyblock || block < dirtyblock)
+                        dirtyblock = block;
+        }
+        if (l == 0)
+                block->length = 0;
+        else {
+                if (block->funcc)
+                        block->curtext[l++] = block->signal;
+                memcpy(block->curtext + l, delimiter, DELIMITERLENGTH);
+                block->length = l + DELIMITERLENGTH;
+        }
+}
+
+void
 updatestatus()
 {
+        static char statustext[STATUSLENGTH + DELIMITERLENGTH];
         char *s = statustext;
-        size_t len;
-        Block *block = blocks;
 
-        /* checking half of the function */
-        for (; block->funcu; block++) {
-                len = strlen(block->curtext);
-                if (memcmp(block->curtext, block->prvtext, len + 1) != 0)
-                        goto update;
-                if (len == 0)
-                        continue;
-                s += len + (block->funcc ? 1 : 0) + DELIMITERLENGTH;
+        if (!dirtyblock)
+                return;
+        for (Block *block = blocks; block < dirtyblock; block++)
+                s += block->length;
+        for (Block *block = dirtyblock; block->funcu; block++) {
+                memcpy(s, block->curtext, block->length);
+                s += block->length;
         }
-        return 0;
+        s[s == statustext ? 0 : -DELIMITERLENGTH] = '\0';
+        dirtyblock = NULL;
 
-        /* updating half of the function */
-        for (; block->funcu; block++) {
-                len = strlen(block->curtext);
-update:
-                memcpy(block->prvtext, block->curtext, len + 1);
-                if (len == 0)
-                        continue;
-                memcpy(s, block->curtext, len);
-                s += len;
-                if (block->funcc)
-                        *(s++) = block->signal;
-                memcpy(s, delimiter, DELIMITERLENGTH);
-                s += DELIMITERLENGTH;
-        }
-        if (s != statustext)
-                s -= DELIMITERLENGTH;
-        *s = '\0';
-        return 1;
+        XStoreName(dpy, DefaultRootWindow(dpy), statustext);
+        XSync(dpy, False);
 }
 
 void
