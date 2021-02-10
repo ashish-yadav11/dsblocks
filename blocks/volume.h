@@ -1,2 +1,2 @@
-void volumeu(char *str, int sigval);
+int volumeu(char *str, int sigval);
 void volumec(int button);

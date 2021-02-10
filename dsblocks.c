@@ -163,7 +163,8 @@ updateblock(Block *block, int sigval)
 {
         size_t l;
 
-        block->funcu(block->curtext, sigval);
+        if (!block->funcu(block->curtext, sigval))
+                return;
         l = strlen(block->curtext);
         if (memcmp(block->curtext, block->prvtext, l + 1) != 0) {
                 memcpy(block->prvtext, block->curtext, l + 1);
@@ -185,12 +186,13 @@ updatestatus()
 {
         static char statustext[STATUSLENGTH + DELIMITERLENGTH];
         char *s = statustext;
+        Block *block;
 
         if (!dirtyblock)
                 return;
-        for (Block *block = blocks; block < dirtyblock; block++)
+        for (block = blocks; block < dirtyblock; block++)
                 s += block->length;
-        for (Block *block = dirtyblock; block->funcu; block++) {
+        for (; block->funcu; block++) {
                 memcpy(s, block->curtext, block->length);
                 s += block->length;
         }

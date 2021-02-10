@@ -45,7 +45,7 @@ numnewmails()
         return n;
 }
 
-void
+int
 mailu(char *str, int sigval)
 {
         static int n;
@@ -55,6 +55,7 @@ mailu(char *str, int sigval)
         if (sigval == NILL) {
                 if (!frozen)
                         uspawn(MAILSYNC);
+                return 0;
         /* handle signals from MAILSYNC */
         } else if (sigval >= 0) {
                 if (n < 0)
@@ -71,7 +72,7 @@ mailu(char *str, int sigval)
                 }
                 if (n < 0) {
                         *str = '\0';
-                        return;
+                        return 1;
                 }
                 /* MAILSYNC started */
                 if (sigval == 0) {
@@ -89,14 +90,16 @@ mailu(char *str, int sigval)
         /* toggle frozen */
         } else {
                 if (n < 0)
-                        return;
-                if (frozen)
+                        return 0;
+                if (frozen) {
                         uspawn(MAILSYNC);
-                else {
+                        return 0;
+                } else {
                         frozen = 1;
                         snprintf(str, BLOCKLENGTH, ICONz "%d", n);
                 }
         }
+        return 1;
 }
 
 void

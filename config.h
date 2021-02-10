@@ -32,6 +32,7 @@ static const char delimiter[] = { ' ', ' ', ' ', DELIMITERENDCHAR };
    delivered first. */
 
 /* funcu - function responsible for updating status text of the block
+           (it should return whether the text was updated or not)
  * funcc - function responsible for handling clicks on the block */
 
 /* 1 interval = INTERVALs seconds, INTERVALn nanoseconds */

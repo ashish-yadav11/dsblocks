@@ -10,19 +10,20 @@
 
 #define CPUTEMPFILE                     "/sys/class/thermal/thermal_zone0/temp"
 
-void
+int
 cputempu(char *str, int sigval)
 {
         int temp;
 
         if (!readint(CPUTEMPFILE, &temp)) {
                 *str = '\0';
-                return;
+                return 1;
         }
         if (temp < WARNCPUTEMP)
                 snprintf(str, BLOCKLENGTH, ICONn "%d°C", temp / 1000);
         else
                 snprintf(str, BLOCKLENGTH, ICONc "%d°C", temp / 1000);
+        return 1;
 }
 
 void

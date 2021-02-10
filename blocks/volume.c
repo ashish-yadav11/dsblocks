@@ -14,7 +14,7 @@
 #define NORMALIZEVOLUME                 (char *[]){ SCRIPT("pulse_normalize.sh"), NULL }
 #define TOGGLEMUTE                      (char *[]){ "/usr/bin/pactl", "set-sink-mute", "@DEFAULT_SINK@", "toggle", NULL }
 
-void
+int
 volumeu(char *str, int sigval)
 {
         static char *icons[] = { ICONsn, ICONsm, ICONhn, ICONhm };
@@ -26,6 +26,7 @@ volumeu(char *str, int sigval)
                 snprintf(str, BLOCKLENGTH, "%s%s", icons[buf[0] - '0'], buf + 1);
         } else
                 *str = '\0';
+        return 1;
 }
 
 void

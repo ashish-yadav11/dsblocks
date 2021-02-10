@@ -60,7 +60,7 @@
 
 enum { Normal, Critical, Low, Plug, Unplug };
 
-void
+int
 batteryu(char *str, int ac)
 {
         static int level = Normal;
@@ -70,13 +70,13 @@ batteryu(char *str, int ac)
 
         if (!readint(BATCAPFILE, &bat)) {
                 strcpy(str, ICONa);
-                return;
+                return 1;
         }
         /* routine update */
         if (ac == NILL) {
                 if (!readint(ACSTATEFILE, &ac)) {
                         snprintf(str, BLOCKLENGTH, ICONe "%d%%", bat);
-                        return;
+                        return 1;
                 }
                 if (ac) {
                         if (bat < BATU)
@@ -136,6 +136,7 @@ batteryu(char *str, int ac)
                 }
                 snprintf(str, BLOCKLENGTH, PDN "%s%d%%", ICON(bat), bat);
         }
+        return 1;
 }
 
 void
