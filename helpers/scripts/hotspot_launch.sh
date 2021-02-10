@@ -1,4 +1,6 @@
 #!/bin/sh
+# This script is a wrapper on hotspot.sh to create hotspot
+# This is supposed to be bound to a key binding
 hotspot=/home/ashish/.scripts/hotspot.sh
 notify="notify-send -h string:x-canonical-private-synchronous:hotspot"
 

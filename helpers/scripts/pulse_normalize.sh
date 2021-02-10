@@ -1,5 +1,7 @@
 #!/bin/sh
-# sets volume to the greatest factor of "step" less than the current value
+# This script sets volume to the greatest factor of "step" less than the current
+# value
+# It is executed by volume block on middle click
 volume=$(
     pacmd list-sinks | awk '
         BEGIN {

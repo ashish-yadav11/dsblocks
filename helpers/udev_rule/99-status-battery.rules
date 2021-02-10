@@ -1,2 +1,3 @@
-# place this in /etc/udev/rules.d/
+# This file should be placed in /etc/udev/rules.d/
+# It signals battery block to update on plugging/unplugging charger
 SUBSYSTEM=="power_supply", ACTION=="change", ATTR{type}=="Mains", RUN+="/usr/local/bin/sigdsblocks 5 $attr{online}"

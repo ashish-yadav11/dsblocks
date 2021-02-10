@@ -1,4 +1,9 @@
 #!/bin/sh
+# This script is a wrapper on create_ap
+# It is supposed that sudo is setup such that running this script with sudo
+# doesn't ask for password
+# The script signals hotspot block to update on initiating and terminating
+# hotspot
 wifi_interface=wlp5s0
 
 case $1 in

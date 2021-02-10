@@ -1,8 +1,6 @@
 #!/bin/sh
-
-# This script is only for systemd-logind users
-# It should be placed in /usr/lib/systemd/system-sleep/
-
+# This script should be placed in /usr/lib/systemd/system-sleep/
+# It updates blocks when waking up from sleep
 case $1 in
     post)
         sigdsblocks 1 # calendar

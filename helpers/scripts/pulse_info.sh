@@ -1,4 +1,7 @@
 #!/bin/sh
+# This is a helper script for volume block
+# It prints info about current volume, mute and whether headhone is plugged or
+# not in a manner parsable by volume block
 pacmd list-sinks | awk '
     {
         if (f) {
