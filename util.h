@@ -10,6 +10,11 @@
 #define SCRIPT(name)                    "/home/ashish/.scripts/"name
 #define TERMCMD(cmd)                    cspawn((char *[]){ "/usr/bin/termite", "-e", cmd, NULL })
 
+#define SPRINTF(str, ...)               ({ \
+                                                int len = snprintf(str, BLOCKLENGTH, __VA_ARGS__); \
+                                                len < BLOCKLENGTH ? len + 1 : BLOCKLENGTH; \
+                                        })
+
 void cspawn(char *const *arg);
 void csigself(int sig, int sigval);
 size_t getcmdout(char *const *arg, char *cmdout, size_t cmdoutlen);

@@ -7,14 +7,16 @@
 
 #define TURNOFFHOTSPOT                  (char *[]){ "/usr/bin/sudo", SCRIPT("hotspot.sh"), "terminate", NULL }
 
-int
+size_t
 hotspotu(char *str, int enabled)
 {
-        if (enabled)
+        if (enabled) {
                 strcpy(str, ICON);
-        else
+                return sizeof ICON;
+        } else {
                 *str = '\0';
-        return 1;
+                return 1;
+        }
 }
 
 void

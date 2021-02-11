@@ -14,19 +14,19 @@
 #define NORMALIZEVOLUME                 (char *[]){ SCRIPT("pulse_normalize.sh"), NULL }
 #define TOGGLEMUTE                      (char *[]){ "/usr/bin/pactl", "set-sink-mute", "@DEFAULT_SINK@", "toggle", NULL }
 
-int
+size_t
 volumeu(char *str, int sigval)
 {
         static char *icons[] = { ICONsn, ICONsm, ICONhn, ICONhm };
         char buf[15];
         size_t l;
 
-        if ((l = getcmdout(PULSEINFO, buf, sizeof buf - 1))) {
-                buf[l] = '\0';
-                snprintf(str, BLOCKLENGTH, "%s%s", icons[buf[0] - '0'], buf + 1);
-        } else
+        if (!(l = getcmdout(PULSEINFO, buf, sizeof buf - 1))) {
                 *str = '\0';
-        return 1;
+                return 1;
+        }
+        buf[l] = '\0';
+        return SPRINTF(str, "%s%s", icons[buf[0] - '0'], buf + 1);
 }
 
 void

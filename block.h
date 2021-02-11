@@ -1,5 +1,5 @@
 typedef struct {
-        int (*const funcu)(char *str, int sigval);
+        size_t (*const funcu)(char *str, int sigval);
         void (*const funcc)(int button);
         const int interval;
         const int signal;

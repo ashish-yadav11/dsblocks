@@ -14,41 +14,38 @@
 
 #define MAILSYNC                        (char *[]){ SCRIPT("mailsync.sh"), NULL }
 
-static int
-countnewmails()
+static int newmails;
+
+static void
+updatenewmails()
 {
         static time_t lastmtime = 0;
-        struct stat buf;
-
-        if (stat(NEWMAILDIR, &buf) == -1)
-                return -1;
-        if (buf.st_mtime == lastmtime)
-                return 0;
-        lastmtime = buf.st_mtime;
-        return 1;
-}
-
-static int
-numnewmails()
-{
-        int n;
         DIR* dir;
         struct dirent* entry;
+        struct stat buf;
 
-        if (!(dir = opendir(NEWMAILDIR)))
-                return -1;
-        n = 0;
+        if (stat(NEWMAILDIR, &buf) == -1) {
+                newmails = -1;
+                return;
+        }
+        if (buf.st_mtime == lastmtime)
+                return;
+        lastmtime = buf.st_mtime;
+
+        if (!(dir = opendir(NEWMAILDIR))) {
+                newmails = -1;
+                return;
+        }
+        newmails = 0;
         while ((entry = readdir(dir)))
                 if (entry->d_type == DT_REG)
-                        n++;
+                        newmails++;
         closedir(dir);
-        return n;
 }
 
-int
+size_t
 mailu(char *str, int sigval)
 {
-        static int n;
         static int frozen;
 
         /* routine update */
@@ -58,48 +55,36 @@ mailu(char *str, int sigval)
                 return 0;
         /* handle signals from MAILSYNC */
         } else if (sigval >= 0) {
-                if (n < 0)
-                        n = numnewmails();
-                else {
-                         switch (countnewmails()) {
-                                 case -1:
-                                         n = -1;
-                                         break;
-                                 case 1:
-                                         n = numnewmails();
-                                         break;
-                         }
-                }
-                if (n < 0) {
+                updatenewmails();
+                if (newmails < 0) {
                         *str = '\0';
                         return 1;
                 }
                 /* MAILSYNC started */
                 if (sigval == 0) {
                         frozen = 0;
-                        snprintf(str, BLOCKLENGTH, ICONs "%d", n);
+                        return SPRINTF(str, ICONs "%d", newmails);
                 /* sync finished */
                 } else {
                         if (frozen)
-                                snprintf(str, BLOCKLENGTH, ICONz "%d", n);
-                        else if (sigval == 1)
-                                snprintf(str, BLOCKLENGTH, ICONn "%d", n);
+                                return SPRINTF(str, ICONz "%d", newmails);
+                        if (sigval == 1)
+                                return SPRINTF(str, ICONn "%d", newmails);
                         else
-                                snprintf(str, BLOCKLENGTH, ICONe "%d", n);
+                                return SPRINTF(str, ICONe "%d", newmails);
                 }
         /* toggle frozen */
         } else {
-                if (n < 0)
+                if (newmails < 0)
                         return 0;
                 if (frozen) {
                         uspawn(MAILSYNC);
                         return 0;
                 } else {
                         frozen = 1;
-                        snprintf(str, BLOCKLENGTH, ICONz "%d", n);
+                        return SPRINTF(str, ICONz "%d", newmails);
                 }
         }
-        return 1;
 }
 
 void

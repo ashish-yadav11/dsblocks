@@ -163,19 +163,20 @@ updateblock(Block *block, int sigval)
 {
         size_t l;
 
-        if (!block->funcu(block->curtext, sigval))
+        if (!(l = block->funcu(block->curtext, sigval)))
                 return;
-        l = strlen(block->curtext);
-        if (memcmp(block->curtext, block->prvtext, l + 1) != 0) {
-                memcpy(block->prvtext, block->curtext, l + 1);
+        if (memcmp(block->curtext, block->prvtext, l) != 0) {
+                memcpy(block->prvtext, block->curtext, l);
                 if (!dirtyblock || block < dirtyblock)
                         dirtyblock = block;
         }
-        if (l == 0)
+        if (l == 1)
                 block->length = 0;
         else {
                 if (block->funcc)
-                        block->curtext[l++] = block->signal;
+                        block->curtext[l - 1] = block->signal;
+                else
+                        l--;
                 memcpy(block->curtext + l, delimiter, DELIMITERLENGTH);
                 block->length = l + DELIMITERLENGTH;
         }

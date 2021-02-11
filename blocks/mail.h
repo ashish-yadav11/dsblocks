@@ -1,2 +1,2 @@
-int mailu(char *str, int sigval);
+size_t mailu(char *str, int sigval);
 void mailc(int button);

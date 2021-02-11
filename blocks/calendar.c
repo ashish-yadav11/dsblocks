@@ -7,14 +7,13 @@
 
 #define TOGGLECALCURSE          (char *[]){ SCRIPT("sigdwm"), "scrt i 4", NULL }
 
-int
+size_t
 calendaru(char *str, int sigval)
 {
         time_t t = time(NULL);
         struct tm tm = *localtime(&t);
 
-        strftime(str, BLOCKLENGTH, ICON "%a, %b %d, %R", &tm);
-        return 1;
+        return strftime(str, BLOCKLENGTH, ICON "%a, %b %d, %R", &tm) + 1;
 }
 
 void
