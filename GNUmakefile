@@ -31,13 +31,14 @@ xgetrootname/xgetrootname: xgetrootname/xgetrootname.c
 clean:
 	rm -f blocks/*.o *.o dsblocks sigdsblocks/sigdsblocks xgetrootname/xgetrootname
 
+BINDIR = ${DESTDIR}${PREFIX}/bin
+
 install: all
-	mkdir -p ${DESTDIR}${PREFIX}/bin
-	install -m 0755 dsblocks ${DESTDIR}${PREFIX}/bin/dsblocks
-	install -m 0755 sigdsblocks/sigdsblocks ${DESTDIR}${PREFIX}/bin/sigdsblocks
-	install -m 0755 xgetrootname/xgetrootname ${DESTDIR}${PREFIX}/bin/xgetrootname
+	mkdir -p ${BINDIR}
+	cp -f dsblocks sigdsblocks/sigdsblocks xgetrootname/xgetrootname ${BINDIR}
+	chmod 755 ${BINDIR}/dsblocks ${BINDIR}/sigdsblocks ${BINDIR}/xgetrootname
 
 uninstall:
-	rm -f ${DESTDIR}${PREFIX}/bin/dsblocks ${DESTDIR}${PREFIX}/bin/sigdsblocks ${DESTDIR}${PREFIX}/bin/xgetrootname
+	rm -f ${BINDIR}/dsblocks ${BINDIR}/sigdsblocks ${BINDIR}/xgetrootname
 
 .PHONY: all clean install uninstall
