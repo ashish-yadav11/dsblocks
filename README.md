@@ -36,7 +36,7 @@ clickability (inspired by statuscmd patch for dwm) and cursor hinting when
 hovering on clickable blocks (inspired by polybar).
 
 To add colors to status, have your functions output raw characters from `\x0b`
-to `\x31`. `\x0b` in status text switches active colorscheme to the first one in
+to `\x1f`. `\x0b` in status text switches active colorscheme to the first one in
 the colors array defined in dwm's config.h and so on. See [util.h](util.h) and
 [statuscolors patch for dwm](https://dwm.suckless.org/patches/statuscolors/)
 for more info. Keep in mind that you have to start from `\x0b` instead of `\x01`
