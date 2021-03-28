@@ -6,7 +6,6 @@
 #define COL3                            "\x0e" /* mail block - syncing */
 #define COL4                            "\x0f" /* mail block - frozen */
 
-#define LENGTH(X)                       (sizeof X / sizeof X[0])
 #define SCRIPT(name)                    "/home/ashish/.scripts/"name
 #define TERMCMD(cmd)                    cspawn((char *[]){ "/usr/bin/termite", "-e", cmd, NULL })
 
