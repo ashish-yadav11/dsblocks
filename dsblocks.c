@@ -13,7 +13,7 @@
 #define LOCKFILE                        "/tmp/dsblocks.pid"
 
 #define DELIMITERLENGTH                 (sizeof delimiter)
-#define STATUSLENGTH                    (LENGTH(blocks) * BLOCKLENGTH)
+#define STATUSLENGTH                    (LENGTH(blocks) * (BLOCKLENGTH + DELIMITERLENGTH) + 1)
 
 #include "config.h"
 
@@ -185,7 +185,7 @@ updateblock(Block *block, int sigval)
 void
 updatestatus()
 {
-        static char statustext[STATUSLENGTH + DELIMITERLENGTH];
+        static char statustext[STATUSLENGTH];
         char *s = statustext;
         Block *block;
 
