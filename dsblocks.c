@@ -188,15 +188,27 @@ updatestatus()
         static char statustext[STATUSLENGTH + DELIMITERLENGTH];
         char *s = statustext;
         Block *block;
+        ssize_t rem;
 
         if (!dirtyblock)
                 return;
         for (block = blocks; block < dirtyblock; block++)
                 s += block->length;
-        for (; block->funcu; block++) {
-                memcpy(s, block->curtext, block->length);
-                s += block->length;
+
+        rem = sizeof(statustext) - (s - statustext);
+
+        for (; rem > 0 && block->funcu; block++) {
+                if (block->length < (size_t)rem) {
+                        memcpy(s, block->curtext, block->length);
+                        s += block->length;
+                } else {
+                        memcpy(s, block->curtext, rem);
+                        s += rem;
+                }
+                rem = sizeof(statustext) - (s - statustext);
         }
+        if (rem < 0)
+                s += rem;
         s[s == statustext ? 0 : -DELIMITERLENGTH] = '\0';
         dirtyblock = NULL;
 
