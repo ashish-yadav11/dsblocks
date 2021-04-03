@@ -105,7 +105,10 @@ setupsignals()
         sa.sa_mask = blocksigmask;
         sa.sa_sigaction = sighandler;
         for (Block *block = blocks; block->funcu; block++)
-                if (block->signal > 0)
+                if (SIGRTMIN + block->signal > SIGRTMAX) {
+                        fprintf(stderr, "SIGRTMIN + %d exceeds SIGRTMAX\n", block->signal);
+                        exit(1);
+                } else if (block->signal > 0)
                         sigaction(SIGRTMIN + block->signal, &sa, NULL);
 }
 
@@ -239,13 +242,13 @@ writepid()
 int
 main(int argc, char *argv[])
 {
+        setupsignals();
         if (!(dpy = XOpenDisplay(NULL))) {
                 fputs("Error: could not open display.\n", stderr);
                 return 1;
         }
         pid = getpid();
         writepid();
-        setupsignals();
         statusloop();
         cleanup();
         return 0;
