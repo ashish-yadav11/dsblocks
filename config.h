@@ -36,8 +36,9 @@ static const char delimiter[] = { ' ', ' ', ' ', DELIMITERENDCHAR };
             null byte), if the text was updated and 0 otherwise)
  * funcc - function responsible for handling clicks on the block */
 
-/* 1 interval = <first entry> seconds, <second entry> nanoseconds */
-static const struct timespec interval = { 1, 0 };
+/* 1 interval = INTERVALs seconds, INTERVALn nanoseconds */
+#define INTERVALs                       1
+#define INTERVALn                       0
 
 static Block blocks[] = {
 /*      funcu                   funcc                   interval        signal */
