@@ -20,8 +20,9 @@
 _Static_assert(INTERVALs >= 0, "INTERVALs must be greater than or equal to 0");
 _Static_assert(INTERVALn >= 0 && INTERVALn <= 999999999, "INTERVALn must be between 0 and 999999999");
 
+void cleanup();
+
 static void buttonhandler(int sig, siginfo_t *info, void *ucontext);
-static void cleanup();
 static void setupsignals();
 static void sighandler(int sig, siginfo_t *info, void *ucontext);
 static void statusloop();
@@ -66,14 +67,22 @@ setupsignals()
 {
         struct sigaction sa;
 
-        /* populate blocksigmask */
+        /* populate blocksigmask and check validity of signals */
         sigemptyset(&blocksigmask);
         sigaddset(&blocksigmask, SIGHUP);
         sigaddset(&blocksigmask, SIGINT);
         sigaddset(&blocksigmask, SIGTERM);
-        for (Block *block = blocks; block->funcu; block++)
-                if (block->signal > 0)
-                        sigaddset(&blocksigmask, SIGRTMIN + block->signal);
+        for (Block *block = blocks; block->funcu; block++) {
+                if (block->signal <= 0)
+                        continue;
+                if (block->signal > SIGRTMAX - SIGRTMIN) {
+                        fprintf(stderr, "Error: SIGRTMIN + %d exceeds SIGRTMAX.\n", block->signal);
+                        unlink(LOCKFILE);
+                        XCloseDisplay(dpy);
+                        exit(2);
+                }
+                sigaddset(&blocksigmask, SIGRTMIN + block->signal);
+        }
 
         /* setup signal handlers */
         /* to handle HUP, INT and TERM */
@@ -232,12 +241,13 @@ writepid()
 int
 main(int argc, char *argv[])
 {
-        if (!(dpy = XOpenDisplay(NULL))) {
-                fputs("Error: could not open display.\n", stderr);
-                return 1;
-        }
         pid = getpid();
         writepid();
+        if (!(dpy = XOpenDisplay(NULL))) {
+                fputs("Error: could not open display.\n", stderr);
+                unlink(LOCKFILE);
+                return 1;
+        }
         setupsignals();
         statusloop();
         cleanup();

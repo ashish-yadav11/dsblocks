@@ -38,11 +38,13 @@ getcmdout(char *const *arg, char *cmdout, size_t cmdoutlen)
 
         if (pipe(fd) == -1) {
                 perror("getcmdout - pipe");
+                cleanup();
                 exit(1);
         }
         switch (fork()) {
                 case -1:
                         perror("getcmdout - fork");
+                        cleanup();
                         exit(1);
                 case 0:
                         close(ConnectionNumber(dpy));
@@ -65,6 +67,7 @@ getcmdout(char *const *arg, char *cmdout, size_t cmdoutlen)
                         while (rd > 0 && (trd += rd) < cmdoutlen);
                         if (rd == -1) {
                                 perror("getcmdout - read");
+                                cleanup();
                                 exit(1);
                         }
                         close(fd[0]);
@@ -92,7 +95,8 @@ uspawn(char *const *arg)
         switch (fork()) {
                 case -1:
                         perror("uspawn - fork");
-                        break;
+                        cleanup();
+                        exit(1);
                 case 0:
                         close(ConnectionNumber(dpy));
                         setsid();

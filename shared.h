@@ -6,5 +6,7 @@
 
 #define LENGTH(X)                       (sizeof X / sizeof X[0])
 
+void cleanup();
+
 extern Display *dpy;
 extern pid_t pid;
