@@ -1,6 +1,6 @@
 #!/bin/sh
-# This script sets volume to the greatest factor of "step" less than the current
-# value
+# This script sets volume of both sides of output to the greatest factor of
+# "step" less than the smaller of the two
 # It is executed by volume block on middle click
 volume=$(
     pacmd list-sinks | awk '
@@ -14,7 +14,7 @@ volume=$(
                 }
                 if ($1 == "volume:") {
                     v = $3 <= $10 ? $5 : $12
-                    gsub(/%/, "", v)
+                    sub(/%/, "", v)
                     v = int(v / step) * step
                 }
             } else if ($1 == "*" && $2 == "index:") {
