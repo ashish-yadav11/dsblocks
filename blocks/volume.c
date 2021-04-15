@@ -10,9 +10,9 @@
 
 #define PULSEINFO                       (char *[]){ SCRIPT("pulse_info.sh"), NULL }
 
-#define PAVUCONTROL                     (char *[]){ "/usr/bin/pavucontrol-qt", NULL }
+#define PAVUCONTROL                     (char *[]){ "pavucontrol-qt", NULL }
 #define NORMALIZEVOLUME                 (char *[]){ SCRIPT("pulse_normalize.sh"), NULL }
-#define TOGGLEMUTE                      (char *[]){ "/usr/bin/pactl", "set-sink-mute", "@DEFAULT_SINK@", "toggle", NULL }
+#define TOGGLEMUTE                      (char *[]){ "pactl", "set-sink-mute", "@DEFAULT_SINK@", "toggle", NULL }
 
 size_t
 volumeu(char *str, int sigval)

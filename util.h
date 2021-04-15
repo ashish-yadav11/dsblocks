@@ -7,7 +7,7 @@
 #define COL4                            "\x0f" /* mail block - frozen */
 
 #define SCRIPT(name)                    "/home/ashish/.scripts/"name
-#define TERMCMD(cmd)                    cspawn((char *[]){ "/usr/bin/termite", "-e", cmd, NULL })
+#define TERMCMD(cmd)                    cspawn((char *[]){ "termite", "-e", cmd, NULL })
 
 #define SPRINTF(str, ...)               ({ \
                                                 int len = snprintf(str, BLOCKLENGTH, __VA_ARGS__); \

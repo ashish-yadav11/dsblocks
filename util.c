@@ -9,8 +9,8 @@ void
 cspawn(char *const *arg)
 {
         setsid();
-        execv(arg[0], arg);
-        perror("cspawn - execv");
+        execvp(arg[0], arg);
+        perror("cspawn - execvp");
         _exit(127);
 }
 
@@ -56,8 +56,8 @@ getcmdout(char *const *arg, char *cmdout, size_t cmdoutlen)
                                 }
                                 close(fd[1]);
                         }
-                        execv(arg[0], arg);
-                        perror("getcmdout - child - execv");
+                        execvp(arg[0], arg);
+                        perror("getcmdout - child - execvp");
                         _exit(127);
                 default:
                         close(fd[1]);
@@ -100,8 +100,8 @@ uspawn(char *const *arg)
                 case 0:
                         close(ConnectionNumber(dpy));
                         setsid();
-                        execv(arg[0], arg);
-                        perror("uspawn - child - execv");
+                        execvp(arg[0], arg);
+                        perror("uspawn - child - execvp");
                         _exit(127);
         }
 }

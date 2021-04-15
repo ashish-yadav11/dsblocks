@@ -34,18 +34,18 @@
 #define BATCNOWFILE                     "/sys/class/power_supply/BAT0/charge_now"
 #define BATRATEFILE                     "/sys/class/power_supply/BAT0/current_now"
 
-#define CNOTIFY(t, msg)                (char *[]){ "/usr/bin/notify-send", \
+#define CNOTIFY(t, msg)                (char *[]){ "notify-send", \
                                                    "-h", "string:x-canonical-private-synchronous:batmon", \
                                                    "-u", "critical", \
                                                    "-t", t, \
                                                    "BatMon", msg, NULL }
 
-#define NNOTIFY(t, msg)                (char *[]){ "/usr/bin/notify-send", \
+#define NNOTIFY(t, msg)                (char *[]){ "notify-send", \
                                                    "-h", "string:x-canonical-private-synchronous:batmon", \
                                                    "-t", t, \
                                                    "BatMon", msg, NULL }
 
-#define TNOTIFY(t, msg)                (char *[]){ "/usr/bin/notify-send", \
+#define TNOTIFY(t, msg)                (char *[]){ "notify-send", \
                                                    "-h", "string:x-canonical-private-synchronous:batmon", \
                                                    "-h", "int:transient:1", \
                                                    "-t", t, \

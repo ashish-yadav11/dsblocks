@@ -5,7 +5,7 @@
 
 #define ICON                            COL1 ""
 
-#define TURNOFFHOTSPOT                  (char *[]){ "/usr/bin/sudo", SCRIPT("hotspot.sh"), "terminate", NULL }
+#define TURNOFFHOTSPOT                  (char *[]){ "sudo", SCRIPT("hotspot.sh"), "terminate", NULL }
 
 size_t
 hotspotu(char *str, int enabled)
