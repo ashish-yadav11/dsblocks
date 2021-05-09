@@ -10,14 +10,9 @@ sigdsblocks 3 -1
 exec >/dev/null 2>&1 8<>/tmp/mailsync.1.lock 9<>/tmp/mailsync.2.lock
 if ! flock -n 8 ; then
     flock -n 9 || exit
-    if ! flock -w120 8 ; then
-        read -r PID <&8 && pkill mbsync -P "$PID"
-        flock -w15 8 || exit
-    fi
+    flock 8
 fi
-echo "$$" >&8
 mbsync "$mbsync_channel"
 sigval=$?
-: >/tmp/mailsync.1.lock
 notmuch new
 flock -n 9 && sigdsblocks 3 "$sigval"
