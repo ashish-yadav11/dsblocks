@@ -43,7 +43,7 @@ diff -ruN dwm-6.2-ori/config.def.h dwm-6.2/config.def.h
  	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
 diff -ruN dwm-6.2-ori/dwm.c dwm-6.2/dwm.c
 --- dwm-6.2-ori/dwm.c	2019-02-02 18:25:28.000000000 +0530
-+++ dwm-6.2/dwm.c	2021-01-25 16:29:30.411870905 +0530
++++ dwm-6.2/dwm.c	2021-06-21 17:50:13.520152649 +0530
 @@ -40,6 +40,7 @@
  #include <X11/extensions/Xinerama.h>
  #endif /* XINERAMA */
@@ -59,7 +59,7 @@ diff -ruN dwm-6.2-ori/dwm.c dwm-6.2/dwm.c
 +#define TTEXTW(X)               (drw_fontset_getwidth(drw, (X)))
 +
 +#define STATUSLENGTH            256
-+#define DSBLOCKSLOCKFILE        "/tmp/dsblocks.pid"
++#define DSBLOCKSLOCKFILE        "/var/local/dsblocks/dsblocks.pid"
 +#define DELIMITERENDCHAR        10
 +#define LSPAD                   (lrpad / 2) /* padding on left side of status text */
 +#define RSPAD                   (lrpad / 2) /* padding on right side of status text */

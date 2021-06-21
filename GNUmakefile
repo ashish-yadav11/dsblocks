@@ -32,13 +32,17 @@ clean:
 	rm -f blocks/*.o *.o dsblocks sigdsblocks/sigdsblocks xgetrootname/xgetrootname
 
 BINDIR = ${DESTDIR}${PREFIX}/bin
+PIDDIR = /var/local/dsblocks
 
 install: all
 	mkdir -p ${BINDIR}
 	cp -f dsblocks sigdsblocks/sigdsblocks xgetrootname/xgetrootname ${BINDIR}
 	chmod 755 ${BINDIR}/dsblocks ${BINDIR}/sigdsblocks ${BINDIR}/xgetrootname
+	mkdir -p ${PIDDIR}
+	chmod 777 ${PIDDIR}
 
 uninstall:
 	rm -f ${BINDIR}/dsblocks ${BINDIR}/sigdsblocks ${BINDIR}/xgetrootname
+	rm -df ${PIDDIR} || exit 0
 
 .PHONY: all clean install uninstall

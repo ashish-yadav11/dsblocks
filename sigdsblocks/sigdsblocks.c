@@ -7,7 +7,7 @@
 #include <unistd.h>
 
 #define NILL                            INT_MIN
-#define LOCKFILE                        "/tmp/dsblocks.pid"
+#define LOCKFILE                        "/var/local/dsblocks/dsblocks.pid"
 
 int
 parsesignal(char *arg)

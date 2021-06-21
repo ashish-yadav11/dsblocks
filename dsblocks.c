@@ -10,7 +10,7 @@
 
 #include "shared.h"
 
-#define LOCKFILE                        "/tmp/dsblocks.pid"
+#define LOCKFILE                        "/var/local/dsblocks/dsblocks.pid"
 
 #define DELIMITERLENGTH                 (sizeof delimiter)
 #define STATUSLENGTH                    (LENGTH(blocks) * (BLOCKLENGTH + DELIMITERLENGTH) + 1)
