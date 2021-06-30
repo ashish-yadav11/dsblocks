@@ -1,6 +1,6 @@
 # dsblocks
 
-Modular status monitor for dwm, written and meant to be extended in C, with
+Modular status monitor for dwm, written and meant to be configured in C, with
 features including signaling, clickability, cursor hinting and color.
 
 > The project is only meant for people comfortable with the C language. See
