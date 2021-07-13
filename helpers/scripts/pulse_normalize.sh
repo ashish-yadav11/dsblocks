@@ -1,4 +1,5 @@
 #!/bin/sh
+# (for pulseaudio users)
 # This script sets volume of both sides of output to the greatest factor of
 # "step" less than the smaller of the two
 # It is executed by volume block on middle click
