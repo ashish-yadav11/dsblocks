@@ -8,26 +8,22 @@ volume=$(
         BEGIN {
             step = 5
         }
-        {
-            if (f) {
-                if ($1 == "index:") {
-                    exit
-                }
-                if ($1 == "volume:") {
-                    v = $3 <= $10 ? $5 : $12
-                    sub(/%/, "", v)
-                    v = int(v / step) * step
-                }
-            } else if ($1 == "*" && $2 == "index:") {
-                f = 1
+        f {
+            if ($1 == "volume:") {
+                v = $3 <= $10 ? $5 : $12
+                sub(/%/, "", v)
+                v = int(v / step) * step
+                exit
             }
         }
+        $1 == "*" && $2 == "index:" {
+            f = 1
+        }
         END {
-            if (f) {
+            if (f)
                 print v
-            } else {
+            else
                 exit 1
-            }
         }
     '
 ) && pactl set-sink-volume @DEFAULT_SINK@ "$volume%"

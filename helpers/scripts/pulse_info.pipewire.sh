@@ -7,17 +7,18 @@ sink=$(pactl info | awk '$1 == "Default" && $2 == "Sink:" {print $3}')
 [ -n "$sink" ] || exit
 pactl list sinks | awk -v sink="$sink" '
     f {
-        if ($1 == "Mute:" && $2 == "yes")
+        if ($1 == "Mute:" && $2 == "yes") {
             i += 1
-        else if ($1 == "Volume:") {
-            if ($3 == $10)
+        } else if ($1 == "Volume:") {
+            if ($3 == $10) {
                 vb = $5
-            else {
+            } else {
                 vl = $5
                 vr = $12
             }
-        } else if ($1 == "Active" && $2 == "Port:" && tolower($3) ~ /headphone/) {
-            i += 2
+        } else if ($1 == "Active" && $2 == "Port:") {
+            if (tolower($3) ~ /headphone/)
+                i += 2
             exit
         }
         next
