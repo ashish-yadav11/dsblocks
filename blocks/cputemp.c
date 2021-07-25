@@ -30,13 +30,13 @@ cputempc(int button)
 {
         switch (button) {
                 case 1:
-                        TERMCMD("htop -s PERCENT_CPU");
+                        TERMCMD("htop", "-s", "PERCENT_CPU");
                         break;
                 case 2:
                         TERMCMD("htop");
                         break;
                 case 3:
-                        TERMCMD("htop -s PERCENT_MEM");
+                        TERMCMD("htop", "-s", "PERCENT_MEM");
                         break;
         }
 }
