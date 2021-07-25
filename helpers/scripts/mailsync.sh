@@ -3,8 +3,8 @@
 # signals mail block whether the sync was successful or not
 mbsync_channel=-a
 
-lockfile1=$XDG_RUNTIME_DIR/mailsync.1.lock
-lockfile2=$XDG_RUNTIME_DIR/mailsync.2.lock
+lockfile1="$XDG_RUNTIME_DIR/mailsync.1.lock"
+lockfile2="$XDG_RUNTIME_DIR/mailsync.2.lock"
 
 # At max two instances of the script are allowed to run simultaneously, one
 # syncing and one waiting for the other to finish syncing.
@@ -16,6 +16,6 @@ if ! flock -n 8 ; then
     flock 8
 fi
 mbsync "$mbsync_channel"
-sigval=$?
+sigval="$?"
 notmuch new
 flock -n 9 && sigdsblocks 3 "$sigval"

@@ -3,7 +3,7 @@
 # This is a helper script for volume block
 # It prints info about current volume, mute and whether headhone is plugged or
 # not in a manner parsable by volume block
-sink=$(pactl info | awk '$1 == "Default" && $2 == "Sink:" {print $3}')
+sink="$(pactl info | awk '$1 == "Default" && $2 == "Sink:" {print $3}')"
 [ -n "$sink" ] || exit
 pactl list sinks | awk -v sink="$sink" '
     f {

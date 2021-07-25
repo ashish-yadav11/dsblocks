@@ -6,19 +6,19 @@
 # hotspot
 wifi_interface=wlp5s0
 
-case $1 in
+case "$1" in
     initiate)
         fallback_interface=eno1
 
         nmcli device disconnect "$wifi_interface"
-        active_interface=$(nmcli -t -f DEVICE connection show --active)
+        active_interface="$(nmcli -t -f DEVICE connection show --active)"
         newline='
 '
-        active_interface=${active_interface%%"$newline"*}
+        active_interface="${active_interface%%"$newline"*}"
         trap 'sigdsblocks 4 0; exit 0' HUP INT TERM
         sigdsblocks 4 1
-        create_ap "$wifi_interface" "${active_interface:-$fallback_interface}" pc 11111111
-        status=$?
+        create_ap "$wifi_interface" "${active_interface:-"$fallback_interface"}" pc 11111111
+        status="$?"
         sigdsblocks 4 0
         exit "$status"
         ;;
