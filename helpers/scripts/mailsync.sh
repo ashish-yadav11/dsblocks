@@ -9,8 +9,9 @@ lockfile2="$XDG_RUNTIME_DIR/mailsync.2.lock"
 # At max two instances of the script are allowed to run simultaneously, one
 # syncing and one waiting for the other to finish syncing.
 
-sigdsblocks 3 -1
 exec >/dev/null 2>&1 8<>"$lockfile1" 9<>"$lockfile2"
+
+sigdsblocks 3 -1
 if ! flock -n 8 ; then
     flock -n 9 || exit
     flock 8
