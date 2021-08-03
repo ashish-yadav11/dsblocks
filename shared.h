@@ -8,5 +8,4 @@
 
 void cleanup();
 
-extern Display *dpy;
 extern pid_t pid;

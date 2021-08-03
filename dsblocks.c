@@ -31,10 +31,10 @@ static void updateblock(Block *block, int sigval);
 static void updatestatus();
 static void writepid();
 
-Display *dpy;
 pid_t pid;
 
 static Block *dirtyblock;
+static Display *dpy;
 static sigset_t blocksigmask;
 
 void
@@ -48,7 +48,6 @@ buttonhandler(int sig, siginfo_t *info, void *ucontext)
                                         perror("buttonhandler - fork");
                                         break;
                                 case 0:
-                                        close(ConnectionNumber(dpy));
                                         block->funcc(info->si_value.sival_int & 0xff);
                                         exit(0);
                         }
@@ -242,6 +241,8 @@ writepid()
 int
 main(int argc, char *argv[])
 {
+        int xfd;
+
         pid = getpid();
         writepid();
         if (!(dpy = XOpenDisplay(NULL))) {
@@ -249,6 +250,8 @@ main(int argc, char *argv[])
                 unlink(LOCKFILE);
                 return 1;
         }
+        xfd = ConnectionNumber(dpy);
+        fcntl(xfd, F_SETFD, fcntl(xfd, F_GETFD) | FD_CLOEXEC);
         setupsignals();
         statusloop();
         cleanup();

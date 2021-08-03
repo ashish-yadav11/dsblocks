@@ -47,7 +47,6 @@ getcmdout(char *const *arg, char *cmdout, size_t cmdoutlen)
                         cleanup();
                         exit(1);
                 case 0:
-                        close(ConnectionNumber(dpy));
                         close(fd[0]);
                         if (fd[1] != STDOUT_FILENO) {
                                 if (dup2(fd[1], STDOUT_FILENO) != STDOUT_FILENO) {
@@ -98,7 +97,6 @@ uspawn(char *const *arg)
                         cleanup();
                         exit(1);
                 case 0:
-                        close(ConnectionNumber(dpy));
                         setsid();
                         execvp(arg[0], arg);
                         perror("uspawn - child - execvp");
