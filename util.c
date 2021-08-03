@@ -47,6 +47,7 @@ getcmdout(char *const *arg, char *cmdout, size_t cmdoutlen)
                         cleanup();
                         exit(1);
                 case 0:
+                        close(lfd);
                         close(ConnectionNumber(dpy));
                         close(fd[0]);
                         if (fd[1] != STDOUT_FILENO) {
@@ -98,6 +99,7 @@ uspawn(char *const *arg)
                         cleanup();
                         exit(1);
                 case 0:
+                        close(lfd);
                         close(ConnectionNumber(dpy));
                         setsid();
                         execvp(arg[0], arg);
