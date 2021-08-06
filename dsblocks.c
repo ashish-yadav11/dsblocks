@@ -222,18 +222,22 @@ writepid()
         fl.l_len = 0;
         if (fcntl(fd, F_SETLK, &fl) == -1) {
                 if (errno == EACCES || errno == EAGAIN) {
+                        close(fd);
                         fputs("Error: another instance of dsblocks is already running.\n", stderr);
                         exit(2);
                 }
                 perror("writepid - fcntl");
+                close(fd);
                 exit(1);
         }
         if (ftruncate(fd, 0) == -1) {
                 perror("writepid - ftruncate");
+                close(fd);
                 exit(1);
         }
         if (dprintf(fd, "%ld", (long)pid) < 0) {
                 perror("writepid - dprintf");
+                close(fd);
                 exit(1);
         }
 }
