@@ -20,16 +20,16 @@
 _Static_assert(INTERVALs >= 0, "INTERVALs must be greater than or equal to 0");
 _Static_assert(INTERVALn >= 0 && INTERVALn <= 999999999, "INTERVALn must be between 0 and 999999999");
 
-void cleanup();
+void cleanup(void);
 
 static void buttonhandler(int sig, siginfo_t *info, void *ucontext);
-static void setupsignals();
+static void setupsignals(void);
 static void sighandler(int sig, siginfo_t *info, void *ucontext);
-static void statusloop();
+static void statusloop(void);
 static void termhandler(int sig);
 static void updateblock(Block *block, int sigval);
-static void updatestatus();
-static void writepid();
+static void updatestatus(void);
+static void writepid(void);
 
 pid_t pid;
 
@@ -54,7 +54,7 @@ buttonhandler(int sig, siginfo_t *info, void *ucontext)
 }
 
 void
-cleanup()
+cleanup(void)
 {
         unlink(LOCKFILE);
         XStoreName(dpy, DefaultRootWindow(dpy), "");
@@ -62,7 +62,7 @@ cleanup()
 }
 
 void
-setupsignals()
+setupsignals(void)
 {
         struct sigaction sa;
 
@@ -131,7 +131,7 @@ sighandler(int sig, siginfo_t *info, void *ucontext)
 }
 
 void
-statusloop()
+statusloop(void)
 {
         int i;
         struct timespec t;
@@ -184,7 +184,7 @@ updateblock(Block *block, int sigval)
 }
 
 void
-updatestatus()
+updatestatus(void)
 {
         static char statustext[STATUSLENGTH];
         char *s = statustext;
@@ -206,7 +206,7 @@ updatestatus()
 }
 
 void
-writepid()
+writepid(void)
 {
         int fd;
         struct flock fl;

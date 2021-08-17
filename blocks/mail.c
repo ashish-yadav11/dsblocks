@@ -17,7 +17,7 @@
 static int newmails;
 
 static void
-updatenewmails()
+updatenewmails(void)
 {
         static time_t lastmtime = 0;
         DIR* dir;

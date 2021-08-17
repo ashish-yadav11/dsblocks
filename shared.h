@@ -6,6 +6,6 @@
 
 #define LENGTH(X)                       (sizeof X / sizeof X[0])
 
-void cleanup();
+void cleanup(void);
 
 extern pid_t pid;
