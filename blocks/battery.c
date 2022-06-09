@@ -23,10 +23,10 @@
 
 #define ICON(bat)                       icons[(bat * (LENGTH(icons) - 1) + 50) / 100]
 
-#define BATC                            10 /* critical level */
-#define BATL                            20 /* low level */
-#define BATP                            40 /* plug in level */
-#define BATU                            80 /* unplug level */
+#define BATC                            10  /* critical level */
+#define BATL                            20  /* low level */
+#define BATP                            40  /* plug in level */
+#define BATU                            80  /* unplug level */
 
 #define BATCAPFILE                      "/sys/class/power_supply/BAT0/capacity"
 #define ACSTATEFILE                     "/sys/class/power_supply/AC/online"
