@@ -18,7 +18,7 @@ size_t
 volumeu(char *str, int sigval)
 {
         static char *icons[] = { ICONsn, ICONsm, ICONhn, ICONhm };
-        char buf[15];
+        char buf[32];
         size_t l;
 
         if (!(l = getcmdout(PULSEINFO, buf, sizeof buf - 1))) {

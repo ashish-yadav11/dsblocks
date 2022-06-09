@@ -190,7 +190,7 @@ batteryc(int button)
                                         break;
                                 default:
                                 {
-                                        char buf[21];
+                                        char buf[64];
 
                                         snprintf(buf, sizeof buf, "%d minutes remaining", mn);
                                         CNNOTIFY("2000", buf);
@@ -208,7 +208,7 @@ batteryc(int button)
                                         break;
                                 default:
                                 {
-                                        char buf[29];
+                                        char buf[64];
 
                                         snprintf(buf, sizeof buf, "1 hour, %d minutes remaining", mn);
                                         CNNOTIFY("2000", buf);
@@ -220,7 +220,7 @@ batteryc(int button)
                         switch (mn) {
                                 case 0:
                                 {
-                                        char buf[19];
+                                        char buf[64];
 
                                         snprintf(buf, sizeof buf, "%d hours remaining", hr);
                                         CNNOTIFY("2000", buf);
@@ -228,7 +228,7 @@ batteryc(int button)
                                         break;
                                 case 1:
                                 {
-                                        char buf[29];
+                                        char buf[64];
 
                                         snprintf(buf, sizeof buf, "%d hours, 1 minute remaining", hr);
                                         CNNOTIFY("2000", buf);
@@ -236,7 +236,7 @@ batteryc(int button)
                                         break;
                                 default:
                                 {
-                                        char buf[31];
+                                        char buf[64];
 
                                         snprintf(buf, sizeof buf, "%d hours, %d minutes remaining", hr, mn);
                                         CNNOTIFY("2000", buf);
