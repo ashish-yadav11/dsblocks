@@ -3,7 +3,7 @@
 # This script sets volume of both sides of output to the greatest factor of
 # "step" less than the smaller of the two
 # It is executed by volume block on middle click
-sink="$(pactl info | awk '$1 == "Default" && $2 == "Sink:" {print $3}')"
+sink="$(pactl get-default-sink)"
 [ -n "$sink" ] || exit
 volume=$(
     pactl list sinks | awk -v sink="$sink" '
