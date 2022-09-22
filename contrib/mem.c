@@ -8,7 +8,7 @@
 
 static const char meminfofile[] = "/proc/meminfo";
 
-void
+size_t
 memu(char *str, int sigval)
 {
 	char field[20];
