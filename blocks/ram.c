@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -23,15 +24,15 @@ ramu(char *str, int sigval)
 {
         FILE *fp;
         char field[32];
-        size_t val, memtotal = 0, swptotal = 0;
-        size_t memu = 0, swpu = 0;
+        uintmax_t val, memavail = 0, memtotal = 0, swpavail = 0, swptotal = 0;
+        unsigned int memu, swpu;
 
         if (!(fp = fopen(RAMFILE, "r"))) {
                 *str = '\0';
                 return 1;
         }
         do {
-                if (fscanf(fp, "%s %zu kB", field, &val) != 2) {
+                if (fscanf(fp, "%s %ju kB", field, &val) != 2) {
                         fclose(fp);
                         *str = '\0';
                         return 1;
@@ -39,23 +40,28 @@ ramu(char *str, int sigval)
                 if (strncmp(field, MEMTOTAL, sizeof MEMTOTAL) == 0) {
                         memtotal = val;
                 } else if (strncmp(field, MEMAVAIL, sizeof MEMAVAIL) == 0) {
-                        memu = 100 - (val * 100) / memtotal;
+                        memavail = val;
                 } else if (strncmp(field, SWPTOTAL, sizeof SWPTOTAL) == 0) {
                         swptotal = val;
                 } else if (strncmp(field, SWPAVAIL, sizeof SWPAVAIL) == 0) {
-                        swpu = 100 - (val * 100) / swptotal;
+                        swpavail = val;
                 }
         } while (strncmp(field, LASTFIELDTOSCAN, sizeof LASTFIELDTOSCAN) != 0);
         fclose(fp);
 
         if (memtotal != 0 && swptotal != 0) {
+                memu = 100 - (memavail * 100) / memtotal;
+                swpu = 100 - (swpavail * 100) / swptotal;
                 if (memu >= MEMW && swpu >= SWPW)
-                        return SPRINTF(str, ICONw "s%zu%% r%zu%%", swpu, memu);
-                return SPRINTF(str, ICONn "s%zu%% r%zu%%", swpu, memu);
+                        return SPRINTF(str, ICONw "s%u%% r%u%%", swpu, memu);
+                else
+                        return SPRINTF(str, ICONn "s%u%% r%u%%", swpu, memu);
         } else if (memtotal != 0) {
+                memu = 100 - (memavail * 100) / memtotal;
                 if (memu >= MEMW)
-                        return SPRINTF(str, ICONw "%zu%%", memu);
-                return SPRINTF(str, ICONn "%zu%%", memu);
+                        return SPRINTF(str, ICONw "%u%%", memu);
+                else
+                        return SPRINTF(str, ICONn "%u%%", memu);
         } else {
                 *str = '\0';
                 return 1;
