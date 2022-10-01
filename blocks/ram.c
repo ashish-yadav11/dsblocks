@@ -9,7 +9,7 @@
 #define ICONw                           COL2 "" COL0
 
 #define MEMW                            85
-#define SWPW                            85
+#define SWPW                            95
 
 #define RAMFILE                         "/proc/meminfo"
 
