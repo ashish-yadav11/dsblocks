@@ -37,14 +37,15 @@ ramu(char *str, int sigval)
                         *str = '\0';
                         return 1;
                 }
-                if (strncmp(field, MEMTOTAL, sizeof MEMTOTAL) == 0) {
+                if (!memtotal && strncmp(field, MEMTOTAL, sizeof MEMTOTAL) == 0) {
                         memtotal = val;
-                } else if (strncmp(field, MEMAVAIL, sizeof MEMAVAIL) == 0) {
+                } else if (!memavail && strncmp(field, MEMAVAIL, sizeof MEMAVAIL) == 0) {
                         memavail = val;
-                } else if (strncmp(field, SWPTOTAL, sizeof SWPTOTAL) == 0) {
+                } else if (!swptotal && strncmp(field, SWPTOTAL, sizeof SWPTOTAL) == 0) {
                         swptotal = val;
-                } else if (strncmp(field, SWPAVAIL, sizeof SWPAVAIL) == 0) {
+                } else if (!swpavail && strncmp(field, SWPAVAIL, sizeof SWPAVAIL) == 0) {
                         swpavail = val;
+                        break;
                 }
         } while (strncmp(field, LASTFIELDTOSCAN, sizeof LASTFIELDTOSCAN) != 0);
         fclose(fp);
