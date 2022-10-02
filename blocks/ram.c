@@ -39,10 +39,13 @@ ramu(char *str, int sigval)
                 }
                 if (!memtotal && strncmp(field, MEMTOTAL, sizeof MEMTOTAL) == 0) {
                         memtotal = val;
+                        continue;
                 } else if (!memavail && strncmp(field, MEMAVAIL, sizeof MEMAVAIL) == 0) {
                         memavail = val;
+                        continue;
                 } else if (!swptotal && strncmp(field, SWPTOTAL, sizeof SWPTOTAL) == 0) {
                         swptotal = val;
+                        continue;
                 } else if (!swpavail && strncmp(field, SWPAVAIL, sizeof SWPAVAIL) == 0) {
                         swpavail = val;
                         break;
