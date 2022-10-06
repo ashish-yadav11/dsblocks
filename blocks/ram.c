@@ -53,23 +53,22 @@ ramu(char *str, int sigval)
         } while (strncmp(field, LASTFIELDTOSCAN, sizeof LASTFIELDTOSCAN) != 0);
         fclose(fp);
 
-        if (memtotal != 0 && swptotal != 0) {
-                memu = 100 - (memavail * 100) / memtotal;
-                swpu = 100 - (swpavail * 100) / swptotal;
-                if (memu >= MEMW && swpu >= SWPW)
-                        return SPRINTF(str, ICONw "s%u%% r%u%%", swpu, memu);
-                else
-                        return SPRINTF(str, ICONn "s%u%% r%u%%", swpu, memu);
-        } else if (memtotal != 0) {
-                memu = 100 - (memavail * 100) / memtotal;
+        if (!memtotal) {
+                *str = '\0';
+                return 1;
+        }
+        memu = 100 - (memavail * 100) / memtotal;
+        if (!swptotal) {
                 if (memu >= MEMW)
                         return SPRINTF(str, ICONw "%u%%", memu);
                 else
                         return SPRINTF(str, ICONn "%u%%", memu);
-        } else {
-                *str = '\0';
-                return 1;
         }
+        swpu = 100 - (swpavail * 100) / swptotal;
+        if (memu >= MEMW && swpu >= SWPW)
+                return SPRINTF(str, ICONw "s%u%% r%u%%", swpu, memu);
+        else
+                return SPRINTF(str, ICONn "s%u%% r%u%%", swpu, memu);
 }
 
 void
