@@ -14,6 +14,7 @@ cspawn(char *const *arg)
         _exit(127);
 }
 
+/* sigdsblocks from funcc */
 void
 csigself(int sig, int sigval)
 {
