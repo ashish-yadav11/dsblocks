@@ -10,14 +10,28 @@
 size_t
 calendaru(char *str, int sigval)
 {
+        static int hidetime = 0;
         time_t t = time(NULL);
         struct tm tm = *localtime(&t);
 
-        return strftime(str, BLOCKLENGTH, ICON "%a, %b %d, %R", &tm) + 1;
+        if (sigval == 0)
+                hidetime = !hidetime;
+
+        if (hidetime)
+                return strftime(str, BLOCKLENGTH, ICON "%a, %b %d", &tm) + 1;
+        else
+                return strftime(str, BLOCKLENGTH, ICON "%a, %b %d, %R", &tm) + 1;
 }
 
 void
 calendarc(int button)
 {
-        cspawn(TOGGLECALCURSE);
+        switch (button) {
+                case 1:
+                        cspawn(TOGGLECALCURSE);
+                        break;
+                case 3:
+                        csigself(1, 0);
+                        break;
+        }
 }
