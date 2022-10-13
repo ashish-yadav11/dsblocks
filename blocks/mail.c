@@ -14,12 +14,19 @@
 
 #define MAILSYNC                        (char *[]){ SCRIPT("mailsync.sh"), NULL }
 
-static int newmails;
+#define NOTIFY(t, msg)                  uspawn((char *[]){ \
+                "notify-send", \
+                "-h", "string:x-canonical-private-synchronous:mailsync", \
+                "-t", t, \
+                "MailSync", msg, NULL })
+
+static int newmails = 0;
 
 static void
 updatenewmails(void)
 {
         static time_t lastmtime = 0;
+        int prevnewmails;
         DIR* dir;
         struct dirent* entry;
         struct stat buf;
@@ -36,11 +43,14 @@ updatenewmails(void)
                 newmails = -1;
                 return;
         }
+        prevnewmails = newmails;
         newmails = 0;
         while ((entry = readdir(dir)))
                 if (entry->d_type == DT_REG)
                         newmails++;
         closedir(dir);
+        if (newmails > prevnewmails)
+                NOTIFY("2000", "You have got new mails!");
 }
 
 size_t
