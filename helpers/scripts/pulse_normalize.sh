@@ -12,7 +12,7 @@ volume="$(
             if ($1 == "volume:") {
                 v = $3 <= $10 ? $5 : $12
                 sub(/%/, "", v)
-                v = int(v / step) * step
+                v = int(v / step + 1/2) * step
                 exit
             }
         }
