@@ -108,7 +108,7 @@ batteryu(char *str, int ac)
                         return SPRINTF(str, PDN "%s%d%%", ICON(bat), bat);
                 }
         /* charger plugged in */
-        } else if (ac) {
+        } else if (ac == 1) {
                 if (bat < BATU) {
                         UTNOTIFY("1000", "Charger plugged in");
                         level = Normal;
@@ -118,7 +118,7 @@ batteryu(char *str, int ac)
                 }
                 return SPRINTF(str, PUP "%s%d%%", ICON(bat), bat);
         /* charger plugged out */
-        } else {
+        } else if (ac == 0) {
                 if (bat > BATP) {
                         UTNOTIFY("1000", "Charger plugged out");
                         level = Normal;
