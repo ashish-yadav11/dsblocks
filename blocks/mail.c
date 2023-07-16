@@ -58,25 +58,26 @@ mailu(char *str, int sigval)
 {
         static int frozen;
 
-        /* update newmails on signals from MAILSYNC */
-        if (sigval >= -1) {
+        /* update newmails except when MAILSYNC signals it's launch */
+        if (sigval != -1) {
                 updatenewmails();
                 if (newmails < 0) {
                         *str = '\0';
                         return 1;
                 }
         }
+        if (frozen && sigval != -2)
+                return SPRINTF(str, ICONz "%d", newmails);
         switch (sigval) {
-                /* routine update */
+                /* routine update or `sigdsblocks 3` */
                 case NILL:
-                        if (!frozen)
-                                uspawn(MAILSYNC);
+                        uspawn(MAILSYNC);
+                        /* MAILSYNC will signal -1, no need to update text now */
                         return 0;
                 /* toggle frozen */
                 case -2:
-                        if (newmails < 0)
-                                return 0;
                         if (frozen) {
+                                frozen = 0;
                                 uspawn(MAILSYNC);
                                 return 0;
                         } else {
@@ -85,20 +86,13 @@ mailu(char *str, int sigval)
                         }
                 /* MAILSYNC started */
                 case -1:
-                        frozen = 0;
                         return SPRINTF(str, ICONs "%d", newmails);
                 /* sync successful */
                 case 0:
-                        if (frozen)
-                                return SPRINTF(str, ICONz "%d", newmails);
-                        else
-                                return SPRINTF(str, ICONn "%d", newmails);
+                        return SPRINTF(str, ICONn "%d", newmails);
                 /* sync failed */
                 default:
-                        if (frozen)
-                                return SPRINTF(str, ICONz "%d", newmails);
-                        else
-                                return SPRINTF(str, ICONe "%d", newmails);
+                        return SPRINTF(str, ICONe "%d", newmails);
         }
 }
 
@@ -107,7 +101,7 @@ mailc(int button)
 {
         switch (button) {
                 case 1:
-                        cspawn(MAILSYNC);
+                        csigself(3, NILL);
                         break;
                 case 3:
                         csigself(3, -2);
