@@ -134,6 +134,7 @@ batteryu(char *str, int ac)
                 }
                 return SPRINTF(str, PDN "%s%d%%", ICON(bat), bat);
         }
+        return 0;
 }
 
 void
