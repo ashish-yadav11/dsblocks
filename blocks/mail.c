@@ -57,20 +57,25 @@ size_t
 mailu(char *str, int sigval)
 {
         static int frozen;
+        static int lastsuccess = 0;
 
-        /* update newmails except when MAILSYNC signals it's launch */
-        if (sigval != -1) {
+        if (lastsuccess && sigval == RTNE)
+                return 0;
+        /* update newmails except for routine resync due to network failure and
+         * when MAILSYNC signals it's launch */
+        if (sigval != -1 && sigval != RTNE)
                 updatenewmails();
-                if (newmails < 0) {
-                        *str = '\0';
-                        return 1;
-                }
+        if (newmails < 0) {
+                *str = '\0';
+                return 1;
         }
         if (frozen && sigval != -2)
                 return SPRINTF(str, ICONz "%d", newmails);
         switch (sigval) {
                 /* routine update or `sigdsblocks 3` */
-                case NILL:
+                case STRT:
+                case RTNE:
+                case NONE:
                         uspawn(MAILSYNC);
                         /* MAILSYNC will signal -1, no need to update text now */
                         return 0;
@@ -89,9 +94,11 @@ mailu(char *str, int sigval)
                         return SPRINTF(str, ICONs "%d", newmails);
                 /* sync successful */
                 case 0:
+                        lastsuccess = 1;
                         return SPRINTF(str, ICONn "%d", newmails);
                 /* sync failed */
                 default:
+                        lastsuccess = 0;
                         return SPRINTF(str, ICONe "%d", newmails);
         }
 }
@@ -101,7 +108,7 @@ mailc(int button)
 {
         switch (button) {
                 case 1:
-                        csigself(3, NILL);
+                        csigself(3, NONE);
                         break;
                 case 3:
                         csigself(3, -2);

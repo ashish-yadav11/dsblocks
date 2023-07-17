@@ -1,12 +1,12 @@
 #include <errno.h>
 #include <fcntl.h>
-#include <limits.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-#define NILL                            INT_MIN
+#include "../sigvals.h"
+
 #define LOCKFILE                        "/var/local/dsblocks/dsblocks.pid"
 
 int
@@ -98,7 +98,15 @@ main(int argc, char *argv[])
                 return 2;
         }
         sig = parsesignal(argv[1]);
-        sv.sival_int = argc == 2 ? NILL : parsesigval(argv[2]);
+        if (argc == 2) {
+                sv.sival_int = NONE;
+        } else {
+                sv.sival_int = parsesigval(argv[2]);
+                if (ISSPLSIGVAL(sv.sival_int)) {
+                        fputs("Error: provided <sigval> is reserved.\n", stderr);
+                }
+                return 3;
+        }
         sendsignal(sig, sv);
         return 0;
 }

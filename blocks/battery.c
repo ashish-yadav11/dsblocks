@@ -61,19 +61,22 @@
 enum { Normal, Critical, Low, Plug, Unplug };
 
 size_t
-batteryu(char *str, int ac)
+batteryu(char *str, int sigval)
 {
         static int level = Normal;
         static char *icons[] = { ICON0, ICON1, ICON2, ICON3, ICON4,
                                  ICON5, ICON6, ICON7, ICON8, ICON9 };
-        int bat;
+        int ac, bat;
 
         if (!readint(BATCAPFILE, &bat)) {
                 strcpy(str, ICONa);
                 return sizeof ICONa;
         }
+        switch (sigval) {
         /* routine update */
-        if (ac == NILL) {
+        case STRT:
+        case RTNE:
+        case NONE:
                 if (!readint(ACSTATEFILE, &ac))
                         return SPRINTF(str, ICONe "%d%%", bat);
                 if (ac) {
@@ -108,7 +111,7 @@ batteryu(char *str, int ac)
                         return SPRINTF(str, PDN "%s%d%%", ICON(bat), bat);
                 }
         /* charger plugged in */
-        } else if (ac == 1) {
+        case 1:
                 if (bat < BATU) {
                         UTNOTIFY("1000", "Charger plugged in");
                         level = Normal;
@@ -118,7 +121,7 @@ batteryu(char *str, int ac)
                 }
                 return SPRINTF(str, PUP "%s%d%%", ICON(bat), bat);
         /* charger plugged out */
-        } else if (ac == 0) {
+        case 0:
                 if (bat > BATP) {
                         UTNOTIFY("1000", "Charger plugged out");
                         level = Normal;
@@ -133,8 +136,9 @@ batteryu(char *str, int ac)
                         level = Critical;
                 }
                 return SPRINTF(str, PDN "%s%d%%", ICON(bat), bat);
+        default:
+                return 0;
         }
-        return 0;
 }
 
 void

@@ -139,7 +139,7 @@ statusloop(void)
         sigprocmask(SIG_BLOCK, &blocksigmask, NULL);
         for (Block *block = blocks; block->funcu; block++)
                 if (block->interval >= 0)
-                        updateblock(block, NILL);
+                        updateblock(block, STRT);
         for (i = 1; ; i++) {
                 updatestatus();
                 sigprocmask(SIG_UNBLOCK, &blocksigmask, NULL);
@@ -148,7 +148,7 @@ statusloop(void)
                 sigprocmask(SIG_BLOCK, &blocksigmask, NULL);
                 for (Block *block = blocks; block->funcu; block++)
                         if (block->interval > 0 && i % block->interval == 0)
-                                updateblock(block, NILL);
+                                updateblock(block, RTNE);
         }
 }
 

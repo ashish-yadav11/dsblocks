@@ -10,19 +10,19 @@ BLOCKS := $(wildcard blocks/*.c)
 
 all: dsblocks sigdsblocks/sigdsblocks xgetrootname/xgetrootname
 
-dsblocks.o: dsblocks.c shared.h config.h block.h
+dsblocks.o: dsblocks.c shared.h sigvals.h config.h block.h
 	${CC} -o $@ -c -Wno-missing-field-initializers -Wno-unused-parameter ${CFLAGS} ${X11CFLAGS} $<
 
-util.o: util.c util.h shared.h
+util.o: util.c util.h shared.h sigvals.h
 	${CC} -o $@ -c ${CFLAGS} ${X11CFLAGS} $<
 
-blocks/%.o: blocks/%.c blocks/%.h util.h shared.h
+blocks/%.o: blocks/%.c blocks/%.h util.h shared.h sigvals.h
 	${CC} -o $@ -c -Wno-unused-parameter ${CFLAGS} $<
 
 dsblocks: dsblocks.o util.o ${BLOCKS:c=o}
 	${CC} -o $@ $^ ${X11LIBS}
 
-sigdsblocks/sigdsblocks: sigdsblocks/sigdsblocks.c
+sigdsblocks/sigdsblocks: sigdsblocks/sigdsblocks.c sigvals.h
 	${CC} -o $@ ${CFLAGS} $<
 
 xgetrootname/xgetrootname: xgetrootname/xgetrootname.c
