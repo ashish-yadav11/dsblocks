@@ -104,8 +104,8 @@ main(int argc, char *argv[])
                 sv.sival_int = parsesigval(argv[2]);
                 if (ISSPLSIGVAL(sv.sival_int)) {
                         fputs("Error: provided <sigval> is reserved.\n", stderr);
+                        return 3;
                 }
-                return 3;
         }
         sendsignal(sig, sv);
         return 0;
