@@ -32,7 +32,7 @@ clean:
 	rm -f blocks/*.o *.o dsblocks sigdsblocks/sigdsblocks xgetrootname/xgetrootname
 
 BINDIR = ${DESTDIR}${PREFIX}/bin
-PIDDIR = /var/local/dsblocks
+PIDDIR = ${DESTDIR}/var/local/dsblocks
 
 install: all
 	mkdir -p ${BINDIR}
