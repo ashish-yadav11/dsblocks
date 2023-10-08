@@ -45,7 +45,7 @@ static Block blocks[] = {
 /*      funcu                   funcc                   interval        signal */
         { hotspotu,             hotspotc,               -1,             4 },
         { calendaru,            calendarc,              1,              1 },
-        { mailu,                mailc,                  60,             3 },
+        { mailu,                mailc,                  180,            3 },
         { volumeu,              volumec,                0,              2 },
         { cputempu,             cputempc,               2,              6 },
         { ramu,                 ramc,                   2,              7 },

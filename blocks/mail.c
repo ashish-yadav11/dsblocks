@@ -57,13 +57,10 @@ size_t
 mailu(char *str, int sigval)
 {
         static int frozen;
-        static int lastsuccess = 0;
 
-        if (lastsuccess && sigval == RTNE)
-                return 0;
-        /* update newmails except for routine resync due to network failure and
-         * when MAILSYNC signals it's launch */
-        if (sigval != -1 && sigval != RTNE)
+        /* update newmails except for routine resync and when MAILSYNC signals
+         * it's launch */
+        if (sigval != RTNE && sigval != -1)
                 updatenewmails();
         if (newmails < 0) {
                 *str = '\0';
@@ -94,11 +91,9 @@ mailu(char *str, int sigval)
                         return SPRINTF(str, ICONs "%d", newmails);
                 /* sync successful */
                 case 0:
-                        lastsuccess = 1;
                         return SPRINTF(str, ICONn "%d", newmails);
                 /* sync failed */
                 default:
-                        lastsuccess = 0;
                         return SPRINTF(str, ICONe "%d", newmails);
         }
 }
