@@ -28,10 +28,10 @@ calendarc(int button)
 {
         switch (button) {
                 case 1:
-                        cspawn(TOGGLECALCURSE);
+                        csigself(1, 0);
                         break;
                 case 3:
-                        csigself(1, 0);
+                        cspawn(TOGGLECALCURSE);
                         break;
         }
 }
