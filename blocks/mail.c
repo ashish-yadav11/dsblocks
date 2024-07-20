@@ -18,6 +18,7 @@
                 "notify-send", \
                 "-h", "string:x-canonical-private-synchronous:mailsync", \
                 "-t", t, \
+                "-e", \
                 "MailSync", msg, NULL })
 
 static int newmails = 0;
