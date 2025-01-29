@@ -15,7 +15,7 @@ pacmd list-sinks | awk '
                 vr = $12
             }
         } else if ($1 == "active" && $2 == "port:") {
-            if (tolower($3) ~ /headphone/)
+            if (tolower($3) !~ /speaker/)
                 i += 2
             exit
         }
