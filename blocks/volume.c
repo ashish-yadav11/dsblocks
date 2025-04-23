@@ -3,10 +3,10 @@
 #include "../util.h"
 #include "volume.h"
 
-#define ICONsn                          COL1 "" COL0
-#define ICONsm                          COL2 "" COL0
 #define ICONhn                          COL1 "" COL0
 #define ICONhm                          COL2 "" COL0
+#define ICONsn                          COL1 "" COL0
+#define ICONsm                          COL2 "" COL0
 
 #define PULSEINFO                       (char *[]){ SCRIPT("pulse_info.sh"), NULL }
 
@@ -17,7 +17,7 @@
 size_t
 volumeu(char *str, int sigval)
 {
-        static char *icons[] = { ICONsn, ICONsm, ICONhn, ICONhm };
+        static char *icons[] = { ICONhn, ICONhm, ICONsn, ICONsm };
         char buf[32];
         size_t l;
 
