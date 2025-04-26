@@ -17,16 +17,22 @@
 size_t
 volumeu(char *str, int sigval)
 {
+        static int playing = 0;
         static char *icons[] = { ICONhn, ICONhm, ICONsn, ICONsm };
-        char buf[32];
+        static char buf[32] = "";
         size_t l;
 
-        if (!(l = getcmdout(PULSEINFO, buf, sizeof buf - 1))) {
-                *str = '\0';
-                return 1;
+        if (sigval != 0)
+                playing = 1 ? sigval > 0 : 0;
+
+        if (buf[0] == '\0' || sigval == 0) {
+                if (!(l = getcmdout(PULSEINFO, buf, sizeof buf - 1))) {
+                        *str = '\0';
+                        return 1;
+                }
+                buf[l] = '\0';
         }
-        buf[l] = '\0';
-        return SPRINTF(str, "%s%s", icons[buf[0] - '0'], buf + 1);
+        return SPRINTF(str, "%s%c%s", icons[buf[0]-'0'], playing ? 'v' : 'x', buf+1);
 }
 
 void
