@@ -1,6 +1,6 @@
 #!/bin/dash
-# This script should be autostarted on startup
-# It signals volume block to update on playerctl status change
+# This script or <mprisdaemon.py> should be autostarted on startup
+# It signals volume block to update on audio playback resume/pause events
 lockfile="$XDG_RUNTIME_DIR/playerdaemon.lock"
 
 exec 9<>"$lockfile"
