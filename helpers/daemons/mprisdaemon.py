@@ -13,6 +13,7 @@ import dbus.service
 import dbus.mainloop.glib
 from gi.repository import GLib
 import subprocess
+import signal
 
 
 DBUS_DAEMON = 'org.freedesktop.DBus'
@@ -30,6 +31,8 @@ OBJECT_PATH = '/org/python/mpriscustomdaemon'
 active_players = []
 paused_players = []
 
+
+signal.signal(signal.SIGCHLD, signal.SIG_IGN)
 
 def sigvolblock(active):
     subprocess.Popen(["sigdsblocks", "2", str(active)])
@@ -130,7 +133,7 @@ def playnext(player_name):
 def playprev(player_name):
     try:
         proxy = bus.get_object(player_name, PLAYER_PATH)
-        dbus.Interface(proxy, PLAYER_IFACE).Next()
+        dbus.Interface(proxy, PLAYER_IFACE).Previous()
     except:
         pass
 
