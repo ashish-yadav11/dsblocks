@@ -192,11 +192,11 @@ class mpriscontrol(dbus.service.Object):
 
     @dbus.service.method(SERVICE_NAME, in_signature='s', out_signature='s')
     def query(self, data):
-        if data == "player":
+        if data == "status":
             if active_players:
-                return active_players[-1]
+                return f"{active_players[-1]}: active"
             elif paused_players:
-                return paused_players[-1]
+                return f"{paused_players[-1]}: paused"
         return ""
 
 
