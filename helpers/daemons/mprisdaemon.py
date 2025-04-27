@@ -76,7 +76,7 @@ def hook_player(bus, player_name):
                             sigvolblock(-1)
 
                     paused_players[:] = (p for p in paused_players if p != player_name)
-#               print(f"{player_name} -> {changed['PlaybackStatus']}")
+#               print(f"{player_name} -> {changed_props['PlaybackStatus']}")
 
         bus.add_signal_receiver(
             handler_function=on_properties_changed,
