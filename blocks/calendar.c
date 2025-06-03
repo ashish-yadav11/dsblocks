@@ -17,10 +17,11 @@ calendaru(char *str, int sigval)
         if (sigval == 0)
                 hidetime = !hidetime;
 
-        if (hidetime)
+        if (hidetime) {
                 return strftime(str, BLOCKLENGTH, ICON "%a, %b %d", &tm) + 1;
-        else
+        } else {
                 return strftime(str, BLOCKLENGTH, ICON "%a, %b %d, %R", &tm) + 1;
+        }
 }
 
 void

@@ -63,81 +63,72 @@ enum { Normal, Critical, Low, Plug, Unplug };
 size_t
 batteryu(char *str, int sigval)
 {
+        static int ac = -1, bat = -1;
         static int level = Normal;
         static char *icons[] = { ICON0, ICON1, ICON2, ICON3, ICON4,
                                  ICON5, ICON6, ICON7, ICON8, ICON9 };
-        int ac, bat;
 
-        if (!readint(BATCAPFILE, &bat)) {
-                strcpy(str, ICONa);
-                return sizeof ICONa;
-        }
-        switch (sigval) {
-        /* routine update */
-        case STRT:
-        case RTNE:
-        case NONE:
+        if (sigval == -2) {
+                ac = 0;
+                if (bat < 0 && !readint(BATCAPFILE, &bat)) {
+                        strcpy(str, ICONe);
+                        return sizeof ICONe;
+                }
+                if (bat > BATP)
+                        UTNOTIFY("1000", "Charger plugged out");
+        } else if (sigval == -1) {
+                ac = 1;
+                if (bat < 0 && !readint(BATCAPFILE, &bat)) {
+                        strcpy(str, ICONa);
+                        return sizeof ICONa;
+                }
+                if (bat < BATU)
+                        UTNOTIFY("1000", "Charger plugged in");
+        } else if (0 <= sigval && sigval <= 100) {
+                if (bat == sigval)
+                        return 0;
+                bat = sigval;
+                if (ac < 0 && !readint(ACSTATEFILE, &ac))
+                        return SPRINTF(str, ICONe "%d%%", bat);
+        } else {
+                if (!readint(BATCAPFILE, &bat)) {
+                        strcpy(str, ICONa);
+                        return sizeof ICONa;
+                }
                 if (!readint(ACSTATEFILE, &ac))
                         return SPRINTF(str, ICONe "%d%%", bat);
-                if (ac) {
-                        if (bat < BATU)
-                                level = Normal;
-                        else {
-                                if (level != Unplug) {
-                                        UNNOTIFY("0", "Unplug the charger");
-                                        level = Unplug;
-                                }
+        }
+
+        if (ac) {
+                if (bat >= BATU) {
+                        if (level != Unplug) {
+                                UNNOTIFY("0", "Unplug the charger");
+                                level = Unplug;
                         }
-                        return SPRINTF(str, PUP "%s%d%%", ICON(bat), bat);
                 } else {
-                        if (bat > BATP)
-                                level = Normal;
-                        else if (bat > BATL) {
-                                if (level != Plug) {
-                                        UNNOTIFY("0", "Plug in the charger");
-                                        level = Plug;
-                                }
-                        } else if (bat > BATC) {
-                                if (level != Low) {
-                                        UNNOTIFY("0", "Battery level is low!");
-                                        level = Low;
-                                }
-                        } else {
-                                if (level != Critical) {
-                                        UCNOTIFY("0", "Battery level is critical!");
-                                        level = Critical;
-                                }
-                        }
-                        return SPRINTF(str, PDN "%s%d%%", ICON(bat), bat);
-                }
-        /* charger plugged in */
-        case 1:
-                if (bat < BATU) {
-                        UTNOTIFY("1000", "Charger plugged in");
                         level = Normal;
-                } else {
-                        UNNOTIFY("0", "Unplug the charger");
-                        level = Unplug;
                 }
                 return SPRINTF(str, PUP "%s%d%%", ICON(bat), bat);
-        /* charger plugged out */
-        case 0:
-                if (bat > BATP) {
-                        UTNOTIFY("1000", "Charger plugged out");
-                        level = Normal;
-                } else if (bat > BATL) {
-                        UNNOTIFY("0", "Plug in the charger");
-                        level = Plug;
-                } else if (bat > BATC) {
-                        UNNOTIFY("0", "Battery level is low!");
-                        level = Low;
+        } else {
+                if (bat <= BATC) {
+                        if (level != Critical) {
+                                UCNOTIFY("0", "Battery level is critical!");
+                                level = Critical;
+                        }
+                } else if (bat <= BATL) {
+                        if (level != Low) {
+                                UNNOTIFY("0", "Battery level is low!");
+                                level = Low;
+                        }
+                } else if (bat <= BATP) {
+                        if (level != Plug) {
+                                UNNOTIFY("0", "Plug in the charger");
+                                level = Plug;
+                        }
                 } else {
-                        UCNOTIFY("0", "Battery level is critical!");
-                        level = Critical;
+                        level = Normal;
                 }
                 return SPRINTF(str, PDN "%s%d%%", ICON(bat), bat);
-        default:
-                return 0;
         }
 }
 
@@ -185,6 +176,8 @@ batteryc(int button)
         hr = cur / rate;
         mn = ((cur * 60) / rate) - hr * 60;
         switch (hr) {
+                char buf[64];
+
                 case 0:
                         switch (mn) {
                                 case 0:
@@ -194,12 +187,8 @@ batteryc(int button)
                                         CNNOTIFY("2000", "1 minute remaining");
                                         break;
                                 default:
-                                {
-                                        char buf[64];
-
                                         snprintf(buf, sizeof buf, "%d minutes remaining", mn);
                                         CNNOTIFY("2000", buf);
-                                }
                                         break;
                         }
                         break;
@@ -212,40 +201,24 @@ batteryc(int button)
                                         CNNOTIFY("2000", "1 hour, 1 minute remaining");
                                         break;
                                 default:
-                                {
-                                        char buf[64];
-
                                         snprintf(buf, sizeof buf, "1 hour, %d minutes remaining", mn);
                                         CNNOTIFY("2000", buf);
-                                }
                                         break;
                         }
                         break;
                 default:
                         switch (mn) {
                                 case 0:
-                                {
-                                        char buf[64];
-
                                         snprintf(buf, sizeof buf, "%d hours remaining", hr);
                                         CNNOTIFY("2000", buf);
-                                }
                                         break;
                                 case 1:
-                                {
-                                        char buf[64];
-
                                         snprintf(buf, sizeof buf, "%d hours, 1 minute remaining", hr);
                                         CNNOTIFY("2000", buf);
-                                }
                                         break;
                                 default:
-                                {
-                                        char buf[64];
-
                                         snprintf(buf, sizeof buf, "%d hours, %d minutes remaining", hr, mn);
                                         CNNOTIFY("2000", buf);
-                                }
                                         break;
                         }
                         break;

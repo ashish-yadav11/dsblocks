@@ -36,12 +36,13 @@ parsesigval(char *arg)
         if (*arg == '-') {
                 s = -1;
                 arg++;
-        } else if (*arg == '+')
+        } else if (*arg == '+') {
                 arg++;
+        }
         for (; *arg != '\0'; arg++)
-                if (*arg >= '0' && *arg <= '9')
+                if (*arg >= '0' && *arg <= '9') {
                         i = 10 * i + *arg - '0';
-                else {
+                } else {
                         fputs("Usage: sigdsblocks <signal> [<sigval>]\n", stderr);
                         exit(2);
                 }

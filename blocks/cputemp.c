@@ -19,10 +19,11 @@ cputempu(char *str, int sigval)
                 *str = '\0';
                 return 1;
         }
-        if (temp < WARNCPUTEMP)
+        if (temp < WARNCPUTEMP) {
                 return SPRINTF(str, ICONn "%d°C", temp / 1000);
-        else
+        } else {
                 return SPRINTF(str, ICONc "%d°C", temp / 1000);
+        }
 }
 
 void

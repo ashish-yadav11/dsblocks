@@ -171,13 +171,14 @@ updateblock(Block *block, int sigval)
                 if (!dirtyblock || block < dirtyblock)
                         dirtyblock = block;
         }
-        if (l == 1)
+        if (l == 1) {
                 block->length = 0;
-        else {
-                if (block->funcc)
+        } else {
+                if (block->funcc) {
                         block->curtext[l - 1] = block->signal;
-                else
+                } else {
                         l--;
+                }
                 memcpy(block->curtext + l, delimiter, DELIMITERLENGTH);
                 block->length = l + DELIMITERLENGTH;
         }

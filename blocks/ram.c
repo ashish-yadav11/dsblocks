@@ -64,10 +64,11 @@ ramu(char *str, int sigval)
                         return SPRINTF(str, ICONn "%u%%", memu);
         }
         swpu = 100 - (swpavail * 100) / swptotal;
-        if (memu + swpu >= 2 * MEMW)
+        if (memu + swpu >= 2 * MEMW) {
                 return SPRINTF(str, ICONw "s%u%% r%u%%", swpu, memu);
-        else
+        } else {
                 return SPRINTF(str, ICONn "s%u%% r%u%%", swpu, memu);
+        }
 }
 
 void
