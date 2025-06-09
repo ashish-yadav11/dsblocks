@@ -49,6 +49,6 @@ static Block blocks[] = {
         { volumeu,              volumec,                0,              2 },
         { cputempu,             cputempc,               2,              6 },
         { ramu,                 ramc,                   2,              7 },
-        { batteryu,             batteryc,               0,              5 },
+        { batteryu,             batteryc,               10,             5 },
         { NULL } /* just to mark the end of the array */
 };

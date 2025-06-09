@@ -63,42 +63,32 @@ enum { Normal, Critical, Low, Plug, Unplug };
 size_t
 batteryu(char *str, int sigval)
 {
-        static int ac = -1, bat = -1;
+        int bat;
+        static int ac;
         static int level = Normal;
         static char *icons[] = { ICON0, ICON1, ICON2, ICON3, ICON4,
                                  ICON5, ICON6, ICON7, ICON8, ICON9 };
 
-        if (sigval == -2) {
-                ac = 0;
-                if (bat < 0 && !readint(BATCAPFILE, &bat)) {
-                        strcpy(str, ICONe);
-                        return sizeof ICONe;
-                }
-                if (bat > BATP)
-                        UTNOTIFY("1000", "Charger plugged out");
-        } else if (sigval == -1) {
-                ac = 1;
-                if (bat < 0 && !readint(BATCAPFILE, &bat)) {
-                        strcpy(str, ICONa);
-                        return sizeof ICONa;
-                }
-                if (bat < BATU)
-                        UTNOTIFY("1000", "Charger plugged in");
-        } else if (0 <= sigval && sigval <= 100) {
-                if (bat == sigval)
-                        return 0;
-                bat = sigval;
-                if (ac < 0 && !readint(ACSTATEFILE, &ac))
-                        return SPRINTF(str, ICONe "%d%%", bat);
-        } else {
-                if (!readint(BATCAPFILE, &bat)) {
-                        strcpy(str, ICONa);
-                        return sizeof ICONa;
-                }
-                if (!readint(ACSTATEFILE, &ac))
-                        return SPRINTF(str, ICONe "%d%%", bat);
+        if (!readint(BATCAPFILE, &bat)) {
+                strcpy(str, ICONa);
+                return sizeof ICONa;
         }
-
+        switch (sigval) {
+                case STRT:
+                        if (!readint(ACSTATEFILE, &ac))
+                                return SPRINTF(str, ICONe "%d%%", bat);
+                        break;
+                case 0:
+                        ac = 0;
+                        if (bat > BATP)
+                                UTNOTIFY("1000", "Charger plugged out");
+                        break;
+                case 1:
+                        ac = 1;
+                        if (bat < BATU)
+                                UTNOTIFY("1000", "Charger plugged in");
+                        break;
+        }
         if (ac) {
                 if (bat >= BATU) {
                         if (level != Unplug) {

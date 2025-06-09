@@ -1,5 +1,4 @@
 # This file should be placed in /etc/udev/rules.d/
 # It signals battery block to update on charger plug/unplug and battery status updates
-SUBSYSTEM=="power_supply", ACTION=="change", ATTR{type}=="Mains", ATTR{online}=="0", RUN+="/usr/local/bin/sigdsblocks 5 -2"
-SUBSYSTEM=="power_supply", ACTION=="change", ATTR{type}=="Mains", ATTR{online}=="1", RUN+="/usr/local/bin/sigdsblocks 5 -1"
-SUBSYSTEM=="power_supply", ACTION=="change", ATTR{type}=="Battery", RUN+="/usr/local/bin/sigdsblocks 5 $attr{capacity}"
+SUBSYSTEM=="power_supply", ACTION=="change", ATTR{type}=="Mains", RUN+="/usr/local/bin/sigdsblocks 5 $attr{online}"
+SUBSYSTEM=="power_supply", ATTR{type}=="Battery", RUN+="/usr/local/bin/sigdsblocks 5"
