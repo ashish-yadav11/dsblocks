@@ -64,7 +64,7 @@ size_t
 batteryu(char *str, int sigval)
 {
         int bat;
-        static int ac;
+        static int ac, pbat;
         static int level = Normal;
         static char *icons[] = { ICON0, ICON1, ICON2, ICON3, ICON4,
                                  ICON5, ICON6, ICON7, ICON8, ICON9 };
@@ -88,7 +88,11 @@ batteryu(char *str, int sigval)
                         if (bat < BATU)
                                 UTNOTIFY("1000", "Charger plugged in");
                         break;
+                default:
+                        if (bat == pbat)
+                                return 0;
         }
+        pbat = bat;
         if (ac) {
                 if (bat >= BATU) {
                         if (level != Unplug) {
