@@ -10,17 +10,20 @@
 size_t
 calendaru(char *str, int sigval)
 {
-        static int hidetime = 0;
+        static int mode = 0;
         time_t t = time(NULL);
         struct tm tm = *localtime(&t);
 
         if (sigval == 0)
-                hidetime = !hidetime;
+                mode = (mode + 1) % 3;
 
-        if (hidetime) {
-                return strftime(str, BLOCKLENGTH, ICON "%a, %b %d", &tm) + 1;
-        } else {
-                return strftime(str, BLOCKLENGTH, ICON "%a, %b %d, %R", &tm) + 1;
+        switch (mode) {
+                case 1:
+                        return strftime(str, BLOCKLENGTH, ICON "%a, %b %d, %T", &tm) + 1;
+                case 2:
+                        return strftime(str, BLOCKLENGTH, ICON "%a, %b %d", &tm) + 1;
+                default:
+                        return strftime(str, BLOCKLENGTH, ICON "%a, %b %d, %R", &tm) + 1;
         }
 }
 
