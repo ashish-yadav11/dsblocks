@@ -8,7 +8,7 @@
 #define ICONn                           COL1 "" COL0
 #define ICONw                           COL2 "" COL0
 
-#define MEMW                            90
+#define MEMW                            80
 
 #define RAMFILE                         "/proc/meminfo"
 
@@ -64,7 +64,7 @@ ramu(char *str, int sigval)
                         return SPRINTF(str, ICONn "%u%%", memu);
         }
         swpu = 100 - (swpavail * 100) / swptotal;
-        if (memu + swpu >= 2 * MEMW) {
+        if (swpu == 100 && memu >= MEMW) {
                 return SPRINTF(str, ICONw "s%u%% r%u%%", swpu, memu);
         } else {
                 return SPRINTF(str, ICONn "s%u%% r%u%%", swpu, memu);
